@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<settings>
+    <!-- Timer list -->
+    <setting id="t0_active" default="false" />
+    <setting id="t0_channel" default="" />
+    <setting id="t0_date" default="" />
+    <setting id="t1_active" default="false" />
+    <setting id="t1_channel" default="" />
+    <setting id="t1_date" default="" />
+    <setting id="t2_active" default="false" />
+    <setting id="t2_channel" default="" />
+    <setting id="t2_date" default="" />
+    <setting id="t3_active" default="false" />
+    <setting id="t3_channel" default="" />
+    <setting id="t3_date" default="" />
+    <setting id="t4_active" default="false" />
+    <setting id="t4_channel" default="" />
+    <setting id="t4_date" default="" />
+    <setting id="t5_active" default="false" />
+    <setting id="t5_channel" default="" />
+    <setting id="t5_date" default="" />
+    <setting id="t6_active" default="false" />
+    <setting id="t6_channel" default="" />
+    <setting id="t6_date" default="" />
+    <setting id="t7_active" default="false" />
+    <setting id="t7_channel" default="" />
+    <setting id="t7_date" default="" />
+    <setting id="t8_active" default="false" />
+    <setting id="t8_channel" default="" />
+    <setting id="t8_date" default="" />
+    <setting id="t9_active" default="false" />
+    <setting id="t9_channel" default="" />
+    <setting id="t9_date" default="" />
+</settings>
