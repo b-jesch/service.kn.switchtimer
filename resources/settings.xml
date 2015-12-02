@@ -1,34 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <settings>
-    <!-- Timer list -->
-    <setting id="t0_active" default="false" />
-    <setting id="t0_channel" default="" />
-    <setting id="t0_date" default="" />
-    <setting id="t1_active" default="false" />
-    <setting id="t1_channel" default="" />
-    <setting id="t1_date" default="" />
-    <setting id="t2_active" default="false" />
-    <setting id="t2_channel" default="" />
-    <setting id="t2_date" default="" />
-    <setting id="t3_active" default="false" />
-    <setting id="t3_channel" default="" />
-    <setting id="t3_date" default="" />
-    <setting id="t4_active" default="false" />
-    <setting id="t4_channel" default="" />
-    <setting id="t4_date" default="" />
-    <setting id="t5_active" default="false" />
-    <setting id="t5_channel" default="" />
-    <setting id="t5_date" default="" />
-    <setting id="t6_active" default="false" />
-    <setting id="t6_channel" default="" />
-    <setting id="t6_date" default="" />
-    <setting id="t7_active" default="false" />
-    <setting id="t7_channel" default="" />
-    <setting id="t7_date" default="" />
-    <setting id="t8_active" default="false" />
-    <setting id="t8_channel" default="" />
-    <setting id="t8_date" default="" />
-    <setting id="t9_active" default="false" />
-    <setting id="t9_channel" default="" />
-    <setting id="t9_date" default="" />
+    <!-- Service Addon settings -->
+    <setting id="showNoticeBeforeSw" type="bool" label="30001" default="true" />
+    <setting id="dispTime" type="labelenum" label="30002" values="3 sec|4 sec|5 sec|6 sec|7 sec|8 sec|9 sec|10 sec" default="5 sec" />
+    <setting id="confirmTmrAdded" type="bool" label="30003" default="true" />
+    <setting id="discardOldTmr" type="labelenum" label="30004" values="5 min|10 min|15 min|20 min|30 min|45 min|60 min|120 min" default="10 min" />
+    <!-- Timer slots -->
+    <setting id="t0:channel" default="" />
+    <setting id="t0:date" default="" />
+    <setting id="t1:channel" default="" />
+    <setting id="t1:date" default="" />
+    <setting id="t2:channel" default="" />
+    <setting id="t2:date" default="" />
+    <setting id="t3:channel" default="" />
+    <setting id="t3:date" default="" />
+    <setting id="t4:channel" default="" />
+    <setting id="t4:date" default="" />
+    <setting id="t5:channel" default="" />
+    <setting id="t5:date" default="" />
+    <setting id="t6:channel" default="" />
+    <setting id="t6:date" default="" />
+    <setting id="t7:channel" default="" />
+    <setting id="t7:date" default="" />
+    <setting id="t8:channel" default="" />
+    <setting id="t8:date" default="" />
+    <setting id="t9:channel" default="" />
+    <setting id="t9:date" default="" />
 </settings>

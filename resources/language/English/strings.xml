@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<strings>
+    <string id="30000">Switch Timer Service</string>
+    <!-- settings -->
+    <string id="30001">Show Notice before Channel is switched</string>
+    <string id="30002">Duration of Notification</string>
+    <string id="30003">Show Confirmation if Timer is set</string>
+    <string id="30004">Ignore Timers older than</string>
+    <!-- Messages -->
+    <string id="30020">Timer could not be set</string>
+    <string id="30021">Timer successful added</string>
+    <string id="30022">Start Time resides in the past, Timer not set</string>
+    <string id="30023">Timer already set</string>
+    <string id="30024">Timer Limit exceed, no free Slots</string>
+    <string id="30025">Could not switch to %s</string>
+</strings>
