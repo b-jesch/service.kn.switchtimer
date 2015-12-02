@@ -15,6 +15,8 @@ __IconDefault__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media'
 __IconAlert__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'alert.png'))
 __IconOk__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'ok.png'))
 
+__confirmTmrAdded__ = True if __addon__.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
+
 OSD = xbmcgui.Dialog()
 
 def notifyLog(message, level=xbmc.LOGNOTICE):
@@ -49,7 +51,7 @@ def setSwitchTimer(channel, date):
         __addon__.setSetting(_prefix + 'channel', channel)
         __addon__.setSetting(_prefix + 'date', str(itime))
         notifyLog('timer added @%s, ch:%s' % (date, channel.decode('utf-8')))
-        notifyOSD(__LS__(30000), __LS__(30021), icon=__IconOk__)
+        if __confirmTmrAdded__: notifyOSD(__LS__(30000), __LS__(30021), icon=__IconOk__)
         return True
     notifyLog('timer limit exceeded, no free slot', xbmc.LOGERROR)
     notifyOSD(__LS__(30000), __LS__(30024), icon=__IconAlert__)

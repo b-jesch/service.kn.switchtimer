@@ -48,13 +48,16 @@ class Service(XBMCMonitor):
         self.__discardTmr = int(re.match('\d+', __addon__.getSetting('discardOldTmr')).group())*60
         self.__confirmTmrAdded = True if __addon__.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
 
-    def getSwitchTimer(self):
+    def getSwitchTimer(self, cntActTmr):
         timers = []
         for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
             if __addon__.getSetting(_prefix + 'date') == '' or None: continue
             timers.append({'channel': __addon__.getSetting(_prefix + 'channel'), 'date': int(__addon__.getSetting(_prefix + 'date'))})
         self.SettingsChanged = False
         notifyLog('timer (re)loaded, currently %s active timer' % (len(timers)))
+        if cntActTmr == len(timers):
+            self.getSettings()
+            notifyLog('addon settings refreshed')
         return timers
 
     def resetSwitchTimer(self, channel, date):
@@ -74,11 +77,11 @@ class Service(XBMCMonitor):
 
     def poll(self):
 
-        timers = self.getSwitchTimer()
+        timers = self.getSwitchTimer(0)
 
         while not XBMCMonitor.abortRequested(self):
             if XBMCMonitor.waitForAbort(self, INTERVAL): break
-            if self.SettingsChanged: timers = self.getSwitchTimer()
+            if self.SettingsChanged: timers = self.getSwitchTimer(len(timers))
             _now = time.time()
             for _timer in timers:
                 # delete discarded times
