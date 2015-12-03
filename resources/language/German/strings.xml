@@ -2,15 +2,15 @@
 <strings>
     <string id="30000">Switch Timer Service</string>
     <!-- settings -->
-    <string id="30001">Zeige Hinweis vor dem Kanalwechsel</string>
+    <string id="30001">Zeige Hinweis, wenn Kanalwechsel bevor steht</string>
     <string id="30002">Anzeigedauer der Hinweismeldung</string>
-    <string id="30003">Zeige Bestätigung für gesetzten Timer an</string>
-    <string id="30004">Verwerfe Timer älter als</string>
+    <string id="30003">Zeige Bestätigung für gesetzten Timer</string>
+    <string id="30004">Ignoriere Timer, die älter sind als</string>
     <!-- Messages -->
     <string id="30020">Timer konnte nicht aktiviert werden</string>
     <string id="30021">Timer wurde erfolgreich aktiviert</string>
     <string id="30022">Startzeit liegt in der Vergangenheit, Timer verworfen</string>
-    <string id="30023">Timer wurde bereits aktiviert</string>
+    <string id="30023">Timer wurde bereits gesetzt</string>
     <string id="30024">max. Anzahl Timer erreicht, kein freier Speicher</string>
     <string id="30025">Kann nicht umschalten zu %s</string>
     <string id="30026">Umschaltung zu %s steht bevor</string>
