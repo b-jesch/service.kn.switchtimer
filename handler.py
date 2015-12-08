@@ -45,7 +45,7 @@ def setSwitchTimer(channel, date):
                 return False
             continue
         if int(time.time()) > itime:
-            notifyLog('timer date resides in the past')
+            notifyLog('timer date is in the past')
             notifyOSD(__LS__(30000), __LS__(30022), icon=__IconAlert__)
             return False
 
@@ -74,11 +74,11 @@ try:
             args[item] = value
         if args['action'] == 'add':
             if not setSwitchTimer(args['channel'], args['date']):
-                notifyLog('timer could or would not be set', xbmc.LOGERROR)
+                notifyLog('timer couldn\'t or wouldn\'t be set', xbmc.LOGERROR)
         elif args['action'] == 'del':
             pass
         elif args['action'] == 'delall':
             clearTimerList()
             notifyLog('all timer deleted')
 except IndexError:
-        notifyLog('Calling this script without parameters are not allowed', xbmc.LOGERROR)
+        notifyLog('Calling this script without parameters is not allowed', xbmc.LOGERROR)
