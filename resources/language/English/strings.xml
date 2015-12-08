@@ -12,7 +12,7 @@
     <!-- Messages -->
     <string id="30020">Timer could not be set</string>
     <string id="30021">Timer successful added</string>
-    <string id="30022">Start Time is in the past, Timer not set</string>
+    <string id="30022">Timer is in the past</string>
     <string id="30023">Timer already set</string>
     <string id="30024">Timer Limit exceed, no free Slots</string>
     <string id="30025">Could not switch to %s</string>

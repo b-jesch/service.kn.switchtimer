@@ -42,9 +42,8 @@ def setSwitchTimer(channel, date, title):
     if not itime: return False
 
     for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
-        if __addon__.getSetting(_prefix + 'date') != '':
-            # if itime == int(__addon__.getSetting(_prefix + 'date')):
-            if date == __addon__.getSetting(_prefix + 'date'):
+        if xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date')) != '':
+            if date == xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date')):
                 notifyLog('timer already set')
                 notifyOSD(__LS__(30000), __LS__(30023), icon=__IconAlert__)
                 return False
@@ -54,10 +53,8 @@ def setSwitchTimer(channel, date, title):
             notifyOSD(__LS__(30000), __LS__(30022), icon=__IconAlert__)
             return False
 
-        __addon__.setSetting(_prefix + 'channel', channel)
-        __addon__.setSetting(_prefix + 'date', date)
-
         # Set the Skin Strings
+
         xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'channel', channel))
         xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'date', date))
         xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'title', title))
@@ -71,9 +68,9 @@ def setSwitchTimer(channel, date, title):
 
 def clearTimerList():
     for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
-        __addon__.setSetting(_prefix + 'channel', '')
-        __addon__.setSetting(_prefix + 'date', '')
+
         # Reset the skin strings
+
         xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'channel'))
         xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'date'))
         xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'title'))

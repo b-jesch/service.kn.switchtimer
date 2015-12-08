@@ -24,6 +24,9 @@ OSD = xbmcgui.Dialog()
 def notifyLog(message, level=xbmc.LOGNOTICE):
     xbmc.log('[%s] %s' % (__addonid__, message.encode('utf-8')), level)
 
+def notifyOSD(header, message, icon=__IconDefault__, time=5000):
+    OSD.notification(header.encode('utf-8'), message.encode('utf-8'), icon, time)
+
 def date2timeStamp(date, format=DATEFORMAT):
     try:
         dtime = datetime.datetime.strptime(date, DATEFORMAT)
@@ -50,37 +53,28 @@ class Service(XBMCMonitor):
         XBMCMonitor.__init__(self)
         self.getSettings()
         notifyLog('Init Service %s %s' % (__addonname__, __version__))
-        
-    def notifyOSD(self, header, message, icon=__IconDefault__, dur=5000):
-        OSD.notification(header.encode('utf-8'), message.encode('utf-8'), icon, dur)
 
     def getSettings(self):
         self.__showNoticeBeforeSw = True if __addon__.getSetting('showNoticeBeforeSw').upper() == 'TRUE' else False
         self.__dispMsgTime = int(re.match('\d+', __addon__.getSetting('dispTime')).group())
         self.__discardTmr = int(re.match('\d+', __addon__.getSetting('discardOldTmr')).group())*60
         self.__confirmTmrAdded = True if __addon__.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
+        self.SettingsChanged = False
 
-    def getSwitchTimer(self, cntActTmr):
+    def getSwitchTimer(self, cntActTmr=0):
         timers = []
         for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
-            if __addon__.getSetting(_prefix + 'date') == '' or None: continue
-            # date = date2timeStamp(__addon__.getSetting(_prefix + 'date'))
-            # if not date: return False
-            timers.append({'channel': __addon__.getSetting(_prefix + 'channel'), 'date': __addon__.getSetting(_prefix + 'date')})
-        self.SettingsChanged = False
+            if xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date')) == '' or None: continue
+            timers.append({'channel': xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'channel')), 'date': xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date'))})
         notifyLog('timer (re)loaded, currently %s active timer' % (len(timers)))
-        if cntActTmr == len(timers):
-            self.getSettings()
-            notifyLog('addon settings refreshed')
-        __addon__.setSetting('cntTmr', str(len(timers)))
+        if cntActTmr != len(timers):
+            __addon__.setSetting('cntTmr', str(len(timers)))
         return timers
 
     def resetSwitchTimer(self, channel, date):
         for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
-            if __addon__.getSetting(_prefix + 'date') == '': continue
-            elif __addon__.getSetting(_prefix + 'channel') == channel and __addon__.getSetting(_prefix + 'date') == date:
-                __addon__.setSetting(_prefix + 'channel', '')
-                __addon__.setSetting(_prefix + 'date', '')
+            if xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date')) == '': continue
+            elif xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date')) == date and xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'channel')) == channel:
 
                 # Reset the skin strings
 
@@ -98,30 +92,32 @@ class Service(XBMCMonitor):
 
     def poll(self):
 
-        timers = self.getSwitchTimer(0)
-
         while not XBMCMonitor.abortRequested(self):
             if XBMCMonitor.waitForAbort(self, INTERVAL): break
-            if self.SettingsChanged: timers = self.getSwitchTimer(len(timers))
+            if self.SettingsChanged: self.getSettings()
             _now = time.time()
+            timers = self.getSwitchTimer(int(__addon__.getSetting('cntTmr')))
             for _timer in timers:
                 timestamp = date2timeStamp(_timer['date'])
 
                 if not timestamp:
-                    notifylog('could not calculate timer', xbmc.LOGERROR)
+                    notifyLog('could not calculate timer', xbmc.LOGERROR)
                     break
+
                 # delete discarded times
+
                 if timestamp + self.__discardTmr < _now:
                     self.resetSwitchTimer(_timer['channel'], _timer['date'])
                     continue
                 _timediff = INTERVAL
                 if self.__showNoticeBeforeSw: _timediff += self.__dispMsgTime
                 if timestamp - _now < _timediff:
+
                     # switch to channel, delete timer
 
                     channelid = self.channelName2channelId(_timer['channel'].decode('utf-8'))
                     if channelid:
-                        self.notifyOSD(__LS__(30000), __LS__(30026) % (_timer['channel'].decode('utf-8')), dur=self.__dispMsgTime * 1000)
+                        notifyOSD(__LS__(30000), __LS__(30026) % (_timer['channel'].decode('utf-8')), time=self.__dispMsgTime * 1000)
                         xbmc.sleep(self.__dispMsgTime * 1000)
                         res = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "id":"1", "method": "Player.Open","params":{"item":{"channelid":%s}}}' % channelid)
                         res = json.loads(unicode(res, 'utf-8', errors='ignore'))
@@ -131,7 +127,7 @@ class Service(XBMCMonitor):
                             notifyLog('timer @%s deactivated' % (_timer['date']))
                     else:
                         notifyLog('could not switch to channel %s' % (_timer['channel'].decode('utf-8')))
-                        self.notifyOSD(__LS__(30000), __LS__(30025) % (_timer['channel'].decode('utf-8')),icon=__IconAlert__)
+                        notifyOSD(__LS__(30000), __LS__(30025) % (_timer['channel'].decode('utf-8')),icon=__IconAlert__)
 
         notifyLog('Service kicks off')
 

@@ -12,7 +12,7 @@
     <!-- Messages -->
     <string id="30020">Timer konnte nicht aktiviert werden</string>
     <string id="30021">Timer wurde erfolgreich aktiviert</string>
-    <string id="30022">Startzeit liegt in der Vergangenheit, Timer verworfen</string>
+    <string id="30022">Timer liegt in der Vergangenheit</string>
     <string id="30023">Timer wurde bereits gesetzt</string>
     <string id="30024">max. Anzahl Timer erreicht, kein freier Speicher</string>
     <string id="30025">Kann nicht umschalten zu %s</string>
