@@ -17,11 +17,23 @@ __IconAlert__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 
 __IconOk__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'ok.png'))
 
 INTERVAL = 10
+DATEFORMAT = '%d.%m.%Y %H:%M'
 
 OSD = xbmcgui.Dialog()
 
 def notifyLog(message, level=xbmc.LOGNOTICE):
     xbmc.log('[%s] %s' % (__addonid__, message.encode('utf-8')), level)
+
+def date2timeStamp(date, format=DATEFORMAT):
+    try:
+        dtime = datetime.datetime.strptime(date, DATEFORMAT)
+    except TypeError:
+        dtime = datetime.datetime.fromtimestamp(time.mktime(time.strptime(date, DATEFORMAT)))
+    except Exception:
+        notifyLog('Couldn\'t parse date: %s' % (date), xbmc.LOGERROR)
+        notifyOSD(__LS__(30000), __LS__(30020), icon=__IconAlert__)
+        return False
+    return int(time.mktime(dtime.timetuple()))
 
 class XBMCMonitor(xbmc.Monitor):
 
@@ -52,22 +64,29 @@ class Service(XBMCMonitor):
         timers = []
         for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
             if __addon__.getSetting(_prefix + 'date') == '' or None: continue
-            timers.append({'channel': __addon__.getSetting(_prefix + 'channel'), 'date': int(__addon__.getSetting(_prefix + 'date'))})
+            # date = date2timeStamp(__addon__.getSetting(_prefix + 'date'))
+            # if not date: return False
+            timers.append({'channel': __addon__.getSetting(_prefix + 'channel'), 'date': __addon__.getSetting(_prefix + 'date')})
         self.SettingsChanged = False
         notifyLog('timer (re)loaded, currently %s active timer' % (len(timers)))
         if cntActTmr == len(timers):
             self.getSettings()
             notifyLog('addon settings refreshed')
-        else:
-            __addon__.setSetting('cntTmr', str(len(timers)))
+        __addon__.setSetting('cntTmr', str(len(timers)))
         return timers
 
     def resetSwitchTimer(self, channel, date):
         for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
             if __addon__.getSetting(_prefix + 'date') == '': continue
-            elif __addon__.getSetting(_prefix + 'channel') == channel and int(__addon__.getSetting(_prefix + 'date')) == date:
+            elif __addon__.getSetting(_prefix + 'channel') == channel and __addon__.getSetting(_prefix + 'date') == date:
                 __addon__.setSetting(_prefix + 'channel', '')
                 __addon__.setSetting(_prefix + 'date', '')
+
+                # Reset the skin strings
+
+                xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'channel'))
+                xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'date'))
+                xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'title'))
 
     def channelName2channelId(self, channelname):
         res = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "PVR.GetChannels", "params": {"channelgroupid": "alltv"}, "id": "1"}')
@@ -86,13 +105,18 @@ class Service(XBMCMonitor):
             if self.SettingsChanged: timers = self.getSwitchTimer(len(timers))
             _now = time.time()
             for _timer in timers:
+                timestamp = date2timeStamp(_timer['date'])
+
+                if not timestamp:
+                    notifylog('could not calculate timer', xbmc.LOGERROR)
+                    break
                 # delete discarded times
-                if int(_timer['date']) + self.__discardTmr < _now:
+                if timestamp + self.__discardTmr < _now:
                     self.resetSwitchTimer(_timer['channel'], _timer['date'])
                     continue
                 _timediff = INTERVAL
                 if self.__showNoticeBeforeSw: _timediff += self.__dispMsgTime
-                if int(_timer['date']) - _now < _timediff:
+                if timestamp - _now < _timediff:
                     # switch to channel, delete timer
 
                     channelid = self.channelName2channelId(_timer['channel'].decode('utf-8'))
@@ -104,7 +128,7 @@ class Service(XBMCMonitor):
                         if 'result' in res and res['result'] == 'OK':
                             notifyLog('switched to channel %s' % (_timer['channel'].decode('utf-8')))
                             self.resetSwitchTimer(_timer['channel'], _timer['date'])
-                            notifyLog('timer @%s deactivated' % (datetime.datetime.fromtimestamp(int(_timer['date'])).strftime('%d.%m.%Y %H:%M')))
+                            notifyLog('timer @%s deactivated' % (_timer['date']))
                     else:
                         notifyLog('could not switch to channel %s' % (_timer['channel'].decode('utf-8')))
                         self.notifyOSD(__LS__(30000), __LS__(30025) % (_timer['channel'].decode('utf-8')),icon=__IconAlert__)
