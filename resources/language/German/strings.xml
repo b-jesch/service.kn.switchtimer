@@ -6,6 +6,9 @@
     <string id="30002">Anzeigedauer der Hinweismeldung</string>
     <string id="30003">Zeige Bestätigung für gesetzten Timer</string>
     <string id="30004">Ignoriere Timer, die älter sind als</string>
+    <!-- Info -->
+    <string id="30010">Anzahl aktuell aktiver Timer</string>
+    <string id="30011">Alle Timer löschen</string>
     <!-- Messages -->
     <string id="30020">Timer konnte nicht aktiviert werden</string>
     <string id="30021">Timer wurde erfolgreich aktiviert</string>

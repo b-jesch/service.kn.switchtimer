@@ -16,7 +16,7 @@ __IconDefault__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media'
 __IconAlert__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'alert.png'))
 __IconOk__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'ok.png'))
 
-INTERVAL = 15
+INTERVAL = 10
 
 OSD = xbmcgui.Dialog()
 
@@ -58,6 +58,8 @@ class Service(XBMCMonitor):
         if cntActTmr == len(timers):
             self.getSettings()
             notifyLog('addon settings refreshed')
+        else:
+            __addon__.setSetting('cntTmr', str(len(timers)))
         return timers
 
     def resetSwitchTimer(self, channel, date):

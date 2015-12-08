@@ -18,6 +18,7 @@ __IconOk__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'ok
 __confirmTmrAdded__ = True if __addon__.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
 
 OSD = xbmcgui.Dialog()
+DATEFORMAT = '%d.%m.%Y %H:%M'
 
 def notifyLog(message, level=xbmc.LOGNOTICE):
     xbmc.log('[%s] %s' % (__addonid__, message.encode('utf-8')), level)
@@ -28,9 +29,9 @@ def notifyOSD(header, message, icon=__IconDefault__):
 def setSwitchTimer(channel, date):
     for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
         try:
-            dtime = datetime.datetime.strptime(date, '%d.%m.%Y %H:%M')
+            dtime = datetime.datetime.strptime(date, DATEFORMAT)
         except TypeError:
-            dtime = datetime.datetime.fromtimestamp(time.mktime(time.strptime(date, '%d.%m.%Y %H:%M')))
+            dtime = datetime.datetime.fromtimestamp(time.mktime(time.strptime(date, DATEFORMAT)))
         except Exception:
             notifyLog('Couldn\'t parse date: %s' % (date), xbmc.LOGERROR)
             notifyOSD(__LS__(30000), __LS__(30020), icon=__IconAlert__)
@@ -57,6 +58,12 @@ def setSwitchTimer(channel, date):
     notifyOSD(__LS__(30000), __LS__(30024), icon=__IconAlert__)
     return False
 
+def clearTimerList():
+    for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
+        __addon__.setSetting(_prefix + 'channel', '')
+        __addon__.setSetting(_prefix + 'date', '')
+    __addon__.setSetting('cntTmr', '0')
+
 notifyLog('parameter handler called')
 try:
     if sys.argv[1]:
@@ -70,5 +77,8 @@ try:
                 notifyLog('timer could or would not be set', xbmc.LOGERROR)
         elif args['action'] == 'del':
             pass
+        elif args['action'] == 'delall':
+            clearTimerList()
+            notifyLog('all timer deleted')
 except IndexError:
         notifyLog('Calling this script without parameters are not allowed', xbmc.LOGERROR)
