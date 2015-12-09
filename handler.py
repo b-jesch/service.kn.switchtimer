@@ -98,4 +98,4 @@ try:
 except IndexError:
         notifyLog('Calling this script without parameters is not allowed', xbmc.LOGERROR)
 except Exception, e:
-        notifyLog('Script error,Operation couldn\'t performed', xbmc.LOGERROR)
+        notifyLog('Script error, Operation couldn\'t performed', xbmc.LOGERROR)
