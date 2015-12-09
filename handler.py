@@ -66,20 +66,22 @@ def setSwitchTimer(channel, date, title):
     notifyOSD(__LS__(30000), __LS__(30024), icon=__IconAlert__)
     return False
 
+def clearTimer(timer):
+
+    # Reset the skin strings
+
+    xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'channel'))
+    xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'date'))
+    xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'title'))
+
 def clearTimerList():
-    for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
-
-        # Reset the skin strings
-
-        xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'channel'))
-        xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'date'))
-        xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'title'))
+    for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']: clearTimer(_prefix);
     __addon__.setSetting('cntTmr', '0')
 
 notifyLog('parameter handler called')
 try:
     if sys.argv[1]:
-        args = {'action':None, 'channel':'', 'date':'', 'title':''}
+        args = {'action':None, 'channel':'', 'date':'', 'title':'', 'timer':''}
         pars = sys.argv[1:]
         for par in pars:
             item, value = par.split('=')
@@ -88,7 +90,8 @@ try:
             if not setSwitchTimer(args['channel'], args['date'], args['title']):
                 notifyLog('timer couldn\'t or wouldn\'t set', xbmc.LOGERROR)
         elif args['action'] == 'del':
-            pass
+            clearTimer(args['timer'] + ':')
+            notifyLog('timer %s deleted' % (args['timer']))
         elif args['action'] == 'delall':
             clearTimerList()
             notifyLog('all timer deleted')
