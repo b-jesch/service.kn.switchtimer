@@ -59,7 +59,7 @@ def setSwitchTimer(channel, date, title):
         xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'date', date))
         xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'title', title))
 
-        notifyLog('timer %s added @%s, %s, %s' % (_prefix[:-1], channel.decode('utf-8'), title.decode('utf-8')))
+        notifyLog('timer %s added @%s, %s, %s' % (_prefix[:-1], date, channel.decode('utf-8'), title.decode('utf-8')))
         if __confirmTmrAdded__: notifyOSD(__LS__(30000), __LS__(30021), icon=__IconOk__)
         return True
     notifyLog('timer limit exceeded, no free slot', xbmc.LOGERROR)
@@ -94,5 +94,5 @@ try:
             notifyLog('all timer deleted')
 except IndexError:
         notifyLog('Calling this script without parameters is not allowed', xbmc.LOGERROR)
-except Exception, e:
-        notifyLog('Timer couldn\'t set', xbmc.LOGERROR)
+#except Exception, e:
+#        notifyLog('Timer couldn\'t set', xbmc.LOGERROR)
