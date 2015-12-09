@@ -94,5 +94,5 @@ try:
             notifyLog('all timer deleted')
 except IndexError:
         notifyLog('Calling this script without parameters is not allowed', xbmc.LOGERROR)
-#except Exception, e:
-#        notifyLog('Timer couldn\'t set', xbmc.LOGERROR)
+except Exception, e:
+        notifyLog('Script error, Timer couldn\'t set', xbmc.LOGERROR)
