@@ -115,7 +115,6 @@ class Service(XBMCMonitor):
             if self.SettingsChanged: self.getSettings()
             _now = time.time()
             timers = self.getSwitchTimer(int(__addon__.getSetting('cntTmr')))
-            self.getPlayer()
             for _timer in timers:
                 timestamp = date2timeStamp(_timer['date'])
 
