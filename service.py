@@ -137,7 +137,11 @@ class Service(XBMCMonitor):
                     plrProps = self.getPlayer()
                     if plrProps['player'] == 'audio' or (plrProps['player'] == 'video' and plrProps['media'] != 'channel'):
                         # stop the media player
+                        notifyLog('player:%s media:%s @id:%id is running' % (plrProps['player'], plrProps['media'], plrProps['playerid']))
                         res = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Player.Stop", "params": { "playerid": %s }, "id": 1}' % (plrProps['playerid']))
+                        res = json.loads(unicode(res, 'utf-8', errors='ignore'))
+                        if 'result' in res and res['result'] == 'OK':
+                            notifyLog('player stopped')
 
                     chanIdTmr = self.channelName2channelId(_timer['channel'].decode('utf-8'))
                     if chanIdTmr:
