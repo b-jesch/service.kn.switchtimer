@@ -89,8 +89,24 @@ class Service(XBMCMonitor):
         res = json.loads(unicode(res, 'utf-8', errors='ignore'))
         if 'result' in res and res['result'] is not None:
             for channeldict in res['result']['channels']:
-                if channeldict['label'] == channelname: return str(channeldict['channelid'])
+                if channeldict['label'] == channelname: return channeldict['channelid']
             return False
+
+    def getPlayer(self):
+        props = {'player': None, 'playerid': None, 'media': None, 'id': None}
+        res = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}')
+        res = json.loads(unicode(res, 'utf-8', errors='ignore'))['result']
+        if len(res) == 0: return props
+
+        props['player'] = res[0]['type']
+        props['playerid'] = res[0]['playerid']
+
+        res = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "season", "episode", "file"], "playerid": %s }, "id": "VideoGetItem"}' % (props['playerid']))
+        res = json.loads(unicode(res, 'utf-8', errors='ignore'))['result']['item']
+        
+        props['media'] = res['type']
+        if 'id' in res: props['id'] = res['id']
+        return props
 
     def poll(self):
 
@@ -99,6 +115,7 @@ class Service(XBMCMonitor):
             if self.SettingsChanged: self.getSettings()
             _now = time.time()
             timers = self.getSwitchTimer(int(__addon__.getSetting('cntTmr')))
+            self.getPlayer()
             for _timer in timers:
                 timestamp = date2timeStamp(_timer['date'])
 
@@ -117,19 +134,34 @@ class Service(XBMCMonitor):
 
                     # switch to channel, delete timer
 
-                    channelid = self.channelName2channelId(_timer['channel'].decode('utf-8'))
-                    if channelid:
-                        notifyOSD(__LS__(30000), __LS__(30026) % (_timer['channel'].decode('utf-8')), time=self.__dispMsgTime * 1000)
-                        xbmc.sleep(self.__dispMsgTime * 1000)
-                        res = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "id":"1", "method": "Player.Open","params":{"item":{"channelid":%s}}}' % channelid)
-                        res = json.loads(unicode(res, 'utf-8', errors='ignore'))
-                        if 'result' in res and res['result'] == 'OK':
-                            notifyLog('switched to channel %s' % (_timer['channel'].decode('utf-8')))
-                            self.resetSwitchTimer(_timer['channel'], _timer['date'])
-                            notifyLog('timer @%s deactivated' % (_timer['date']))
-                    else:
-                        notifyLog('could not switch to channel %s' % (_timer['channel'].decode('utf-8')))
-                        notifyOSD(__LS__(30000), __LS__(30025) % (_timer['channel'].decode('utf-8')),icon=__IconAlert__)
+                    plrProps = self.getPlayer()
+                    if plrProps['player'] == 'audio' or (plrProps['player'] == 'video' and plrProps['media'] != 'channel'):
+                        # stop the media player
+                        res = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Player.Stop", "params": { "playerid": %s }, "id": 1}' % (plrProps['playerid']))
+
+                    chanIdTmr = self.channelName2channelId(_timer['channel'].decode('utf-8'))
+                    if chanIdTmr:
+
+                        # is the current playing channel different form the one we will switch to?
+
+                        if chanIdTmr != plrProps['id']:
+                            notifyLog('currently playing channelid %s, switch to id %s' % (plrProps['id'], chanIdTmr))
+                            notifyOSD(__LS__(30000), __LS__(30026) % (_timer['channel'].decode('utf-8')), time=self.__dispMsgTime * 1000)
+                            xbmc.sleep(self.__dispMsgTime * 1000)
+                            res = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "id":"1", "method": "Player.Open","params":{"item":{"channelid": %s}}}' % chanIdTmr)
+                            res = json.loads(unicode(res, 'utf-8', errors='ignore'))
+                            if 'result' in res and res['result'] == 'OK':
+                                notifyLog('switched to channel \'%s\'' % (_timer['channel'].decode('utf-8')))
+                            else:
+                                notifyLog('could not switch to channel \'%s\'' % (_timer['channel'].decode('utf-8')))
+                                notifyOSD(__LS__(30000), __LS__(30025) % (_timer['channel'].decode('utf-8')),icon=__IconAlert__)
+                        else:
+                            notifyLog('channel switching not required')
+                            notifyOSD(__LS__(30000), __LS__(30027) % (_timer['channel'].decode('utf-8')), time=self.__dispMsgTime * 1000)
+
+                        self.resetSwitchTimer(_timer['channel'], _timer['date'])
+                        notifyLog('timer @%s deactivated' % (_timer['date']))
+
 
         notifyLog('Service kicks off')
 

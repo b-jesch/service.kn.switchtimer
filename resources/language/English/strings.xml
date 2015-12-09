@@ -10,10 +10,12 @@
     <string id="30010">Currently active Timers</string>
     <string id="30011">Delete all Timers</string>
     <!-- Messages -->
-    <string id="30020">Timer could not be set</string>
-    <string id="30021">Timer successful added</string>
+    <string id="30020">Timer could not set</string>
+    <string id="30021">Timer added</string>
     <string id="30022">Timer is in the past</string>
-    <string id="30023">Timer already set</string>
+    <string id="30023">Timer for this time already set</string>
     <string id="30024">Timer Limit exceed, no free Slots</string>
     <string id="30025">Could not switch to %s</string>
+    <string id="30026">Switching now to %s</string>
+    <string id="30027">Broadcast on %s starts now</string>
 </strings>
