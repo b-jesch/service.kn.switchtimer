@@ -69,6 +69,7 @@ class Service(XBMCMonitor):
 
         if cntActTmr != len(timers):
             __addon__.setSetting('cntTmr', str(len(timers)))
+            xbmc.executebuiltin('Skin.SetString(SwitchTimerActiveItems,%s)' % (str(len(timers))))
             notifyLog('timer (re)loaded, currently %s active timer' % (len(timers)))
         return timers
 
