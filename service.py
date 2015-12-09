@@ -66,9 +66,10 @@ class Service(XBMCMonitor):
         for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
             if xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date')) == '' or None: continue
             timers.append({'channel': xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'channel')), 'date': xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date'))})
-        notifyLog('timer (re)loaded, currently %s active timer' % (len(timers)))
+
         if cntActTmr != len(timers):
             __addon__.setSetting('cntTmr', str(len(timers)))
+            notifyLog('timer (re)loaded, currently %s active timer' % (len(timers)))
         return timers
 
     def resetSwitchTimer(self, channel, date):

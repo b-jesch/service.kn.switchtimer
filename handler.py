@@ -79,14 +79,14 @@ def clearTimerList():
 notifyLog('parameter handler called')
 try:
     if sys.argv[1]:
-        args = {'action':None, 'channel':None, 'date':None, 'title':None}
+        args = {'action':None, 'channel':'', 'date':'', 'title':''}
         pars = sys.argv[1:]
         for par in pars:
             item, value = par.split('=')
             args[item] = value
         if args['action'] == 'add':
             if not setSwitchTimer(args['channel'], args['date'], args['title']):
-                notifyLog('timer couldn\'t or wouldn\'t be set', xbmc.LOGERROR)
+                notifyLog('timer couldn\'t or wouldn\'t set', xbmc.LOGERROR)
         elif args['action'] == 'del':
             pass
         elif args['action'] == 'delall':
@@ -94,3 +94,5 @@ try:
             notifyLog('all timer deleted')
 except IndexError:
         notifyLog('Calling this script without parameters is not allowed', xbmc.LOGERROR)
+except Exception, e:
+        notifyLog('Timer couldn\'t set', xbmc.LOGERROR)
