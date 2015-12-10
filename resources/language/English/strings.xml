@@ -16,6 +16,6 @@
     <string id="30023">Timer for this time already set</string>
     <string id="30024">Timer Limit exceed, no free Slots</string>
     <string id="30025">Could not switch to %s</string>
-    <string id="30026">Switching now to %s</string>
-    <string id="30027">Broadcast on %s starts now</string>
+    <string id="30026">Switching now to '%s'</string>
+    <string id="30027">Broadcast on '%s' starts now</string>
 </strings>
