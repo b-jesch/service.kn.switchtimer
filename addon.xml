@@ -7,9 +7,12 @@
     <extension point="xbmc.service" library="service.py" start="login" />
     <extension point="xbmc.python.script" library="handler.py" />
     <extension point="xbmc.addon.metadata">
-        <summary lang="en">A switch timer for Aeon KN</summary>
-        <description lang="en">Provides switch timers for the pvr section of the skin Aeon KN.</description>
+        <summary lang="en">A switch timer for Aeon Flex</summary>
+        <summary lang="de">Ein Umschalttimer für den Aeon Flex Skin</summary>
+        <description lang="en">This Service provides switch timers supported by the PVR section of the skin Aeon Flex.</description>
+        <description lang="de">Dieser Service stellt Umschalttimer zur Verfügung, die vom PVR-Bereich des Skins Aeon Flex unterstützt werden.</description>
         <disclaimer lang="en">Use at your own risk.</disclaimer>
+        <disclaimer lang="de">Benutzung auf eigene Gefahr</disclaimer>
         <platform>all</platform>
         <language/>
     </extension>
