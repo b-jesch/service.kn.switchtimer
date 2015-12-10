@@ -17,8 +17,6 @@ __IconAlert__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 
 __IconOk__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'ok.png'))
 
 INTERVAL = 10
-DATEFORMAT = '%d.%m.%Y %H:%M'
-
 OSD = xbmcgui.Dialog()
 
 def notifyLog(message, level=xbmc.LOGNOTICE):
@@ -27,11 +25,16 @@ def notifyLog(message, level=xbmc.LOGNOTICE):
 def notifyOSD(header, message, icon=__IconDefault__, time=5000):
     OSD.notification(header.encode('utf-8'), message.encode('utf-8'), icon, time)
 
-def date2timeStamp(date, format=DATEFORMAT):
+def date2timeStamp(date, format):
     try:
-        dtime = datetime.datetime.strptime(date, DATEFORMAT)
+        dtime = datetime.datetime.strptime(date, format)
     except TypeError:
-        dtime = datetime.datetime.fromtimestamp(time.mktime(time.strptime(date, DATEFORMAT)))
+        try:
+            dtime = datetime.datetime.fromtimestamp(time.mktime(time.strptime(date, format)))
+        except ValueError:
+            notifyLog('Couldn\'t parse date: %s' % (date), xbmc.LOGERROR)
+            notifyOSD(__LS__(30000), __LS__(30020), icon=__IconAlert__)
+            return False
     except Exception:
         notifyLog('Couldn\'t parse date: %s' % (date), xbmc.LOGERROR)
         notifyOSD(__LS__(30000), __LS__(30020), icon=__IconAlert__)
@@ -51,6 +54,7 @@ class Service(XBMCMonitor):
 
     def __init__(self, *args):
         XBMCMonitor.__init__(self)
+        self.__dateFormat = None
         self.getSettings()
         notifyLog('Init Service %s %s' % (__addonname__, __version__))
 
@@ -59,6 +63,13 @@ class Service(XBMCMonitor):
         self.__dispMsgTime = int(re.match('\d+', __addon__.getSetting('dispTime')).group())
         self.__discardTmr = int(re.match('\d+', __addon__.getSetting('discardOldTmr')).group())*60
         self.__confirmTmrAdded = True if __addon__.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
+        
+        df = xbmc.getRegion('dateshort')
+        tf = xbmc.getRegion('time').split(':')
+        
+        self.__dateFormat = df + ' ' + tf[0][0:2] + ':' + tf[1]
+                
+        notifyLog('settings (re)loaded')
         self.SettingsChanged = False
 
     def getSwitchTimer(self, cntActTmr=0):
@@ -116,13 +127,14 @@ class Service(XBMCMonitor):
             _now = time.time()
             timers = self.getSwitchTimer(int(__addon__.getSetting('cntTmr')))
             for _timer in timers:
-                timestamp = date2timeStamp(_timer['date'])
+                timestamp = date2timeStamp(_timer['date'], self.__dateFormat)
 
                 if not timestamp:
-                    notifyLog('could not calculate timer', xbmc.LOGERROR)
+                    notifyLog('couldn\'t calculate timestamp, delete timer', xbmc.LOGERROR)
+                    self.resetSwitchTimer(_timer['channel'], _timer['date'])
                     break
 
-                # delete discarded times
+                # delete discarded timers
 
                 if timestamp + self.__discardTmr < _now:
                     self.resetSwitchTimer(_timer['channel'], _timer['date'])

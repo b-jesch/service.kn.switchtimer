@@ -10,7 +10,7 @@
     <string id="30010">Currently active Timers</string>
     <string id="30011">Delete all Timers</string>
     <!-- Messages -->
-    <string id="30020">Timer could not set</string>
+    <string id="30020">Date/Time of Timer could not calculate</string>
     <string id="30021">Timer added</string>
     <string id="30022">Timer is in the past</string>
     <string id="30023">Timer for this time already set</string>
