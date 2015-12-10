@@ -2,6 +2,9 @@ This service provides switchtimer aka reminder as a service for several skins.
 Currently Aeon Flex from Kodinerds is supported (WIP) but other skins can this
 service implement too.
 
+No more forgotten football matches or formula one races! Avoid discussion with
+your better half and let kodi switch to the channels you want!
+
 You need at least a button e.g. in the context menu area of the PVR OSD Guide
 (e.g. DialogContextMenu.xml) of your skin with the code below:
 
@@ -12,7 +15,7 @@ If you want buttons for deleting one or all timers just use
 
 <onclick>RunScript(service.kn.switchtimer,action=del,timer=tx</onclick>
 
-where tx is a timer from 0 to 9 (t0-t9), or delete all timers with
+where tx is a timer from t0 to t9, or delete all timers with
 
 <onclick>RunScript(service.kn.switchtimer,action=delall</onclick>
 
