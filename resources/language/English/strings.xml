@@ -18,4 +18,5 @@
     <string id="30025">Could not switch to %s</string>
     <string id="30026">Switching now to '%s'</string>
     <string id="30027">Broadcast on '%s' starts now</string>
+    <string id="30030">This Addon is a part of the Aeon switchtimer service and cannot use as a standalone application.</string>
 </strings>

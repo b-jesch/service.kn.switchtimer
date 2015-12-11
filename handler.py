@@ -108,5 +108,6 @@ try:
             notifyLog('all timer deleted')
 except IndexError:
         notifyLog('Calling this script without parameters is not allowed', xbmc.LOGERROR)
+        OSD.ok(__LS__(30000),__LS__(30030))
 except Exception, e:
         notifyLog('Script error, Timer couldn\'t set', xbmc.LOGERROR)

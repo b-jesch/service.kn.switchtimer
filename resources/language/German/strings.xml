@@ -18,4 +18,5 @@
     <string id="30025">Kann nicht umschalten zu %s</string>
     <string id="30026">Umschaltung zu '%s' steht bevor</string>
     <string id="30027">Sendung auf '%s' beginnt jetzt</string>
+    <string id="30030">Dieses Addon ist Bestandteil des Aeon Switchtimer Services und kann nicht als eigenständiges Programm aufgerufen werden.</string>
 </strings>
