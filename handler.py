@@ -101,7 +101,7 @@ try:
             if not setSwitchTimer(args['channel'], args['date'], args['title']):
                 notifyLog('timer couldn\'t or wouldn\'t set', xbmc.LOGERROR)
         elif args['action'] == 'del':
-            clearTimer(args['timer'+':'])
+            clearTimer(args['timer'] + ':')
             notifyLog('timer %s deleted' % (args['timer']))
         elif args['action'] == 'delall':
             clearTimerList()
