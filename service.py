@@ -55,6 +55,7 @@ class Service(XBMCMonitor):
     def __init__(self, *args):
         XBMCMonitor.__init__(self)
         self.__dateFormat = None
+        self.activeTimers = 0
         self.getSettings()
         notifyLog('Init Service %s %s' % (__addonname__, __version__))
 
@@ -72,14 +73,15 @@ class Service(XBMCMonitor):
         notifyLog('settings (re)loaded')
         self.SettingsChanged = False
 
-    def getSwitchTimer(self, cntActTmr=0):
+    def getSwitchTimer(self):
         timers = []
         for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
             if xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date')) == '' or None: continue
             timers.append({'channel': xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'channel')), 'date': xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date'))})
 
-        if cntActTmr != len(timers):
+        if self.activeTimers != len(timers):
             __addon__.setSetting('cntTmr', str(len(timers)))
+            self.activeTimers = str(len(timers))
             xbmc.executebuiltin('Skin.SetString(SwitchTimerActiveItems,%s)' % (str(len(timers))))
             notifyLog('timer (re)loaded, currently %s active timer' % (len(timers)))
         return timers
@@ -125,7 +127,7 @@ class Service(XBMCMonitor):
             if XBMCMonitor.waitForAbort(self, INTERVAL): break
             if self.SettingsChanged: self.getSettings()
             _now = time.time()
-            timers = self.getSwitchTimer(int(__addon__.getSetting('cntTmr')))
+            timers = self.getSwitchTimer()
             for _timer in timers:
                 timestamp = date2timeStamp(_timer['date'], self.__dateFormat)
 
@@ -165,7 +167,7 @@ class Service(XBMCMonitor):
                                 notifyLog('switched to channel \'%s\'' % (_timer['channel'].decode('utf-8')))
                             else:
                                 notifyLog('could not switch to channel \'%s\'' % (_timer['channel'].decode('utf-8')))
-                                notifyOSD(__LS__(30000), __LS__(30025) % (_timer['channel'].decode('utf-8')),icon=__IconAlert__)
+                                notifyOSD(__LS__(30000), __LS__(30025) % (_timer['channel'].decode('utf-8')), icon=__IconAlert__)
                         else:
                             notifyLog('channel switching not required')
                             notifyOSD(__LS__(30000), __LS__(30027) % (_timer['channel'].decode('utf-8')), time=self.__dispMsgTime)

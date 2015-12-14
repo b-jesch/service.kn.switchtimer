@@ -67,6 +67,8 @@ def setSwitchTimer(channel, date, title):
         xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'channel', channel))
         xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'date', date))
         xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'title', title))
+        cntTmr = int(__addon__.getSetting('cntTmr')) + 1
+        __addon__.setSetting('cntTmr', str(cntTmr))
 
         notifyLog('timer %s added @%s, %s, %s' % (_prefix[:-1], date, channel.decode('utf-8'), title.decode('utf-8')))
         if __confirmTmrAdded__: notifyOSD(__LS__(30000), __LS__(30021), icon=__IconOk__)
