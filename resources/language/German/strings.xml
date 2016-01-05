@@ -15,8 +15,8 @@
     <string id="30022">Timer liegt in der Vergangenheit</string>
     <string id="30023">Timer für diesen Zeitpunkt bereits aktiv</string>
     <string id="30024">max. Anzahl Timer erreicht, kein freier Speicher</string>
-    <string id="30025">Kann nicht umschalten zu %s</string>
-    <string id="30026">Umschaltung zu '%s' steht bevor</string>
+    <string id="30025">Kann nicht umschalten zu '%s'</string>
+    <string id="30026">Umschaltung zu '%s' erfolgt jetzt</string>
     <string id="30027">Sendung auf '%s' beginnt jetzt</string>
     <string id="30030">Dieses Addon ist Bestandteil des Aeon Switchtimer Services und kann nicht als eigenständiges Programm aufgerufen werden.</string>
 </strings>

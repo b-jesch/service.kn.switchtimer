@@ -25,6 +25,9 @@ def notifyLog(message, level=xbmc.LOGNOTICE):
 def notifyOSD(header, message, icon=__IconDefault__, time=5000):
     OSD.notification(header.encode('utf-8'), message.encode('utf-8'), icon, time)
 
+def jsonrpc(query):
+    return json.loads(xbmc.executeJSONRPC(json.dumps(query, encoding='utf-8')))
+
 def date2timeStamp(date, format):
     try:
         dtime = datetime.datetime.strptime(date, format)
@@ -98,27 +101,50 @@ class Service(XBMCMonitor):
                 xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'title'))
 
     def channelName2channelId(self, channelname):
-        res = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "PVR.GetChannels", "params": {"channelgroupid": "alltv"}, "id": "1"}')
-        res = json.loads(unicode(res, 'utf-8', errors='ignore'))
-        if 'result' in res and res['result'] is not None:
-            for channeldict in res['result']['channels']:
-                if channeldict['label'] == channelname: return channeldict['channelid']
+        query = {
+                "jsonrpc": "2.0",
+                "method": "PVR.GetChannels",
+                "params": {"channelgroupid": "alltv"},
+                "id": 1
+                }
+        res = jsonrpc(query)
+        res = res['result']
+        res = res.get('channels')
+
+        if res is not None:
+            for channels in res:
+                if channels['label'] == channelname: return channels['channelid']
             return False
 
     def getPlayer(self):
         props = {'player': None, 'playerid': None, 'media': None, 'id': None}
-        res = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}')
-        res = json.loads(unicode(res, 'utf-8', errors='ignore'))['result']
-        if len(res) == 0: return props
+        query = {
+                "jsonrpc": "2.0",
+                "method": "Player.GetActivePlayers",
+                "id": 1
+                }
+        res = jsonrpc(query)
+        res = res['result']
+
+        if res is None: return props
 
         props['player'] = res[0]['type']
         props['playerid'] = res[0]['playerid']
 
-        res = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "season", "episode", "file"], "playerid": %s }, "id": "VideoGetItem"}' % (props['playerid']))
-        res = json.loads(unicode(res, 'utf-8', errors='ignore'))['result']['item']
-        
+        query = {
+                "jsonrpc": "2.0",
+                "method": "Player.GetItem",
+                "params": {"properties": ["title", "season", "episode", "file"],
+                           "playerid": props['playerid']},
+                "id": "VideoGetItem"
+                }
+        res = jsonrpc(query)
+        res = res['result']
+        res = res.get('item')
+
         props['media'] = res['type']
         if 'id' in res: props['id'] = res['id']
+
         return props
 
     def poll(self):
@@ -151,9 +177,14 @@ class Service(XBMCMonitor):
                         if plrProps['player'] == 'audio' or (plrProps['player'] == 'video' and plrProps['media'] != 'channel'):
                             # stop the media player
                             notifyLog('player:%s media:%s @id:%s is running' % (plrProps['player'], plrProps['media'], plrProps['playerid']))
-                            res = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Player.Stop", "params": { "playerid": %s }, "id": 1}' % (plrProps['playerid']))
-                            res = json.loads(unicode(res, 'utf-8', errors='ignore'))
-                            if 'result' in res and res['result'] == 'OK':
+                            query = {
+                                    "jsonrpc": "2.0",
+                                    "method": "Player.Stop",
+                                    "params": {"playerid": plrProps['playerid']},
+                                    "id": 1
+                                    }
+                            res = jsonrpc(query)
+                            if 'result' in res and res['result'] == "OK":
                                 notifyLog('player stopped')
 
                         # is the current playing channel different from the one we will switch to?
@@ -161,8 +192,13 @@ class Service(XBMCMonitor):
                         if chanIdTmr != plrProps['id']:
                             notifyLog('currently playing channelid %s, switch to id %s' % (plrProps['id'], chanIdTmr))
                             notifyOSD(__LS__(30000), __LS__(30026) % (_timer['channel'].decode('utf-8')), time=self.__dispMsgTime)
-                            res = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "id":"1", "method": "Player.Open","params":{"item":{"channelid": %s}}}' % chanIdTmr)
-                            res = json.loads(unicode(res, 'utf-8', errors='ignore'))
+                            query = {
+                                    "jsonrpc": "2.0",
+                                    "id": 1,
+                                    "method": "Player.Open",
+                                    "params": {"item": {"channelid": chanIdTmr}}
+                                    }
+                            res = jsonrpc(query)
                             if 'result' in res and res['result'] == 'OK':
                                 notifyLog('switched to channel \'%s\'' % (_timer['channel'].decode('utf-8')))
                             else:
