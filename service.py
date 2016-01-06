@@ -108,13 +108,11 @@ class Service(XBMCMonitor):
                 "id": 1
                 }
         res = jsonrpc(query)
-        res = res['result']
-        res = res.get('channels')
-
-        if res is not None:
+        if 'result' in res and 'channels' in res['result']:
+            res = res['result'].get('channels')
             for channels in res:
                 if channels['label'] == channelname: return channels['channelid']
-            return False
+        return False
 
     def getPlayer(self):
         props = {'player': None, 'playerid': None, 'media': None, 'id': None}
@@ -124,27 +122,23 @@ class Service(XBMCMonitor):
                 "id": 1
                 }
         res = jsonrpc(query)
-        res = res['result']
+        if 'result' in res:
 
-        if res is None: return props
+            props['player'] = res['result'].get('type')
+            props['playerid'] = res['result'].get('playerid')
 
-        props['player'] = res[0]['type']
-        props['playerid'] = res[0]['playerid']
-
-        query = {
-                "jsonrpc": "2.0",
-                "method": "Player.GetItem",
-                "params": {"properties": ["title", "season", "episode", "file"],
-                           "playerid": props['playerid']},
-                "id": "VideoGetItem"
-                }
-        res = jsonrpc(query)
-        res = res['result']
-        res = res.get('item')
-
-        props['media'] = res['type']
-        if 'id' in res: props['id'] = res['id']
-
+            query = {
+                    "jsonrpc": "2.0",
+                    "method": "Player.GetItem",
+                    "params": {"properties": ["title", "season", "episode", "file"],
+                               "playerid": props['playerid']},
+                    "id": "VideoGetItem"
+                    }
+            res = jsonrpc(query)
+            if 'result' in res and 'item' in res['result']:
+                res = res['result'].get('item')
+                props['media'] = res['type']
+                if 'id' in res: props['id'] = res['id']
         return props
 
     def poll(self):
