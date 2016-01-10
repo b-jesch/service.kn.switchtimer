@@ -122,10 +122,10 @@ class Service(XBMCMonitor):
                 "id": 1
                 }
         res = jsonrpc(query)
-        if 'result' in res:
-
-            props['player'] = res['result'].get('type')
-            props['playerid'] = res['result'].get('playerid')
+        if 'result' in res and res['result']:
+            res = res['result'][0]
+            props['player'] = res['type']
+            props['playerid'] = res['playerid']
 
             query = {
                     "jsonrpc": "2.0",
@@ -135,7 +135,7 @@ class Service(XBMCMonitor):
                     "id": "VideoGetItem"
                     }
             res = jsonrpc(query)
-            if 'result' in res and 'item' in res['result']:
+            if 'result' in res:
                 res = res['result'].get('item')
                 props['media'] = res['type']
                 if 'id' in res: props['id'] = res['id']

@@ -1,0 +1,8 @@
+CHANGELOG
+
+1.0.11
+- some JSONRPC Errors fixed
+- changelog added
+
+1.0.0
+- intial commit
