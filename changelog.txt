@@ -1,5 +1,8 @@
 CHANGELOG
 
+1.0.12
+- Channelicon property added (t0:icon ... t9:icon)
+
 1.0.11
 - some JSONRPC Errors fixed
 - changelog added

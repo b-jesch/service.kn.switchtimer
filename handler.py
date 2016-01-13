@@ -46,7 +46,7 @@ def date2timeStamp(date, format=DATEFORMAT):
         return False
     return int(time.mktime(dtime.timetuple()))
 
-def setSwitchTimer(channel, date, title):
+def setSwitchTimer(channel, icon, date, title):
     itime = date2timeStamp(date)
     if not itime: return False
 
@@ -65,6 +65,7 @@ def setSwitchTimer(channel, date, title):
         # Set the Skin Strings
 
         xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'channel', channel))
+        xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'icon', icon))
         xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'date', date))
         xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'title', title))
         cntTmr = int(__addon__.getSetting('cntTmr')) + 1
@@ -83,6 +84,7 @@ def clearTimerList():
 
 def clearTimer(timer):
         xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'channel'))
+        xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'icon'))
         xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'date'))
         xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'title'))
         cntTmr = int(__addon__.getSetting('cntTmr')) - 1
@@ -91,7 +93,7 @@ def clearTimer(timer):
 notifyLog('parameter handler called')
 try:
     if sys.argv[1]:
-        args = {'action':None, 'channel':'', 'date':'', 'title':''}
+        args = {'action':None, 'channel':'', 'icon': '','date':'', 'title':''}
         pars = sys.argv[1:]
         for par in pars:
             try:
@@ -100,7 +102,7 @@ try:
             except ValueError:
                 args[item] += ', ' + par
         if args['action'] == 'add':
-            if not setSwitchTimer(args['channel'], args['date'], args['title']):
+            if not setSwitchTimer(args['channel'], args['icon'], args['date'], args['title']):
                 notifyLog('timer couldn\'t or wouldn\'t set', xbmc.LOGERROR)
         elif args['action'] == 'del':
             clearTimer(args['timer'] + ':')
