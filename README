@@ -9,7 +9,7 @@ You need at least a button e.g. in the context menu area of the PVR OSD Guide
 (e.g. DialogContextMenu.xml) of your skin with the code below:
 
 <visible>System.HasAddon(service.kn.switchtimer) + Window.IsVisible(tvguide)</visible>
-<onclick>RunScript(service.kn.switchtimer,action=add,channel=$INFO[ListItem.ChannelName],date=$INFO[ListItem.Date],title=$INFO[ListItem.Title])</onclick>
+<onclick>RunScript(service.kn.switchtimer,action=add,channel=$INFO[ListItem.ChannelName],icon=$INFO[ListItem.Icon],date=$INFO[ListItem.Date],title=$INFO[ListItem.Title])</onclick>
 
 If you want buttons for deleting one or all timers just use
 
