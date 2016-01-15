@@ -25,7 +25,7 @@ are inactive timers.
 t0:channel      # channel name
 t0:icon         # channel icon
 t0:date         # datetime of broadcast
-t0:title        + title of broadcast
+t0:title        # title of broadcast
 ...
 t9:channel
 t9:icon
