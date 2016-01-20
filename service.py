@@ -99,6 +99,7 @@ class Service(XBMCMonitor):
                 xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'channel'))
                 xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'date'))
                 xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'title'))
+                xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'icon'))
 
     def channelName2channelId(self, channelname):
         query = {
