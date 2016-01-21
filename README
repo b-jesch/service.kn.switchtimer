@@ -13,11 +13,11 @@ You need at least a button e.g. in the context menu area of the PVR OSD Guide
 
 If you want buttons for deleting one or all timers just use
 
-<onclick>RunScript(service.kn.switchtimer,action=del,timer=tx</onclick>
+<onclick>RunScript(service.kn.switchtimer,action=del,timer=tx)</onclick>
 
 where tx is a timer from t0 to t9, or delete all timers with
 
-<onclick>RunScript(service.kn.switchtimer,action=delall</onclick>
+<onclick>RunScript(service.kn.switchtimer,action=delall)</onclick>
 
 Timers are stored as strings in the settings of the skin as follows. Empty strings
 are inactive timers.
