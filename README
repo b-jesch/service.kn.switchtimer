@@ -19,8 +19,9 @@ where tx is a timer from t0 to t9, or delete all timers with
 
 <onclick>RunScript(service.kn.switchtimer,action=delall)</onclick>
 
-Timers are stored as strings in the settings of the skin as follows. Empty strings
-are inactive timers.
+Timers are stored as strings in the settings of the skin (guisettings.xml/skinsettings.xml)
+as follows. Empty strings are inactive timers. All timers are sorted by datetime
+where t0 is the nearest and t9 the latest timer.
 
 t0:channel      # channel name
 t0:icon         # channel icon

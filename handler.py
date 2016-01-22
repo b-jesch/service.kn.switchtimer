@@ -3,6 +3,7 @@ import time
 import datetime
 import xbmc, xbmcaddon, xbmcgui
 import os
+import operator
 
 __addon__ = xbmcaddon.Addon()
 __addonid__ = __addon__.getAddonInfo('id')
@@ -19,10 +20,11 @@ __confirmTmrAdded__ = True if __addon__.getSetting('confirmTmrAdded').upper() ==
 
 OSD = xbmcgui.Dialog()
 
-df = xbmc.getRegion('dateshort')
-tf = xbmc.getRegion('time').split(':')
+def getDateFormat():
+    df = xbmc.getRegion('dateshort')
+    tf = xbmc.getRegion('time').split(':')
 
-DATEFORMAT = df + ' ' + tf[0][0:2] + ':' + tf[1]
+    return df + ' ' + tf[0][0:2] + ':' + tf[1]
 
 def notifyLog(message, level=xbmc.LOGNOTICE):
     xbmc.log('[%s] %s' % (__addonid__, message.encode('utf-8')), level)
@@ -30,7 +32,7 @@ def notifyLog(message, level=xbmc.LOGNOTICE):
 def notifyOSD(header, message, icon=__IconDefault__):
     OSD.notification(header.encode('utf-8'), message.encode('utf-8'), icon)
 
-def date2timeStamp(date, format=DATEFORMAT):
+def date2timeStamp(date, format=getDateFormat()):
     try:
         dtime = datetime.datetime.strptime(date, format)
     except TypeError:
@@ -46,72 +48,106 @@ def date2timeStamp(date, format=DATEFORMAT):
         return False
     return int(time.mktime(dtime.timetuple()))
 
-def setSwitchTimer(channel, icon, date, title):
-    itime = date2timeStamp(date)
-    if not itime: return False
-
+def readTimerStrings():
+    timers = []
     for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
         if xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date')) != '':
-            if date == xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date')):
-                notifyLog('timer already set')
-                notifyOSD(__LS__(30000), __LS__(30023), icon=__IconAlert__)
-                return False
-            continue
-        if int(time.time()) > itime:
-            notifyLog('timer date is in the past')
-            notifyOSD(__LS__(30000), __LS__(30022), icon=__IconAlert__)
+            timers.append({'channel': xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'channel')),
+                           'icon': xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'icon')),
+                           'date': xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date')),
+                           'utime': date2timeStamp(xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date'))),
+                           'title': xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'title'))
+                          })
+    return timers
+
+def writeTimerStrings(timers):
+    if timers == None: timers = readTimerStrings()
+    timers.sort(key=operator.itemgetter('utime'))
+
+    _idx = 0
+    for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
+        if _idx < len(timers):
+            # Set the Skin Strings
+
+            xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'channel', timers[_idx]['channel']))
+            xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'icon', timers[_idx]['icon']))
+            xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'date', timers[_idx]['date']))
+            xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'title', timers[_idx]['title']))
+            _idx += 1
+        else:
+            # Reset the skin strings
+
+            xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'channel'))
+            xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'icon'))
+            xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'date'))
+            xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'title'))
+
+    if __addon__.getSetting('cntTmr') != str(_idx):
+        __addon__.setSetting('cntTmr', str(_idx))
+        xbmc.executebuiltin('Skin.SetString(SwitchTimerActiveItems,%s)' % (str(_idx)))
+
+def setSwitchTimer(channel, icon, date, title):
+    utime = date2timeStamp(date)
+
+    if not utime: return False
+
+    if int(time.time()) > utime:
+        notifyLog('timer date is in the past')
+        notifyOSD(__LS__(30000), __LS__(30022), icon=__IconAlert__)
+        return False
+
+    timers = readTimerStrings()
+
+    for timer in timers:
+        if timer['utime'] == utime:
+            notifyLog('timer already set')
+            notifyOSD(__LS__(30000), __LS__(30023), icon=__IconAlert__)
             return False
 
-        # Set the Skin Strings
+    timers.append({'channel': channel, 'icon': icon, 'date': date, 'utime': utime, 'title': title})
 
-        xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'channel', channel))
-        xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'icon', icon))
-        xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'date', date))
-        xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'title', title))
-        cntTmr = int(__addon__.getSetting('cntTmr')) + 1
-        __addon__.setSetting('cntTmr', str(cntTmr))
+    if len(timers) > 10:
+        notifyLog('timer limit exceeded, no free slot', xbmc.LOGERROR)
+        notifyOSD(__LS__(30000), __LS__(30024), icon=__IconAlert__)
+        return False
 
-        notifyLog('timer %s added @%s, %s, %s' % (_prefix[:-1], date, channel.decode('utf-8'), title.decode('utf-8')))
-        if __confirmTmrAdded__: notifyOSD(__LS__(30000), __LS__(30021), icon=__IconOk__)
-        return True
-    notifyLog('timer limit exceeded, no free slot', xbmc.LOGERROR)
-    notifyOSD(__LS__(30000), __LS__(30024), icon=__IconAlert__)
-    return False
+    writeTimerStrings(timers)
+    notifyLog('timer added @%s, %s, %s' % (date, channel.decode('utf-8'), title.decode('utf-8')))
+    if __confirmTmrAdded__: notifyOSD(__LS__(30000), __LS__(30021), icon=__IconOk__)
+    return True
 
 def clearTimerList():
-    for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']: clearTimer(_prefix)
-    __addon__.setSetting('cntTmr', '0')
+    for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']: clearTimer(_prefix, update=False)
+    writeTimerStrings(None)
 
-def clearTimer(timer):
-        xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'channel'))
-        xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'icon'))
+def clearTimer(timer, update=True):
         xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'date'))
-        xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'title'))
-        cntTmr = int(__addon__.getSetting('cntTmr')) - 1
-        if cntTmr >= 0: __addon__.setSetting('cntTmr', str(cntTmr))
+        if update: writeTimerStrings(None)
 
-notifyLog('parameter handler called')
-try:
-    if sys.argv[1]:
-        args = {'action':None, 'channel':'', 'icon': '','date':'', 'title':''}
-        pars = sys.argv[1:]
-        for par in pars:
-            try:
-                item, value = par.split('=')
-                args[item] = value
-            except ValueError:
-                args[item] += ', ' + par
-        if args['action'] == 'add':
-            if not setSwitchTimer(args['channel'], args['icon'], args['date'], args['title']):
-                notifyLog('timer couldn\'t or wouldn\'t set', xbmc.LOGERROR)
-        elif args['action'] == 'del':
-            clearTimer(args['timer'] + ':')
-            notifyLog('timer %s deleted' % (args['timer']))
-        elif args['action'] == 'delall':
-            clearTimerList()
-            notifyLog('all timer deleted')
-except IndexError:
-        notifyLog('Calling this script without parameters is not allowed', xbmc.LOGERROR)
-        OSD.ok(__LS__(30000),__LS__(30030))
-except Exception, e:
-        notifyLog('Script error, Timer couldn\'t set', xbmc.LOGERROR)
+if __name__ ==  '__main__':
+
+    notifyLog('parameter handler called')
+    try:
+        if sys.argv[1]:
+            args = {'action':None, 'channel':'', 'icon': '','date':'', 'title':''}
+            pars = sys.argv[1:]
+            for par in pars:
+                try:
+                    item, value = par.split('=')
+                    args[item] = value
+                except ValueError:
+                    args[item] += ', ' + par
+            if args['action'] == 'add':
+                if not setSwitchTimer(args['channel'], args['icon'], args['date'], args['title']):
+                    notifyLog('timer couldn\'t or wouldn\'t set', xbmc.LOGERROR)
+            elif args['action'] == 'del':
+                clearTimer(args['timer'] + ':')
+                notifyLog('timer %s deleted' % (args['timer']))
+            elif args['action'] == 'delall':
+                clearTimerList()
+                notifyLog('all timer deleted')
+    except IndexError:
+            notifyLog('Calling this script without parameters is not allowed', xbmc.LOGERROR)
+            OSD.ok(__LS__(30000),__LS__(30030))
+    except Exception, e:
+            notifyLog('Script error, Timer couldn\'t set', xbmc.LOGERROR)

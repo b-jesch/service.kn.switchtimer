@@ -1,5 +1,9 @@
 CHANGELOG
 
+1.1.0
+- complete rewrite, refactoring and optimization of code
+- timer t0-t9 now sorted by datetime (t0: nearest)
+
 1.0.12
 - Channelicon property added (t0:icon ... t9:icon)
 
