@@ -51,10 +51,10 @@ class Service(XBMCMonitor):
         self.SettingsChanged = False
 
     def resetSwitchTimer(self, channel, date):
-        for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
-            if xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date')) == '': continue
-            elif xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date')) == date and xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'channel')) == channel:
-                handler.clearTimer(_prefix, update=True)
+        for prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
+            if xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'date')) == '': continue
+            elif xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'date')) == date and xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'channel')) == channel:
+                handler.clearTimer(prefix, update=True)
 
     def channelName2channelId(self, channelname):
         query = {

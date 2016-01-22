@@ -29,8 +29,8 @@ def getDateFormat():
 def notifyLog(message, level=xbmc.LOGNOTICE):
     xbmc.log('[%s] %s' % (__addonid__, message.encode('utf-8')), level)
 
-def notifyOSD(header, message, icon=__IconDefault__):
-    OSD.notification(header.encode('utf-8'), message.encode('utf-8'), icon)
+def notifyOSD(header, message, icon=__IconDefault__, time=5000):
+    OSD.notification(header.encode('utf-8'), message.encode('utf-8'), icon, time)
 
 def date2timeStamp(date, format=getDateFormat()):
     try:
@@ -49,38 +49,33 @@ def date2timeStamp(date, format=getDateFormat()):
     return int(time.mktime(dtime.timetuple()))
 
 def readTimerStrings():
+    xbmc.sleep(1000)
     timers = []
-    for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
-        if xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date')) != '':
-            timers.append({'channel': xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'channel')),
-                           'icon': xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'icon')),
-                           'date': xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date')),
-                           'utime': date2timeStamp(xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'date'))),
-                           'title': xbmc.getInfoLabel('Skin.String(%s)' % (_prefix + 'title'))
+    for prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
+        if xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'date')) != '':
+            timers.append({'channel': xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'channel')),
+                           'icon': xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'icon')),
+                           'date': xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'date')),
+                           'utime': date2timeStamp(xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'date'))),
+                           'title': xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'title'))
                           })
     return timers
 
 def writeTimerStrings(timers):
-    if timers == None: timers = readTimerStrings()
     timers.sort(key=operator.itemgetter('utime'))
-
     _idx = 0
-    for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
+    for prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']:
         if _idx < len(timers):
             # Set the Skin Strings
 
-            xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'channel', timers[_idx]['channel']))
-            xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'icon', timers[_idx]['icon']))
-            xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'date', timers[_idx]['date']))
-            xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_prefix + 'title', timers[_idx]['title']))
+            xbmc.executebuiltin('Skin.SetString(%s,%s)' % (prefix + 'channel', timers[_idx]['channel']))
+            xbmc.executebuiltin('Skin.SetString(%s,%s)' % (prefix + 'icon', timers[_idx]['icon']))
+            xbmc.executebuiltin('Skin.SetString(%s,%s)' % (prefix + 'date', timers[_idx]['date']))
+            xbmc.executebuiltin('Skin.SetString(%s,%s)' % (prefix + 'title', timers[_idx]['title']))
             _idx += 1
         else:
             # Reset the skin strings
-
-            xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'channel'))
-            xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'icon'))
-            xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'date'))
-            xbmc.executebuiltin('Skin.Reset(%s)' % (_prefix + 'title'))
+            clearTimer(prefix, update=False)
 
     if __addon__.getSetting('cntTmr') != str(_idx):
         __addon__.setSetting('cntTmr', str(_idx))
@@ -117,12 +112,17 @@ def setSwitchTimer(channel, icon, date, title):
     return True
 
 def clearTimerList():
-    for _prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']: clearTimer(_prefix, update=False)
-    writeTimerStrings(None)
+    for prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']: clearTimer(prefix, update=False)
+    writeTimerStrings(readTimerStrings())
 
 def clearTimer(timer, update=True):
+    if xbmc.getInfoLabel('Skin.String(%s)' % (timer + 'date')) != '':
+        xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'channel'))
+        xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'icon'))
         xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'date'))
-        if update: writeTimerStrings(None)
+        xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'title'))
+        notifyLog('timer %s deleted' % (timer[:-1]))
+        if update: writeTimerStrings(readTimerStrings())
 
 if __name__ ==  '__main__':
 
@@ -142,10 +142,8 @@ if __name__ ==  '__main__':
                     notifyLog('timer couldn\'t or wouldn\'t set', xbmc.LOGERROR)
             elif args['action'] == 'del':
                 clearTimer(args['timer'] + ':')
-                notifyLog('timer %s deleted' % (args['timer']))
             elif args['action'] == 'delall':
                 clearTimerList()
-                notifyLog('all timer deleted')
     except IndexError:
             notifyLog('Calling this script without parameters is not allowed', xbmc.LOGERROR)
             OSD.ok(__LS__(30000),__LS__(30030))
