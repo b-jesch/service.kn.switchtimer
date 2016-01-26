@@ -24,7 +24,12 @@ def getDateFormat():
     df = xbmc.getRegion('dateshort')
     tf = xbmc.getRegion('time').split(':')
 
-    return df + ' ' + tf[0][0:2] + ':' + tf[1]
+    try:
+        # time format is 12h with am/pm
+        return df + ' ' + tf[0][0:2] + ':' + tf[1] + ' ' + tf[2].split()[1]
+    except IndexError:
+        # time format is 24h with or w/o leading zero
+        return df + ' ' + tf[0][0:2] + ':' + tf[1]
 
 def notifyLog(message, level=xbmc.LOGNOTICE):
     xbmc.log('[%s] %s' % (__addonid__, message.encode('utf-8')), level)

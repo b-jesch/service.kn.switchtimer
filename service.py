@@ -116,46 +116,63 @@ class Service(XBMCMonitor):
                     self.resetSwitchTimer(_timer['channel'], _timer['date'])
                     continue
 
-                _timediff = INTERVAL
+                _timediff = INTERVAL + self.__dispMsgTime/1000
                 if _timer['utime'] - _now < _timediff:
                     chanIdTmr = self.channelName2channelId(_timer['channel'].decode('utf-8'))
                     if chanIdTmr:
 
-                        # switch to channel, delete timer
+                        # get player properties, switch if necessary
+
                         plrProps = self.getPlayer()
-                        if plrProps['player'] == 'audio' or (plrProps['player'] == 'video' and plrProps['media'] != 'channel'):
-                            # stop the media player
-                            handler.notifyLog('player:%s media:%s @id:%s is running' % (plrProps['player'], plrProps['media'], plrProps['playerid']))
-                            query = {
-                                    "jsonrpc": "2.0",
-                                    "method": "Player.Stop",
-                                    "params": {"playerid": plrProps['playerid']},
-                                    "id": 1
-                                    }
-                            res = jsonrpc(query)
-                            if 'result' in res and res['result'] == "OK":
-                                handler.notifyLog('player stopped')
-
-                        # is the current playing channel different from the one we will switch to?
-
-                        if chanIdTmr != plrProps['id']:
-                            handler.notifyLog('currently playing channelid %s, switch to id %s' % (plrProps['id'], chanIdTmr))
-                            handler.notifyOSD(__LS__(30000), __LS__(30026) % (_timer['channel'].decode('utf-8')), time=self.__dispMsgTime)
-                            query = {
-                                    "jsonrpc": "2.0",
-                                    "id": 1,
-                                    "method": "Player.Open",
-                                    "params": {"item": {"channelid": chanIdTmr}}
-                                    }
-                            res = jsonrpc(query)
-                            if 'result' in res and res['result'] == 'OK':
-                                handler.notifyLog('switched to channel \'%s\'' % (_timer['channel'].decode('utf-8')))
-                            else:
-                                handler.notifyLog('could not switch to channel \'%s\'' % (_timer['channel'].decode('utf-8')))
-                                handler.notifyOSD(__LS__(30000), __LS__(30025) % (_timer['channel'].decode('utf-8')), icon=__IconAlert__)
-                        else:
+                        if chanIdTmr == plrProps['id']:
                             handler.notifyLog('channel switching not required')
                             handler.notifyOSD(__LS__(30000), __LS__(30027) % (_timer['channel'].decode('utf-8')), time=self.__dispMsgTime)
+                        else:
+                            idleTime = xbmc.getGlobalIdleTime()
+                            countdown = 0
+                            switchAborted = False
+
+                            handler.notifyOSD(__LS__(30000), __LS__(30026) % (_timer['channel'].decode('utf-8')), time=self.__dispMsgTime)
+
+                            # wait for for cancelling by user (Ennieki ;)
+
+                            while countdown < self.__dispMsgTime/1000:
+                                if idleTime > xbmc.getGlobalIdleTime():
+                                    switchAborted = True
+                                    break
+                                xbmc.sleep(1000)
+                                idleTime += 1
+                                countdown += 1
+
+                            if switchAborted:
+                                handler.notifyLog('channelswitch cancelled by user')
+                            else:
+                                if plrProps['player'] == 'audio' or (plrProps['player'] == 'video' and plrProps['media'] != 'channel'):
+                                    # stop the media player
+                                    handler.notifyLog('player:%s media:%s @id:%s is running' % (plrProps['player'], plrProps['media'], plrProps['playerid']))
+                                    query = {
+                                            "jsonrpc": "2.0",
+                                            "method": "Player.Stop",
+                                            "params": {"playerid": plrProps['playerid']},
+                                            "id": 1
+                                            }
+                                    res = jsonrpc(query)
+                                    if 'result' in res and res['result'] == "OK":
+                                        handler.notifyLog('player stopped')
+
+                                handler.notifyLog('currently playing channelid %s, switch to id %s' % (plrProps['id'], chanIdTmr))
+                                query = {
+                                        "jsonrpc": "2.0",
+                                        "id": 1,
+                                        "method": "Player.Open",
+                                        "params": {"item": {"channelid": chanIdTmr}}
+                                        }
+                                res = jsonrpc(query)
+                                if 'result' in res and res['result'] == 'OK':
+                                    handler.notifyLog('switched to channel \'%s\'' % (_timer['channel'].decode('utf-8')))
+                                else:
+                                    handler.notifyLog('could not switch to channel \'%s\'' % (_timer['channel'].decode('utf-8')))
+                                    handler.notifyOSD(__LS__(30000), __LS__(30025) % (_timer['channel'].decode('utf-8')), icon=__IconAlert__)
 
                         self.resetSwitchTimer(_timer['channel'], _timer['date'])
                         handler.notifyLog('timer @%s deactivated' % (_timer['date']))

@@ -1,5 +1,9 @@
 CHANGELOG
 
+1.1.1
+- Channel switch could be aborted by pressing any key while
+  switch message is displayed on screen
+
 1.1.0
 - complete rewrite, refactoring and optimization of code
 - timer t0-t9 now sorted by datetime (t0: nearest)
