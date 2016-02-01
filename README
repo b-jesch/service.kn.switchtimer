@@ -3,11 +3,15 @@ Currently Aeon Flex from Kodinerds is supported (WIP) but other skins can this
 service implement too.
 
 No more forgotten football matches or formula one races! Avoid discussion with
-your better half and let kodi switch to the channels you want!
+your better half and let kodi switch to the channels you want! Or let they switch
+to their favorite shows at given time!
 
-You need at least a button e.g. in the context menu area of the PVR OSD Guide
-(e.g. DialogContextMenu.xml) of your skin with the code below:
+This service must be supported by the skin. You need at least a button e.g. in the
+context menu area of the PVR OSD Guide (e.g. DialogContextMenu.xml) of your skin
+with the special code below. You need additional code for positioning and drawing
+buttons of course, but that is skin specific.
 
+<label>$ADDON[service.kn.switchtimer 30040]</label>
 <visible>System.HasAddon(service.kn.switchtimer) + Window.IsVisible(tvguide)</visible>
 <onclick>RunScript(service.kn.switchtimer,action=add,channel=$INFO[ListItem.ChannelName],icon=$INFO[ListItem.Icon],date=$INFO[ListItem.Date],title=$INFO[ListItem.Title])</onclick>
 
@@ -17,6 +21,7 @@ If you want buttons for deleting one or all timers just use
 
 where tx is a timer from t0 to t9, or delete all timers with
 
+<label>$ADDON[service.kn.switchtimer 30041]</label>
 <onclick>RunScript(service.kn.switchtimer,action=delall)</onclick>
 
 Timers are stored as strings in the settings of the skin (guisettings.xml/skinsettings.xml)

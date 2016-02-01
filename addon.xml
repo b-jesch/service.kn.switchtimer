@@ -1,16 +1,17 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
-<addon id="service.kn.switchtimer" name="KN Switchtimer Service" provider-name="Birger Jesch" version="1.1.1">
+<addon id="service.kn.switchtimer" name="KN Switchtimer Service" provider-name="Birger Jesch" version="1.1.2">
     <requires>
-        <import addon="xbmc.addon" version="12.0.0"/>
-        <import addon="xbmc.python" version="2.7.0"/>
+        <import addon="xbmc.addon" version="14.0.0"/>
+        <import addon="xbmc.python" version="2.19.0"/>
+        <import addon="xbmc.json" version="6.20.0"/>
     </requires>
     <extension point="xbmc.service" library="service.py" start="login" />
     <extension point="xbmc.python.script" library="handler.py" />
     <extension point="xbmc.addon.metadata">
-        <summary lang="en">A switch timer for Aeon Flex</summary>
-        <summary lang="de">Ein Umschalttimer für den Aeon Flex Skin</summary>
-        <description lang="en">This Service provides switch timers currently supported by the PVR module of the skin Aeon Flex.</description>
-        <description lang="de">Dieser Service stellt Umschalttimer zur Verfügung, die aktuell vom PVR-Modul des Skins Aeon Flex unterstützt werden.</description>
+        <summary lang="en">A switch timer for the PVR module of Kodi</summary>
+        <summary lang="de">Ein Umschalttimer für das PVR-Modul von Kodi</summary>
+        <description lang="en">Switching with the KN switchtimer from every point of view inside Kodi to a tv or radio broadcast at a given time - no more miss your favorite shows or sports events on tv.</description>
+        <description lang="de">Mit dem KN Switchtimer schaltest Du auf Deine programmierte Sendung zur richtigen Zeit um - egal wo Du Dich gerade befindest. Nie wieder die Lieblingssendung oder wichtige Sportereignisse verpassen.</description>
         <disclaimer lang="en">Use at your own risk.</disclaimer>
         <disclaimer lang="de">Benutzung auf eigene Gefahr</disclaimer>
         <platform>all</platform>

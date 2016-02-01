@@ -19,4 +19,7 @@
     <string id="30026">Umschaltung zu '%s' erfolgt jetzt</string>
     <string id="30027">Sendung auf '%s' beginnt jetzt</string>
     <string id="30030">Dieses Addon ist Bestandteil des Aeon Switchtimer Services und kann nicht als eigenständiges Programm aufgerufen werden.</string>
+    <!-- Labels -->
+    <string id="30040">Umschalttimer setzen</string>
+    <string id="30041">alle Umschalttimer löschen</string>
 </strings>
