@@ -1,5 +1,8 @@
 CHANGELOG
 
+1.1.2
+- Internationalization even for skin labels
+
 1.1.1
 - Channel switch could be aborted by pressing any key while
   switch message is displayed on screen
