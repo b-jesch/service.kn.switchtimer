@@ -4,12 +4,11 @@ service implement too.
 
 No more forgotten football matches or formula one races! Avoid discussion with
 your better half and let kodi switch to the channels you want! Or let they switch
-to their favorite shows at given time!
+to their favorite shows at a given time!
 
-This service must be supported by the skin. You need at least a button e.g. in the
-context menu area of the PVR OSD Guide (e.g. DialogContextMenu.xml) of your skin
-with the special code below. You need additional code for positioning and drawing
-buttons of course, but that is skin specific.
+This service adds items to the context menu of the pvr osd guide window (PVROSDGuide)
+automatically (add switchtimer, delete all switchtimer). If you want or need to call
+this service inside of another window, use:
 
 <label>$ADDON[service.kn.switchtimer 30040]</label>
 <visible>System.HasAddon(service.kn.switchtimer) + Window.IsVisible(tvguide)</visible>

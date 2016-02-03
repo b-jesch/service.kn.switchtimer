@@ -1,5 +1,9 @@
 CHANGELOG
 
+1.2.0
+- adding context menu items of PVROSDGuide using the extension
+  point kodi.context.item of Isengard
+
 1.1.2
 - Internationalization even for skin labels
 

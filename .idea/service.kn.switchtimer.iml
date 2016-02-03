@@ -5,7 +5,7 @@
       <excludeFolder url="file://D:/yaXBMC/xbmcstubs-master" />
     </content>
     <content url="file://$MODULE_DIR$" />
-    <orderEntry type="jdk" jdkName="Python 2.7.9 (C:\Python27\python.exe)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 2.7.6 (C:\Python27\python.exe)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

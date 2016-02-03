@@ -18,8 +18,8 @@
     <string id="30025">Could not switch to %s</string>
     <string id="30026">Switching now to '%s'</string>
     <string id="30027">Broadcast on '%s' starts now</string>
-    <string id="30030">This Addon is a part of the Aeon switchtimer service and cannot use as a standalone application.</string>#
+    <string id="30030">This Addon is a part of the KN switchtimer service and cannot use as a standalone application.</string>#
     <!-- Labels -->
-    <string id="30040">Add Switchtimer</string>
-    <string id="30041">Reset all Switchtimer</string>
+    <string id="30040">Add switchtimer</string>
+    <string id="30041">Reset all switchtimer</string>
 </strings>

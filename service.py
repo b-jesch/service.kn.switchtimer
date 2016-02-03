@@ -47,7 +47,7 @@ class Service(XBMCMonitor):
         self.__confirmTmrAdded = True if __addon__.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
         self.__dateFormat = handler.getDateFormat()
 
-        handler.notifyLog('settings (re)loaded')
+        handler.notifyLog('Settings (re)loaded')
         self.SettingsChanged = False
 
     def resetSwitchTimer(self, channel, date):
@@ -107,7 +107,7 @@ class Service(XBMCMonitor):
             for _timer in timers:
 
                 if not _timer['utime']:
-                    handler.notifyLog('couldn\'t calculate timestamp, delete timer', xbmc.LOGERROR)
+                    handler.notifyLog('Couldn\'t calculate timestamp, delete timer', xbmc.LOGERROR)
                     self.resetSwitchTimer(_timer['channel'], _timer['date'])
                     break
 
@@ -125,7 +125,7 @@ class Service(XBMCMonitor):
 
                         plrProps = self.getPlayer()
                         if chanIdTmr == plrProps['id']:
-                            handler.notifyLog('channel switching not required')
+                            handler.notifyLog('Channel switching not required')
                             handler.notifyOSD(__LS__(30000), __LS__(30027) % (_timer['channel'].decode('utf-8')), time=self.__dispMsgTime)
                         else:
                             idleTime = xbmc.getGlobalIdleTime()
@@ -145,7 +145,7 @@ class Service(XBMCMonitor):
                                 countdown += 1
 
                             if switchAborted:
-                                handler.notifyLog('channelswitch cancelled by user')
+                                handler.notifyLog('Channelswitch cancelled by user')
                             else:
                                 if plrProps['player'] == 'audio' or (plrProps['player'] == 'video' and plrProps['media'] != 'channel'):
                                     # stop the media player
@@ -158,9 +158,9 @@ class Service(XBMCMonitor):
                                             }
                                     res = jsonrpc(query)
                                     if 'result' in res and res['result'] == "OK":
-                                        handler.notifyLog('player stopped')
+                                        handler.notifyLog('Player stopped')
 
-                                handler.notifyLog('currently playing channelid %s, switch to id %s' % (plrProps['id'], chanIdTmr))
+                                handler.notifyLog('Currently playing channelid %s, switch to id %s' % (plrProps['id'], chanIdTmr))
                                 query = {
                                         "jsonrpc": "2.0",
                                         "id": 1,
@@ -169,13 +169,13 @@ class Service(XBMCMonitor):
                                         }
                                 res = jsonrpc(query)
                                 if 'result' in res and res['result'] == 'OK':
-                                    handler.notifyLog('switched to channel \'%s\'' % (_timer['channel'].decode('utf-8')))
+                                    handler.notifyLog('Switched to channel \'%s\'' % (_timer['channel'].decode('utf-8')))
                                 else:
-                                    handler.notifyLog('could not switch to channel \'%s\'' % (_timer['channel'].decode('utf-8')))
+                                    handler.notifyLog('Couldn\'t switch to channel \'%s\'' % (_timer['channel'].decode('utf-8')))
                                     handler.notifyOSD(__LS__(30000), __LS__(30025) % (_timer['channel'].decode('utf-8')), icon=__IconAlert__)
 
                         self.resetSwitchTimer(_timer['channel'], _timer['date'])
-                        handler.notifyLog('timer @%s deactivated' % (_timer['date']))
+                        handler.notifyLog('Timer @%s deactivated' % (_timer['date']))
 
         handler.notifyLog('Service kicks off')
 

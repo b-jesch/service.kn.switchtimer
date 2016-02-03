@@ -92,7 +92,7 @@ def setSwitchTimer(channel, icon, date, title):
     if not utime: return False
 
     if int(time.time()) > utime:
-        notifyLog('timer date is in the past')
+        notifyLog('Timer date is in the past')
         notifyOSD(__LS__(30000), __LS__(30022), icon=__IconAlert__)
         return False
 
@@ -100,25 +100,26 @@ def setSwitchTimer(channel, icon, date, title):
 
     for timer in timers:
         if timer['utime'] == utime:
-            notifyLog('timer already set')
+            notifyLog('Timer already set')
             notifyOSD(__LS__(30000), __LS__(30023), icon=__IconAlert__)
             return False
 
     timers.append({'channel': channel, 'icon': icon, 'date': date, 'utime': utime, 'title': title})
 
     if len(timers) > 10:
-        notifyLog('timer limit exceeded, no free slot', xbmc.LOGERROR)
+        notifyLog('Timer limit exceeded, no free slot', xbmc.LOGERROR)
         notifyOSD(__LS__(30000), __LS__(30024), icon=__IconAlert__)
         return False
 
     writeTimerStrings(timers)
-    notifyLog('timer added @%s, %s, %s' % (date, channel.decode('utf-8'), title.decode('utf-8')))
+    notifyLog('Timer added @%s, %s, %s' % (date, channel.decode('utf-8'), title.decode('utf-8')))
     if __confirmTmrAdded__: notifyOSD(__LS__(30000), __LS__(30021), icon=__IconOk__)
     return True
 
 def clearTimerList():
     for prefix in ['t0:', 't1:', 't2:', 't3:', 't4:', 't5:', 't6:', 't7:', 't8:', 't9:']: clearTimer(prefix, update=False)
     writeTimerStrings(readTimerStrings())
+    return True
 
 def clearTimer(timer, update=True):
     if xbmc.getInfoLabel('Skin.String(%s)' % (timer + 'date')) != '':
@@ -126,12 +127,12 @@ def clearTimer(timer, update=True):
         xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'icon'))
         xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'date'))
         xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'title'))
-        notifyLog('timer %s deleted' % (timer[:-1]))
+        notifyLog('Timer %s deleted' % (timer[:-1]))
         if update: writeTimerStrings(readTimerStrings())
 
 if __name__ ==  '__main__':
 
-    notifyLog('parameter handler called')
+    notifyLog('Parameter handler called')
     try:
         if sys.argv[1]:
             args = {'action':None, 'channel':'', 'icon': '','date':'', 'title':''}
@@ -144,7 +145,7 @@ if __name__ ==  '__main__':
                     args[item] += ', ' + par
             if args['action'] == 'add':
                 if not setSwitchTimer(args['channel'], args['icon'], args['date'], args['title']):
-                    notifyLog('timer couldn\'t or wouldn\'t set', xbmc.LOGERROR)
+                    notifyLog('Timer couldn\'t or wouldn\'t set', xbmc.LOGERROR)
             elif args['action'] == 'del':
                 clearTimer(args['timer'] + ':')
             elif args['action'] == 'delall':
