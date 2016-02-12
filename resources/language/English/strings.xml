@@ -9,6 +9,7 @@
     <!-- Info -->
     <string id="30010">Currently active Timers</string>
     <string id="30011">Delete all Timers</string>
+    <string id="30012">Use Countdown Timer</string>
     <!-- Messages -->
     <string id="30020">Date/Time of Timer could not calculate</string>
     <string id="30021">Timer added</string>
