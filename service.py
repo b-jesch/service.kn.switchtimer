@@ -141,17 +141,20 @@ class Service(XBMCMonitor):
                             countdown = 0
                             switchAborted = False
 
+                            handler.notifyLog('Channel switch to ' +  _timer['channel'].decode('utf-8') + 'required')
+
                             if self.__useCountdownTimer:
 
                                 # TODO:
                                 # - only check every 30s, this should be enough, see line 24
                                 # - the switch dialog should appear @ starttime minus 30s minus dialog-displaytime
                                 #   then the user has enough time to react
+                                # - translate "Switch to channel" and "seconds left". I'm too lazy right now ;)
 
                                 ret = msgdialogprogress.create("Channel switch requested", "Switch to Channel:" + (_timer['channel'].decode('utf-8')))
                                 secs = 0
                                 percent = 0
-                                time_to_wait = 30
+                                time_to_wait = self.__dispMsgTime
                                 # use the multiplier 100 to get better %/calculation
                                 increment = 100*100 / time_to_wait
                                 cancelled = False
@@ -161,8 +164,6 @@ class Service(XBMCMonitor):
                                     percent = increment*secs/100
                                     secs_left = str((time_to_wait - secs))
                                     remaining_display = str(secs_left) + " seconds left."
-                                    # add "Switch to channel XYZ?"
-                                    handler.notifyLog('REMINDER: ' + _timer['channel'].decode('utf-8'))
                                     msgdialogprogress.update(percent, str(_timer['channel'].decode('utf-8')), str(_timer['title'].decode('utf-8')), remaining_display)
                                     xbmc.sleep(1000)
                                     if (msgdialogprogress.iscanceled()):
