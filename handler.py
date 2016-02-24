@@ -19,6 +19,10 @@ __IconOk__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'ok
 __confirmTmrAdded__ = True if __addon__.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
 
 OSD = xbmcgui.Dialog()
+OSDProgress = xbmcgui.DialogProgress()
+
+def getSetting(setting):
+    return __addon__.getSetting(setting)
 
 def getDateFormat():
     df = xbmc.getRegion('dateshort')

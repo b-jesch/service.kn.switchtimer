@@ -2,14 +2,14 @@
 <strings>
     <string id="30000">Switch Timer Service</string>
     <!-- settings -->
-    <string id="30001">Zeige Hinweis, wenn Kanalwechsel bevor steht</string>
-    <string id="30002">Anzeigedauer der Hinweismeldung</string>
+    <string id="30001">Zeige Hinweis oder Countdown, wenn Kanalwechsel bevor steht</string>
+    <string id="30002">Anzeigedauer der Hinweismeldung oder des Countdowns</string>
     <string id="30003">Zeige Bestätigung für gesetzten Timer</string>
     <string id="30004">Ignoriere Timer, die älter sind als</string>
     <!-- Info -->
     <string id="30010">Anzahl aktuell aktiver Timer</string>
     <string id="30011">Alle Timer löschen</string>
-    <string id="30012">Benutze CountdownTimer</string>
+    <string id="30012">Benutze Countdown Timer</string>
     <!-- Messages -->
     <string id="30020">Datum/Zeit des Timers kann nicht ermittelt werden</string>
     <string id="30021">Timer wurde aktiviert</string>
@@ -19,6 +19,8 @@
     <string id="30025">Kann nicht umschalten zu '%s'</string>
     <string id="30026">Umschaltung zu '%s' erfolgt jetzt</string>
     <string id="30027">Sendung auf '%s' beginnt jetzt</string>
+    <string id="30028">Kanalumschaltung steht bevor</string>
+    <string id="30029">%s Sekunden verbleibend</string>
     <string id="30030">Dieses Addon ist Bestandteil des Aeon Switchtimer Services und kann nicht als eigenständiges Programm aufgerufen werden.</string>
     <!-- Labels -->
     <string id="30040">Umschalttimer setzen</string>

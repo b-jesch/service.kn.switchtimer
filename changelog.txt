@@ -1,5 +1,10 @@
 CHANGELOG
 
+1.2.1
+- merge from pull request of W. Heisenberg:
+  - Countdown dialog added
+  - Notification or countdown dialog selectable
+
 1.2.0
 - adding context menu items of PVROSDGuide using the extension
   point kodi.context.item of Isengard
