@@ -17,6 +17,10 @@ __IconDefault__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media'
 __IconAlert__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'alert.png'))
 __IconOk__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'ok.png'))
 
+# Don't know, if this should be moved to "handler.py"
+msgdialogprogress = xbmcgui.DialogProgress()
+
+# every 10 seconds? isn't every 30 seconds not enough?
 INTERVAL = 10
 
 def jsonrpc(query):
@@ -42,6 +46,7 @@ class Service(XBMCMonitor):
 
     def getSettings(self):
         self.__showNoticeBeforeSw = True if __addon__.getSetting('showNoticeBeforeSw').upper() == 'TRUE' else False
+        self.__useCountdownTimer = True if __addon__.getSetting('useCountdownTimer').upper() == 'TRUE' else False
         self.__dispMsgTime = int(re.match('\d+', __addon__.getSetting('dispTime')).group())*1000
         self.__discardTmr = int(re.match('\d+', __addon__.getSetting('discardOldTmr')).group())*60
         self.__confirmTmrAdded = True if __addon__.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
@@ -100,8 +105,12 @@ class Service(XBMCMonitor):
     def poll(self):
 
         while not XBMCMonitor.abortRequested(self):
-            if XBMCMonitor.waitForAbort(self, INTERVAL): break
-            if self.SettingsChanged: self.getSettings()
+
+            if XBMCMonitor.waitForAbort(self, INTERVAL): 
+                break
+            if self.SettingsChanged:
+                self.getSettings()
+
             _now = time.time()
             timers = handler.readTimerStrings()
             for _timer in timers:
@@ -132,18 +141,49 @@ class Service(XBMCMonitor):
                             countdown = 0
                             switchAborted = False
 
-                            handler.notifyOSD(__LS__(30000), __LS__(30026) % (_timer['channel'].decode('utf-8')), time=self.__dispMsgTime)
+                            handler.notifyLog('Channel switch to ' +  _timer['channel'].decode('utf-8') + 'required')
 
-                            # wait for for cancelling by user (Ennieki ;)
+                            if self.__useCountdownTimer:
 
-                            while countdown < self.__dispMsgTime/1000:
-                                if idleTime > xbmc.getGlobalIdleTime():
-                                    switchAborted = True
-                                    break
-                                xbmc.sleep(1000)
-                                idleTime += 1
-                                countdown += 1
+                                # TODO:
+                                # - only check every 30s, this should be enough, see line 24
+                                # - the switch dialog should appear @ starttime minus 30s minus dialog-displaytime
+                                #   then the user has enough time to react
+                                # - translate "Switch to channel" and "seconds left". I'm too lazy right now ;)
 
+                                ret = msgdialogprogress.create("Channel switch requested", "Switch to Channel:" + (_timer['channel'].decode('utf-8')))
+                                secs = 0
+                                percent = 0
+                                time_to_wait = self.__dispMsgTime
+                                # use the multiplier 100 to get better %/calculation
+                                increment = 100*100 / time_to_wait
+                                cancelled = False
+                                while secs < time_to_wait:
+                                    secs = secs + 1
+                                    # divide with 100, to get the right value
+                                    percent = increment*secs/100
+                                    secs_left = str((time_to_wait - secs))
+                                    remaining_display = str(secs_left) + " seconds left."
+                                    msgdialogprogress.update(percent, str(_timer['channel'].decode('utf-8')), str(_timer['title'].decode('utf-8')), remaining_display)
+                                    xbmc.sleep(1000)
+                                    if (msgdialogprogress.iscanceled()):
+                                        switchAborted = True
+                                        break
+                                msgdialogprogress.close()
+
+                            else:
+                                handler.notifyOSD(__LS__(30000), __LS__(30026) % (_timer['channel'].decode('utf-8')), time=self.__dispMsgTime)
+
+                                # wait for for cancelling by user (Ennieki ;)
+
+                                while countdown < self.__dispMsgTime/1000:
+                                    if idleTime > xbmc.getGlobalIdleTime():
+                                        switchAborted = True
+                                        break
+                                    xbmc.sleep(1000)
+                                    idleTime += 1
+                                    countdown += 1
+ 
                             if switchAborted:
                                 handler.notifyLog('Channelswitch cancelled by user')
                             else:
@@ -157,6 +197,8 @@ class Service(XBMCMonitor):
                                             "id": 1
                                             }
                                     res = jsonrpc(query)
+                                    # is this faster?
+                                    # xbmc.executebuiltin('PlayerControl(Stop)')
                                     if 'result' in res and res['result'] == "OK":
                                         handler.notifyLog('Player stopped')
 
