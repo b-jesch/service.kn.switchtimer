@@ -4,9 +4,11 @@ to their favorite shows at a given time!
 
 This service adds items to the context menu of the pvr osd guide window (PVROSDGuide)
 automatically (add switchtimer, delete all switchtimer). Currently the skins Aeon Flex,
-Destiny and a Confluence Mod from Kodinerds supports this service but other skins can 
-this service implement too. Hints for integration see below here. If you aren't a skinner
-just ignore the following and install this service as usual.
+Destiny and a Confluence Mod from Kodinerds fully supports this service with additional
+windows but other skins can this service implement too. Hints for integration see 
+below here. If you aren't a skinner or don't need special windows for editing/deleting 
+switchtimers just ignore the skinners section and install this service as usual. All can 
+be done with the context menu of pvr osd guide.
 
 Skinners only:
 
