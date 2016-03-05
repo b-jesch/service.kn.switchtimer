@@ -10,7 +10,8 @@ just ignore the following and install this service as usual.
 
 Skinners only:
 
-If you want or need to call this service inside of another window as PVROSDGuide, use:
+If you want or need to call this service inside of another window different from 
+PVROSDGuide, use:
 
 <label>$ADDON[service.kn.switchtimer 30040]</label>
 <visible>System.HasAddon(service.kn.switchtimer) + Window.IsVisible(tvguide)</visible>
