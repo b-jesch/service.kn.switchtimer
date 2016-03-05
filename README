@@ -15,7 +15,14 @@ PVROSDGuide, use:
 
 <label>$ADDON[service.kn.switchtimer 30040]</label>
 <visible>System.HasAddon(service.kn.switchtimer) + Window.IsVisible(tvguide)</visible>
-<onclick>RunScript(service.kn.switchtimer,action=add,channel=$INFO[ListItem.ChannelName],icon=$INFO[ListItem.Icon],date=$INFO[ListItem.Date],title=$INFO[ListItem.Title])</onclick>
+<onclick>RunScript(service.kn.switchtimer,action=add,channel=channelname,icon=icon,date=datestring,title=title)</onclick>
+
+You have to provide the labels:
+
+channelname (e.g. $INFO[ListItem.Channelname]
+icon (e.g. $INFO[ListItem.Icon]
+datestring (e.g. $INFO[ListItem.Date]
+title (e.g. $INFO[ListItem.Title]
 
 If you want buttons for deleting one or all timers just use:
 
