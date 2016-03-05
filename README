@@ -1,20 +1,22 @@
-This service provides switchtimer aka reminder as a service for several skins.
-Currently Aeon Flex from Kodinerds is supported (WIP) but other skins can this
-service implement too.
-
 No more forgotten football matches or formula one races! Avoid discussion with
 your better half and let kodi switch to the channels you want! Or let they switch
 to their favorite shows at a given time!
 
 This service adds items to the context menu of the pvr osd guide window (PVROSDGuide)
-automatically (add switchtimer, delete all switchtimer). If you want or need to call
-this service inside of another window, use:
+automatically (add switchtimer, delete all switchtimer). Currently the skins Aeon Flex,
+Destiny and a Confluence Mod from Kodinerds supports this service but other skins can 
+this service implement too. Hints for integration see below here. If you aren't a skinner
+just ignore the following.
+
+Skinners only:
+
+If you want or need to call this service inside of another window as PVROSDGuide, use:
 
 <label>$ADDON[service.kn.switchtimer 30040]</label>
 <visible>System.HasAddon(service.kn.switchtimer) + Window.IsVisible(tvguide)</visible>
 <onclick>RunScript(service.kn.switchtimer,action=add,channel=$INFO[ListItem.ChannelName],icon=$INFO[ListItem.Icon],date=$INFO[ListItem.Date],title=$INFO[ListItem.Title])</onclick>
 
-If you want buttons for deleting one or all timers just use
+If you want buttons for deleting one or all timers just use:
 
 <onclick>RunScript(service.kn.switchtimer,action=del,timer=tx)</onclick>
 
