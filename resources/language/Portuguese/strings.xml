@@ -17,7 +17,7 @@
     <string id="30023">Já existe um temporizador para esta hora</string>
     <string id="30024">Limite de temporizadores atingido, não existem vagas</string>
     <string id="30025">Não foi possível sintonizar %s</string>
-    <string id="30026">A sintonizar '%s'</string>
+    <string id="30026">A sintonizar '%s'.</string>
     <string id="30027">A emissão '%s' começa agora</string>
     <string id="30028">Sintonização agendada de canal</string>
     <string id="30029">%s segundos restantes</string>

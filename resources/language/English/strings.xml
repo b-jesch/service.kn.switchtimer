@@ -17,10 +17,10 @@
     <string id="30023">Timer for this time already set</string>
     <string id="30024">Timer Limit exceed, no free Slots</string>
     <string id="30025">Could not switch to %s</string>
-    <string id="30026">Switching now to '%s'</string>
+    <string id="30026">Switching now to '%s'.</string>
     <string id="30027">Broadcast on '%s' starts now</string>
     <string id="30028">Channel Switch requested</string>
-    <string id="30029">%s Seconds left</string>
+    <string id="30029">%s Seconds left to abort</string>
     <string id="30030">This Addon is a part of the KN switchtimer service and cannot use as a standalone application.</string>
     <!-- Labels -->
     <string id="30040">Add switchtimer</string>

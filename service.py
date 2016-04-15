@@ -1,5 +1,5 @@
 import time
-import xbmc, xbmcaddon, xbmcgui
+import xbmc, xbmcaddon
 import json
 import os
 import re
@@ -144,11 +144,11 @@ class Service(XBMCMonitor):
                             if self.__showNoticeBeforeSw:
                                 if self.__useCountdownTimer:
                                     percent = 0
-                                    handler.OSDProgress.create(__LS__(30028), _timer['channel'].decode('utf-8'), _timer['title'].decode('utf-8'), __LS__(30029) % (int(self.__dispMsgTime/1000 - secs)))
+                                    handler.OSDProgress.create(__LS__(30028), __LS__(30026) % _timer['channel'].decode('utf-8'), __LS__(30029) % (int(self.__dispMsgTime/1000 - secs)))
                                     while secs < self.__dispMsgTime/1000:
                                         secs += 1
-                                        percent = int((secs * 100)/self.__dispMsgTime)
-                                        handler.OSDProgress.update(percent, _timer['channel'].decode('utf-8'), _timer['title'].decode('utf-8'), __LS__(30029) % (int(self.__dispMsgTime/1000 - secs)))
+                                        percent = int((secs * 100000)/self.__dispMsgTime)
+                                        handler.OSDProgress.update(percent, __LS__(30026) % _timer['channel'].decode('utf-8'), __LS__(30029) % (int(self.__dispMsgTime/1000 - secs)))
                                         xbmc.sleep(1000)
                                         if (handler.OSDProgress.iscanceled()):
                                             switchAborted = True

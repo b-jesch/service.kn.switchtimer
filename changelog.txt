@@ -1,5 +1,8 @@
 CHANGELOG
 
+1.2.2
+- Bug in countdown dialog fixed
+
 1.2.1
 - merge from pull request of W. Heisenberg:
   - Countdown dialog added
