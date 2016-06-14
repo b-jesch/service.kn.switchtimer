@@ -1,5 +1,8 @@
 CHANGELOG
 
+1.2.3
+- Dutch translation
+
 1.2.2
 - Bug in countdown dialog fixed
 
