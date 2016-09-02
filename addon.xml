@@ -11,11 +11,11 @@
         <menu id="kodi.core.main">
             <item library="addtimer.py">
                 <label>30040</label>
-                <visible>System.HasAddon(service.kn.switchtimer) + Window.IsVisible(tvguide)</visible>
+                <visible>Window.IsVisible(tvguide)</visible>
             </item>
             <item library="deltimer.py">
                 <label>30041</label>
-                <visible>System.HasAddon(service.kn.switchtimer) + Window.IsVisible(tvguide)</visible>
+                <visible>Window.IsVisible(tvguide)</visible>
             </item>
         </menu>
     </extension>
