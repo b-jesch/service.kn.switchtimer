@@ -1,3 +1,4 @@
+<h1>PVR switch timer aka PVR reminder</h1>
 No more forgotten football matches or formula one races! Avoid discussion with your better half and let kodi switch to the channels you want! Or let they switch to their favorite shows at a given time!
 
 This service adds items to the context menu of the pvr osd guide window (PVROSDGuide) automatically (add switchtimer, delete all switchtimer). Currently the skins Aeon Flex, Destiny and a Confluence Mod from Kodinerds fully supports this service with additional
