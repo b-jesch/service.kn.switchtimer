@@ -10,7 +10,7 @@ If you want or need to call this service inside of another window different from
 
     <label>$ADDON[service.kn.switchtimer 30040]</label>
     <visible>System.HasAddon(service.kn.switchtimer) + Window.IsVisible(tvguide)</visible>
-    <onclick>RunScript(service.kn.switchtimer,action=add,channel=channelname,icon=icon,date=datestring,title=title)</onclick>
+    <onclick>RunScript(service.kn.switchtimer,action=add,channel=channelname,icon=icon,date=datestring,title=title,plot=plot)</onclick>
 
 You have to provide the needed parameters, comparsion is done via valid Channelname and Datetime. Format of Datetime must be the same as used in Kodi settings:
 
@@ -18,6 +18,7 @@ You have to provide the needed parameters, comparsion is done via valid Channeln
     icon (e.g. $INFO[ListItem.Icon])
     datestring (e.g. $INFO[ListItem.Date])
     title (e.g. $INFO[ListItem.Title])
+    plot (e.g. $INFO[ListItem.Plot])
 
 If you want buttons for deleting one or all timers just use:
 
@@ -34,6 +35,7 @@ Timers are stored as strings in the settings of the skin (guisettings.xml/skinse
     t0:icon         # channel icon
     t0:date         # datetime of broadcast
     t0:title        # title of broadcast
+    t0:plot         # plot of broadcast
     ...
     t9:channel
     t9:icon

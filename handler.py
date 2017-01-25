@@ -90,7 +90,7 @@ def writeTimerStrings(timers):
         __addon__.setSetting('cntTmr', str(_idx))
         xbmc.executebuiltin('Skin.SetString(SwitchTimerActiveItems,%s)' % (str(_idx)))
 
-def setSwitchTimer(channel, icon, date, title):
+def setSwitchTimer(channel, icon, date, title, plot):
     utime = date2timeStamp(date)
 
     if not utime: return False
@@ -108,7 +108,7 @@ def setSwitchTimer(channel, icon, date, title):
             notifyOSD(__LS__(30000), __LS__(30023), icon=__IconAlert__)
             return False
 
-    timers.append({'channel': channel, 'icon': icon, 'date': date, 'utime': utime, 'title': title})
+    timers.append({'channel': channel, 'icon': icon, 'date': date, 'utime': utime, 'title': title, 'plot': plot})
 
     if len(timers) > 10:
         notifyLog('Timer limit exceeded, no free slot', xbmc.LOGERROR)
@@ -117,6 +117,7 @@ def setSwitchTimer(channel, icon, date, title):
 
     writeTimerStrings(timers)
     notifyLog('Timer added @%s, %s, %s' % (date, channel.decode('utf-8'), title.decode('utf-8')))
+    notifyLog('Schedule Plot: %s' % (plot.decode('utf-8')))
     if __confirmTmrAdded__: notifyOSD(__LS__(30000), __LS__(30021), icon=__IconOk__)
     return True
 
@@ -131,6 +132,7 @@ def clearTimer(timer, update=True):
         xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'icon'))
         xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'date'))
         xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'title'))
+        xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'plot'))
         notifyLog('Timer %s deleted' % (timer[:-1]))
         if update: writeTimerStrings(readTimerStrings())
 
@@ -139,7 +141,7 @@ if __name__ ==  '__main__':
     notifyLog('Parameter handler called')
     try:
         if sys.argv[1]:
-            args = {'action':None, 'channel':'', 'icon': '','date':'', 'title':''}
+            args = {'action':None, 'channel':'', 'icon': '','date':'', 'title':'','plot':''}
             pars = sys.argv[1:]
             for par in pars:
                 try:
@@ -148,7 +150,7 @@ if __name__ ==  '__main__':
                 except ValueError:
                     args[item] += ', ' + par
             if args['action'] == 'add':
-                if not setSwitchTimer(args['channel'], args['icon'], args['date'], args['title']):
+                if not setSwitchTimer(args['channel'], args['icon'], args['date'], args['title'], args['plot']):
                     notifyLog('Timer couldn\'t or wouldn\'t set', xbmc.LOGERROR)
             elif args['action'] == 'del':
                 clearTimer(args['timer'] + ':')
