@@ -147,8 +147,8 @@ if __name__ ==  '__main__':
             for par in pars:
                 try:
                     item, value = par.split('=')
-                    args[item] = value
-                    notifyLog('Provided parameter %s: %s' % (item, value), xbmc.LOGDEBUG)
+                    args[item] = value.replace(',', '&comma;')
+                    notifyLog('Provided parameter %s: %s' % (item, args[item]), xbmc.LOGDEBUG)
                 except ValueError:
                     args[item] += ', ' + par
             if args['action'] == 'add':
