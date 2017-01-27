@@ -66,7 +66,8 @@ def readTimerStrings():
                            'icon': xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'icon')),
                            'date': xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'date')),
                            'utime': date2timeStamp(xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'date'))),
-                           'title': xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'title'))
+                           'title': xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'title')),
+                           'plot': xbmc.getInfoLabel('Skin.String(%s)' % (prefix + 'plot'))
                           })
     return timers
 
@@ -81,6 +82,7 @@ def writeTimerStrings(timers):
             xbmc.executebuiltin('Skin.SetString(%s,%s)' % (prefix + 'icon', timers[_idx]['icon']))
             xbmc.executebuiltin('Skin.SetString(%s,%s)' % (prefix + 'date', timers[_idx]['date']))
             xbmc.executebuiltin('Skin.SetString(%s,%s)' % (prefix + 'title', timers[_idx]['title']))
+            xbmc.executebuiltin('Skin.SetString(%s,%s)' % (prefix + 'plot', timers[_idx]['plot']))
             _idx += 1
         else:
             # Reset the skin strings
@@ -117,7 +119,7 @@ def setSwitchTimer(channel, icon, date, title, plot):
 
     writeTimerStrings(timers)
     notifyLog('Timer added @%s, %s, %s' % (date, channel.decode('utf-8'), title.decode('utf-8')))
-    notifyLog('Schedule Plot: %s' % (plot.decode('utf-8')))
+    notifyLog('Scheduled plot: %s' % (plot.decode('utf-8')))
     if __confirmTmrAdded__: notifyOSD(__LS__(30000), __LS__(30021), icon=__IconOk__)
     return True
 
@@ -132,7 +134,6 @@ def clearTimer(timer, update=True):
         xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'icon'))
         xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'date'))
         xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'title'))
-        xbmc.executebuiltin('Skin.Reset(%s)' % (timer + 'plot'))
         notifyLog('Timer %s deleted' % (timer[:-1]))
         if update: writeTimerStrings(readTimerStrings())
 
@@ -141,12 +142,13 @@ if __name__ ==  '__main__':
     notifyLog('Parameter handler called')
     try:
         if sys.argv[1]:
-            args = {'action':None, 'channel':'', 'icon': '','date':'', 'title':'','plot':''}
+            args = {'action':None, 'channel':'', 'icon': '', 'date':'', 'title':'', 'plot': ''}
             pars = sys.argv[1:]
             for par in pars:
                 try:
                     item, value = par.split('=')
                     args[item] = value
+                    notifyLog('Provided parameter %s: %s' % (item, value), xbmc.LOGDEBUG)
                 except ValueError:
                     args[item] += ', ' + par
             if args['action'] == 'add':

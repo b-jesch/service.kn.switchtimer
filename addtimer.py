@@ -9,7 +9,7 @@ if __name__ ==  '__main__':
                 'icon':xbmc.getInfoLabel('ListItem.Icon'),
                 'date':xbmc.getInfoLabel('ListItem.Date'),
                 'title':xbmc.getInfoLabel('ListItem.Title'),
-                'plot':xbmc.getInfoLabel('ListItem.Plot')
+                'plot': xbmc.getInfoLabel('ListItem.Plot')
                 }
 
         if not handler.setSwitchTimer(args['channel'], args['icon'], args['date'], args['title'], args['plot']):

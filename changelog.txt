@@ -1,8 +1,5 @@
 CHANGELOG
 
-1.2.4
-- updated to new python api and context menu syntax in Jarvis
-
 1.2.3
 - Dutch translation
 
