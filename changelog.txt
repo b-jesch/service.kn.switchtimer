@@ -1,5 +1,10 @@
 CHANGELOG
 
+2.0.0
+- complete Redesign of source code
+- Timers are stored into a JSON structured file unindepented from skin
+- IMPORTANT: Timers use now skin properties instead of skin labels
+
 1.2.3
 - Dutch translation
 

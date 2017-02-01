@@ -86,7 +86,7 @@ msgid "Could not switch to %s"
 msgstr "Kan niet overschakelen naar %s"
 
 msgctxt "#30026"
-msgid "Switching now to '%s'."
+msgid "Switching to '%s' in a few seconds"
 msgstr "Schakel nu over naar '%s'."
 
 msgctxt "#30027"

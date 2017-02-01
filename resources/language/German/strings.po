@@ -86,8 +86,8 @@ msgid "Could not switch to %s"
 msgstr "Kann nicht umschalten zu '%s'"
 
 msgctxt "#30026"
-msgid "Switching now to '%s'."
-msgstr "Umschaltung zu '%s' erfolgt jetzt."
+msgid "Switching to '%s' in a few seconds"
+msgstr "Umschaltung zu '%s' erfolgt in wenigen Sekunden"
 
 msgctxt "#30027"
 msgid "Broadcast on '%s' starts now"

@@ -82,7 +82,7 @@ msgid "Timer Limit exceed, no free Slots"
 msgstr "Limite de temporizadores atingido, não existem vagas"
 
 msgctxt "#30025"
-msgid "Could not switch to %s"
+msgid "Switching to '%s' in a few seconds"
 msgstr "Não foi possível sintonizar %s"
 
 msgctxt "#30026"
