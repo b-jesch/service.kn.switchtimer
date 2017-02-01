@@ -84,14 +84,14 @@ def setTimer(params):
     if not utime: return False
 
     if int(time.time()) > utime:
-        notifyLog('Timer date is in the past')
+        notifyLog('Timer date is in the past', xbmc.LOGNOTICE)
         notifyOSD(__LS__(30000), __LS__(30022), icon=__IconAlert__)
         return False
 
     timers = getTimer()
     for timer in timers:
         if date2timeStamp(timer['date']) == utime:
-            notifyLog('Timer already set')
+            notifyLog('Timer already set', xbmc.LOGNOTICE)
             notifyOSD(__LS__(30000), __LS__(30023), icon=__IconAlert__)
             return False
 
@@ -123,8 +123,9 @@ def setTimer(params):
 
     putTimer(timers)
     HOME.setProperty('SwitchTimerActiveItems', str(_idx))
-    notifyLog('Timer added @%s, %s, %s' % (params['date'], params['channel'].decode('utf-8'), params['title'].decode('utf-8')))
+    notifyLog('Timer added @%s, %s, %s' % (params['date'], params['channel'].decode('utf-8'), params['title'].decode('utf-8')), xbmc.LOGNOTICE)
     notifyLog('Plot: %s...' % (params['plot'].decode('utf-8')[0:63]))
+    notifyLog('%s active timers' % (_idx), xbmc.LOGNOTICE)
     if __confirmTmrAdded__: notifyOSD(__LS__(30000), __LS__(30021), icon=__IconOk__)
     return True
 
@@ -156,7 +157,7 @@ if __name__ ==  '__main__':
                 try:
                     item, value = par.split('=')
                     args[item] = value.replace(',', '&comma;')
-                    notifyLog('Provided parameter %s: %s' % (item, args[item]), xbmc.LOGDEBUG)
+                    notifyLog('Provided parameter %s: %s' % (item, args[item]))
                 except ValueError:
                     args[item] += ', ' + par
             if args['action'] == 'add':
