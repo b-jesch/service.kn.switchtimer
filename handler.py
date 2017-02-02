@@ -31,9 +31,11 @@ __timerdict__ = {'channel': None, 'icon': None, 'date': None, 'title': None, 'pl
 
 def putTimer(timers):
     for timer in timers:
-        if not timer['utime']: timers.pop(0)
+        if not timer['utime'] or timer['utime'] < time.time(): timers.pop(0)
     with open(__timer__, 'w') as handle:
         json.dump(timers, handle)
+    HOME.setProperty('SwitchTimerActiveItems', str(len(timers)))
+    notifyLog('%s timer(s) written' % (len(timers)), xbmc.LOGNOTICE)
 
 def getTimer():
     try:
@@ -91,9 +93,11 @@ def setTimer(params):
     timers = getTimer()
     for timer in timers:
         if date2timeStamp(timer['date']) == utime:
-            notifyLog('Timer already set', xbmc.LOGNOTICE)
-            notifyOSD(__LS__(30000), __LS__(30023), icon=__IconAlert__)
-            return False
+            notifyLog('Timer already set, ask for replace', xbmc.LOGNOTICE)
+            _res = OSD.yesno(__addonname__, __LS__(30031) % (timer['channel'], timer['title']))
+
+            if not _res: return False
+            timers.remove(timer)
 
     if len(timers) > 9:
         notifyLog('Timer limit exceeded, no free slot', xbmc.LOGERROR)
@@ -122,10 +126,8 @@ def setTimer(params):
             clearTimerProperties(prefix)
 
     putTimer(timers)
-    HOME.setProperty('SwitchTimerActiveItems', str(_idx))
     notifyLog('Timer added @%s, %s, %s' % (params['date'], params['channel'].decode('utf-8'), params['title'].decode('utf-8')), xbmc.LOGNOTICE)
     notifyLog('Plot: %s...' % (params['plot'].decode('utf-8')[0:63]))
-    notifyLog('%s active timers' % (_idx), xbmc.LOGNOTICE)
     if __confirmTmrAdded__: notifyOSD(__LS__(30000), __LS__(30021), icon=__IconOk__)
     return True
 
@@ -136,12 +138,13 @@ def clearTimerProperties(prefix=None):
         timers = []
         notifyLog('Properties of all timers deleted, timerlist cleared')
     else:
-        date = HOME.getProperty('%s:date' % (prefix))
+        _date = HOME.getProperty('%s:date' % (prefix))
+        if _date == '': return False
         timers = getTimer()
         for timer in timers:
-            if timer['date'] == date: timer['utime'] = None
+            if timer['date'] == _date: timer['utime'] = None
             for element in __timerdict__: HOME.clearProperty('%s:%s' % (prefix, element))
-            notifyLog('Properties for timer %s @%s deleted' % (prefix, date))
+            notifyLog('Properties for timer %s @%s deleted' % (prefix, _date))
 
     putTimer(timers)
     return True

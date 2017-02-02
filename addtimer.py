@@ -14,4 +14,5 @@ if __name__ ==  '__main__':
             'plot': xbmc.getInfoLabel('ListItem.Plot')
             }
 
-    handler.setTimer(args)
+    if not handler.setTimer(args):
+        handler.notifyLog('Timer couldn\'t or wouldn\' be set')

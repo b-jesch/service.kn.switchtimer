@@ -131,7 +131,7 @@ class Service(XBMCMonitor):
                 if _timer['utime'] < _now:
                     msgTime = 3000
                 else:
-                    msgTime = self.__dispMsgTime/1000
+                    msgTime = self.__dispMsgTime
 
                 _timediff = INTERVAL + msgTime/1000
                 if _timer['utime'] - _now < _timediff:
@@ -149,37 +149,30 @@ class Service(XBMCMonitor):
                             secs = 0
                             handler.notifyLog('Channel switch to %s required' %  (_timer['channel'].decode('utf-8')))
 
-                            if self.__showNoticeBeforeSw:
-                                if self.__useCountdownTimer:
-                                    percent = 0
-                                    handler.OSDProgress.create(__LS__(30028), __LS__(30026) % _timer['channel'].decode('utf-8'), __LS__(30029) % (int(msgTime/1000 - secs)))
-                                    while secs < msgTime/1000:
-                                        secs += 1
-                                        percent = int((secs * 100000)/msgTime)
-                                        handler.OSDProgress.update(percent, __LS__(30026) % _timer['channel'].decode('utf-8'), __LS__(30029) % (int(msgTime/1000 - secs)))
-                                        xbmc.sleep(1000)
-                                        if (handler.OSDProgress.iscanceled()):
-                                            switchAborted = True
-                                            break
-                                    handler.OSDProgress.close()
-                                else:
-                                    idleTime = xbmc.getGlobalIdleTime()
-                                    handler.notifyOSD(__LS__(30000), __LS__(30026) % (_timer['channel'].decode('utf-8')), time=msgTime)
-
-                                    # wait for for cancelling by user (Ennieki ;)
-
-                                    while secs < msgTime/1000:
-                                        if idleTime > xbmc.getGlobalIdleTime():
-                                            switchAborted = True
-                                            break
-                                        xbmc.sleep(1000)
-                                        idleTime += 1
-                                        secs += 1
+                            if not self.__showNoticeBeforeSw: xbmc.sleep(msgTime)
+                            elif self.__useCountdownTimer:
+                                handler.OSDProgress.create(__LS__(30028), __LS__(30026) % _timer['channel'].decode('utf-8'), __LS__(30029) % (int(msgTime/1000 - secs)))
+                                while secs < msgTime/1000:
+                                    secs += 1
+                                    percent = int((secs * 100000)/msgTime)
+                                    handler.OSDProgress.update(percent, __LS__(30026) % _timer['channel'].decode('utf-8'), __LS__(30029) % (int(msgTime/1000 - secs)))
+                                    xbmc.sleep(1000)
+                                    if (handler.OSDProgress.iscanceled()):
+                                        switchAborted = True
+                                        break
+                                handler.OSDProgress.close()
                             else:
-                                xbmc.sleep(msgTime)
- 
-                            if switchAborted:
-                                handler.notifyLog('Channelswitch cancelled by user')
+                                idleTime = xbmc.getGlobalIdleTime()
+                                handler.notifyOSD(__LS__(30000), __LS__(30026) % (_timer['channel'].decode('utf-8')), time=msgTime)
+                                while secs < msgTime/1000:
+                                    if idleTime > xbmc.getGlobalIdleTime():
+                                        switchAborted = True
+                                        break
+                                    xbmc.sleep(1000)
+                                    idleTime += 1
+                                    secs += 1
+
+                            if switchAborted: handler.notifyLog('Channelswitch cancelled by user')
                             else:
                                 if plrProps['player'] == 'audio' or (plrProps['player'] == 'video' and plrProps['media'] != 'channel'):
 
@@ -210,7 +203,7 @@ class Service(XBMCMonitor):
                                     handler.notifyLog('Couldn\'t switch to channel \'%s\'' % (_timer['channel'].decode('utf-8')))
                                     handler.notifyOSD(__LS__(30000), __LS__(30025) % (_timer['channel'].decode('utf-8')), icon=__IconAlert__)
 
-                        self.resetTmr(_timer['date'])
+                    self.resetTmr(_timer['date'])
 
         handler.notifyLog('Service kicks off')
 
