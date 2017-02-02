@@ -115,6 +115,7 @@ class Service(XBMCMonitor):
                 self.getSettings()
 
             _now = time.time()
+            _switchInstantly = False
             timers = handler.getTimer()
             for _timer in timers:
 
@@ -128,12 +129,9 @@ class Service(XBMCMonitor):
                     self.resetTmr(_timer['date'])
                     continue
 
-                if _timer['utime'] < _now:
-                    msgTime = 3000
-                else:
-                    msgTime = self.__dispMsgTime
+                if _timer['utime'] < _now: _switchInstantly = True
 
-                _timediff = INTERVAL + msgTime/1000
+                _timediff = INTERVAL + self.__dispMsgTime / 1000
                 if _timer['utime'] - _now < _timediff:
                     chanIdTmr = self.channelName2channelId(_timer['channel'].decode('utf-8'))
                     if chanIdTmr:
@@ -143,19 +141,24 @@ class Service(XBMCMonitor):
                         plrProps = self.getPlayer()
                         if chanIdTmr == plrProps['id']:
                             handler.notifyLog('Channel switching unnecessary')
-                            handler.notifyOSD(__LS__(30000), __LS__(30027) % (_timer['channel'].decode('utf-8')), time=msgTime)
+                            handler.notifyOSD(__LS__(30000), __LS__(30027) % (_timer['channel'].decode('utf-8')), time=self.__dispMsgTime)
                         else:
                             switchAborted = False
                             secs = 0
                             handler.notifyLog('Channel switch to %s required' %  (_timer['channel'].decode('utf-8')))
 
-                            if not self.__showNoticeBeforeSw: xbmc.sleep(msgTime)
+                            if _switchInstantly:
+                                handler.notifyLog('immediate channel switching required')
+                                handler.notifyOSD(__LS__(30000), __LS__(30027) % (_timer['channel'].decode('utf-8')), time=5000)
+
+                            elif not self.__showNoticeBeforeSw: xbmc.sleep(self.__dispMsgTime)
+
                             elif self.__useCountdownTimer:
-                                handler.OSDProgress.create(__LS__(30028), __LS__(30026) % _timer['channel'].decode('utf-8'), __LS__(30029) % (int(msgTime/1000 - secs)))
-                                while secs < msgTime/1000:
+                                handler.OSDProgress.create(__LS__(30028), __LS__(30026) % _timer['channel'].decode('utf-8'), __LS__(30029) % (int(self.__dispMsgTime / 1000 - secs)))
+                                while secs < self.__dispMsgTime /1000:
                                     secs += 1
-                                    percent = int((secs * 100000)/msgTime)
-                                    handler.OSDProgress.update(percent, __LS__(30026) % _timer['channel'].decode('utf-8'), __LS__(30029) % (int(msgTime/1000 - secs)))
+                                    percent = int((secs * 100000) / self.__dispMsgTime)
+                                    handler.OSDProgress.update(percent, __LS__(30026) % _timer['channel'].decode('utf-8'), __LS__(30029) % (int(self.__dispMsgTime / 1000 - secs)))
                                     xbmc.sleep(1000)
                                     if (handler.OSDProgress.iscanceled()):
                                         switchAborted = True
@@ -163,8 +166,8 @@ class Service(XBMCMonitor):
                                 handler.OSDProgress.close()
                             else:
                                 idleTime = xbmc.getGlobalIdleTime()
-                                handler.notifyOSD(__LS__(30000), __LS__(30026) % (_timer['channel'].decode('utf-8')), time=msgTime)
-                                while secs < msgTime/1000:
+                                handler.notifyOSD(__LS__(30000), __LS__(30026) % (_timer['channel'].decode('utf-8')), time=self.__dispMsgTime)
+                                while secs < self.__dispMsgTime /1000:
                                     if idleTime > xbmc.getGlobalIdleTime():
                                         switchAborted = True
                                         break
