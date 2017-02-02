@@ -24,7 +24,9 @@ INTERVAL = 10 # More than that will make switching too fuzzy because service isn
 HOME = xbmcgui.Window(10000)
 
 def jsonrpc(query):
-    return json.loads(xbmc.executeJSONRPC(json.dumps(query, encoding='utf-8')))
+    querystring = {"jsonrpc": "2.0", "id": 1}
+    querystring.update(query)
+    return json.loads(xbmc.executeJSONRPC(json.dumps(querystring, encoding='utf-8')))
 
 class XBMCMonitor(xbmc.Monitor):
 
@@ -40,9 +42,11 @@ class Service(XBMCMonitor):
     def __init__(self, *args):
         XBMCMonitor.__init__(self)
         self.__dateFormat = None
-        self.activeTimers = 0
         self.getSettings()
         handler.notifyLog('Init Service %s %s' % (__addonname__, __version__))
+
+        self.timers = handler.getTimer()
+        handler.setTimerProperties(self.timers)
 
     def getSettings(self):
 
@@ -70,10 +74,8 @@ class Service(XBMCMonitor):
 
     def channelName2channelId(cls, channelname):
         query = {
-                "jsonrpc": "2.0",
                 "method": "PVR.GetChannels",
                 "params": {"channelgroupid": "alltv"},
-                "id": 1
                 }
         res = jsonrpc(query)
         if 'result' in res and 'channels' in res['result']:
@@ -87,9 +89,7 @@ class Service(XBMCMonitor):
     def getPlayer(cls):
         props = {'player': None, 'playerid': None, 'media': None, 'id': None}
         query = {
-                "jsonrpc": "2.0",
                 "method": "Player.GetActivePlayers",
-                "id": 1
                 }
         res = jsonrpc(query)
         if 'result' in res and res['result']:
@@ -98,7 +98,6 @@ class Service(XBMCMonitor):
             props['playerid'] = res['playerid']
 
             query = {
-                    "jsonrpc": "2.0",
                     "method": "Player.GetItem",
                     "params": {"properties": ["title", "season", "episode", "file"],
                                "playerid": props['playerid']},
@@ -122,8 +121,8 @@ class Service(XBMCMonitor):
 
             _now = time.time()
             _switchInstantly = False
-            timers = handler.getTimer()
-            for _timer in timers:
+
+            for _timer in self.timers:
 
                 if not _timer['utime']:
                     handler.notifyLog('Couldn\'t calculate timestamp, delete timer', xbmc.LOGERROR)
@@ -136,9 +135,7 @@ class Service(XBMCMonitor):
                     continue
 
                 if _timer['utime'] < _now: _switchInstantly = True
-
-                _timediff = INTERVAL + self.__dispMsgTime / 1000
-                if _timer['utime'] - _now < _timediff:
+                if (_timer['utime'] - _now < INTERVAL + self.__dispMsgTime / 1000) or _switchInstantly:
                     chanIdTmr = self.channelName2channelId(_timer['channel'].decode('utf-8'))
                     if chanIdTmr:
 
@@ -189,10 +186,8 @@ class Service(XBMCMonitor):
 
                                     handler.notifyLog('player:%s media:%s @id:%s is running' % (plrProps['player'], plrProps['media'], plrProps['playerid']))
                                     query = {
-                                            "jsonrpc": "2.0",
                                             "method": "Player.Stop",
                                             "params": {"playerid": plrProps['playerid']},
-                                            "id": 1
                                             }
                                     res = jsonrpc(query)
                                     if 'result' in res and res['result'] == "OK":
@@ -200,8 +195,6 @@ class Service(XBMCMonitor):
 
                                 handler.notifyLog('Currently playing channelid %s, switch to id %s' % (plrProps['id'], chanIdTmr))
                                 query = {
-                                        "jsonrpc": "2.0",
-                                        "id": 1,
                                         "method": "Player.Open",
                                         "params": {"item": {"channelid": chanIdTmr}}
                                         }
@@ -213,6 +206,7 @@ class Service(XBMCMonitor):
                                     handler.notifyOSD(__LS__(30000), __LS__(30025) % (_timer['channel'].decode('utf-8')), icon=__IconAlert__)
 
                     self.resetTmr(_timer['date'])
+            self.timers = handler.getTimer()
 
         handler.notifyLog('Service kicks off')
 

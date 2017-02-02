@@ -110,26 +110,29 @@ def setTimer(params):
     timers.append(params)
     timers.sort(key=operator.itemgetter('utime'))
 
-    _idx = 0
-    for prefix in ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9']:
-
-        if _idx < len(timers):
-            # Set properties
-            for element in __timerdict__:
-                try:
-                    HOME.setProperty('%s:%s' % (prefix, element), timers[_idx][element])
-                except KeyError:
-                    pass
-            _idx += 1
-        else:
-            # Clear properties
-            clearTimerProperties(prefix)
-
+    setTimerProperties(timers)
     putTimer(timers)
+
     notifyLog('Timer added @%s, %s, %s' % (params['date'], params['channel'].decode('utf-8'), params['title'].decode('utf-8')), xbmc.LOGNOTICE)
     notifyLog('Plot: %s...' % (params['plot'].decode('utf-8')[0:63]))
     if __confirmTmrAdded__: notifyOSD(__LS__(30000), __LS__(30021), icon=__IconOk__)
     return True
+
+def setTimerProperties(timerlist):
+    _idx = 0
+    for prefix in ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9']:
+
+        if _idx < len(timerlist):
+            # Set timer properties
+            for element in __timerdict__:
+                try:
+                    HOME.setProperty('%s:%s' % (prefix, element), timerlist[_idx][element])
+                except KeyError:
+                    pass
+            _idx += 1
+        else:
+            # Clear remaining properties
+            clearTimerProperties(prefix)
 
 def clearTimerProperties(prefix=None):
     if not prefix:
