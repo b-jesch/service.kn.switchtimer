@@ -59,12 +59,16 @@ class Service(XBMCMonitor):
 
         self.SettingsChanged = False
 
-    def resetTmr(self, date):
+    @classmethod
+
+    def resetTmr(cls, date):
         for prefix in ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9']:
             if HOME.getProperty('%s:date' % (prefix)) == '': continue
             elif HOME.getProperty('%s:date' % (prefix)) == date: handler.clearTimerProperties(prefix)
 
-    def channelName2channelId(self, channelname):
+    @classmethod
+
+    def channelName2channelId(cls, channelname):
         query = {
                 "jsonrpc": "2.0",
                 "method": "PVR.GetChannels",
@@ -78,7 +82,9 @@ class Service(XBMCMonitor):
                 if channels['label'] == channelname: return channels['channelid']
         return False
 
-    def getPlayer(self):
+    @classmethod
+
+    def getPlayer(cls):
         props = {'player': None, 'playerid': None, 'media': None, 'id': None}
         query = {
                 "jsonrpc": "2.0",

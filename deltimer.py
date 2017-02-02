@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import xbmc
 import handler
 
 if __name__ ==  '__main__':
