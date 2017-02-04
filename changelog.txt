@@ -1,5 +1,8 @@
 CHANGELOG
 
+2.0.1
+- Profile paths for timer.json considered
+
 2.0.0
 - complete Redesign of source code
 - Timers are stored into a JSON structured file independent from skin

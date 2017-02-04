@@ -13,6 +13,7 @@ __addon__ = xbmcaddon.Addon()
 __addonid__ = __addon__.getAddonInfo('id')
 __addonname__ = __addon__.getAddonInfo('name')
 __path__ = __addon__.getAddonInfo('path')
+__profiles__ = __addon__.getAddonInfo('profile')
 __version__ = __addon__.getAddonInfo('version')
 __LS__ = __addon__.getLocalizedString
 
@@ -26,7 +27,7 @@ OSD = xbmcgui.Dialog()
 OSDProgress = xbmcgui.DialogProgress()
 HOME = xbmcgui.Window(10000)
 
-__timer__ = xbmc.translatePath(os.path.join('special://userdata', 'addon_data', __addonid__, 'timer.json'))
+__timer__ = xbmc.translatePath(os.path.join(__profiles__, 'timer.json'))
 __timerdict__ = {'channel': None, 'icon': None, 'date': None, 'title': None, 'plot': None}
 
 def putTimer(timers):
@@ -35,6 +36,7 @@ def putTimer(timers):
     with open(__timer__, 'w') as handle:
         json.dump(timers, handle)
     HOME.setProperty('SwitchTimerActiveItems', str(len(timers)))
+    notifyLog('timer.json located @:%s' % __timer__, xbmc.LOGDEBUG)
     notifyLog('%s timer(s) written' % (len(timers)), xbmc.LOGNOTICE)
 
 def getTimer():
@@ -176,5 +178,7 @@ if __name__ ==  '__main__':
     except IndexError:
             notifyLog('Calling this script without parameters is not allowed', xbmc.LOGERROR)
             OSD.ok(__LS__(30000),__LS__(30030))
+    '''
     except Exception, e:
             notifyLog('Script error, Timer couldn\'t set', xbmc.LOGERROR)
+    '''
