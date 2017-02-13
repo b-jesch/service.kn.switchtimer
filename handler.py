@@ -28,7 +28,7 @@ OSDProgress = xbmcgui.DialogProgress()
 HOME = xbmcgui.Window(10000)
 
 __settingspath__ = xbmc.translatePath(__profiles__)
-if not os._exists(__settingspath__): os.makedirs(__settingspath__, 0755)
+if not os.path.exists(__settingspath__): os.makedirs(__settingspath__, 0755)
 __timer__ = os.path.join(__settingspath__, 'timer.json')
 
 __timerdict__ = {'channel': None, 'icon': None, 'date': None, 'title': None, 'plot': None}
