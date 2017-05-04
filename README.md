@@ -1,3 +1,6 @@
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d822ae126ec64cb88eedf2187500d6b7)](https://www.codacy.com/app/birger-jesch/service-kn-switchtimer?utm_source=github.com&utm_medium=referral&utm_content=b-jesch/service.kn.switchtimer&utm_campaign=badger)
+
 <h1>PVR switch timer aka PVR reminder</h1>
 No more forgotten football matches or formula one races! Avoid discussion with your better half and let kodi switch to the channels you want! Or let they switch to their favorite shows at a given time!
 
