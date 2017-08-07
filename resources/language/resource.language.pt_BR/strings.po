@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: KN Switchtimer Service
 # Addon id: service.kn.switchtimer
-# Addon version: 2.0.4
+# Addon version: 2.0.5
 # Addon Provider: Birger Jesch
 msgid ""
 msgstr ""
