@@ -99,7 +99,7 @@ msgid "Switching at '%s' to '%s' in a few seconds"
 msgstr ""
 
 msgctxt "#30027"
-msgid "Broadcast on '%s' starts now"
+msgid "'%s' on '%s' starts now"
 msgstr ""
 
 msgctxt "#30028"

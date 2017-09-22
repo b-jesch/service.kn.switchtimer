@@ -90,8 +90,8 @@ msgid "Switching at '%s' to '%s' in a few seconds"
 msgstr "Umschaltung auf '%s' zu '%s' erfolgt..."
 
 msgctxt "#30027"
-msgid "Broadcast on '%s' starts now"
-msgstr "Sendung auf '%s' beginnt jetzt"
+msgid "'%s' on '%s' starts now"
+msgstr "'%s' auf '%s' beginnt jetzt"
 
 msgctxt "#30028"
 msgid "Channel Switch requested"
