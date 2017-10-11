@@ -52,8 +52,25 @@ msgctxt "#30004"
 msgid "Ignore Timers older than"
 msgstr "Ignorar lembretes com mais de"
 
-#Info
-#empty strings from id 30005 to 30009
+msgctxt "#30005"
+msgid "Kodi startup"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Switchtimer settings"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Actions"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Activate channel on startup"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Channel number"
+msgstr ""
 
 msgctxt "#30010"
 msgid "Currently active Timers"
@@ -67,8 +84,12 @@ msgctxt "#30012"
 msgid "Use Countdown Timer"
 msgstr "Usar lembrete com contagem regressiva"
 
+msgctxt "#30013"
+msgid "Switch to '%s'"
+msgstr ""
+
 #Messages
-#empty strings from id 30013 to 30019
+#empty strings from id 30014 to 30019
 
 msgctxt "#30020"
 msgid "Date/Time of Timer could not calculated"

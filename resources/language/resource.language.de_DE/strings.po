@@ -49,6 +49,26 @@ msgctxt "#30004"
 msgid "Ignore Timers older than"
 msgstr "Ignoriere Timer, die älter sind als"
 
+msgctxt "#30005"
+msgid "Kodi startup"
+msgstr "Kodi Start"
+
+msgctxt "#30006"
+msgid "Switchtimer settings"
+msgstr "Umschalttimer Einstellungen"
+
+msgctxt "#30007"
+msgid "Actions"
+msgstr "Aktionen"
+
+msgctxt "#30008"
+msgid "Activate channel on startup"
+msgstr "Aktiviere Kanal nach Start"
+
+msgctxt "#30009"
+msgid "Channel number"
+msgstr "Kanalnummer"
+
 msgctxt "#30010"
 msgid "Currently active Timers"
 msgstr "Anzahl aktuell aktiver Timer"
@@ -60,6 +80,10 @@ msgstr "Alle Timer löschen"
 msgctxt "#30012"
 msgid "Use Countdown Timer"
 msgstr "Benutze Countdown Timer"
+
+msgctxt "#30013"
+msgid "Switch to '%s'"
+msgstr "Schalte um auf '%s'"
 
 msgctxt "#30020"
 msgid "Date/Time of Timer could not calculated"

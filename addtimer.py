@@ -15,4 +15,4 @@ if __name__ ==  '__main__':
             }
 
     if not handler.setTimer(args):
-        handler.notifyLog('Timer couldn\'t or wouldn\' be set')
+        handler.notifyLog('Timer couldn\'t or wouldn\'t be set')

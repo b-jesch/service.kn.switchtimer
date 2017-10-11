@@ -16,11 +16,11 @@ __path__ = __addon__.getAddonInfo('path')
 __version__ = __addon__.getAddonInfo('version')
 __LS__ = __addon__.getLocalizedString
 
-__IconDefault__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'default.png'))
-__IconAlert__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'alert.png'))
-__IconOk__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'ok.png'))
+IconDefault = xbmc.translatePath(os.path.join(__path__, 'resources', 'media', 'default.png'))
+IconAlert = xbmc.translatePath(os.path.join(__path__, 'resources', 'media', 'alert.png'))
+IconOk = xbmc.translatePath(os.path.join(__path__, 'resources', 'media', 'ok.png'))
 
-INTERVAL = 10 # More than that will make switching too fuzzy because service isn't synchronize with real time
+INTERVAL = 10 # More than that will make switching too fuzzy because service isn't synchronized with real time
 HOME = xbmcgui.Window(10000)
 
 def jsonrpc(query):
@@ -43,7 +43,7 @@ class Service(XBMCMonitor):
         XBMCMonitor.__init__(self)
         self.getSettings()
         handler.notifyLog('Init Service %s %s' % (__addonname__, __version__))
-
+        self.has_started = True
         self.timers = handler.getTimer()
         handler.setTimerProperties(self.timers)
 
@@ -58,6 +58,9 @@ class Service(XBMCMonitor):
         self.__dispMsgTime = int(re.match('\d+', handler.getSetting('dispTime')).group())*1000
         self.__discardTmr = int(re.match('\d+', handler.getSetting('discardOldTmr')).group())*60
         self.__confirmTmrAdded = True if handler.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
+
+        self.switchOnInit = True if handler.getSetting('switchOnInit').upper() == 'TRUE' else False
+        self.channel = int(re.match('\d+', handler.getSetting('channel')).group() or '0')
 
         self.SettingsChanged = False
 
@@ -108,6 +111,34 @@ class Service(XBMCMonitor):
                 if 'id' in res: props['id'] = res['id']
         return props
 
+    def switchToChannelId(self, playerProperties, channelId, channel):
+
+        if playerProperties['player'] == 'audio' or (playerProperties['player'] == 'video' and playerProperties['media'] != 'channel'):
+
+            # stop all other players except pvr
+
+            handler.notifyLog('player:%s media:%s @id:%s is running' %
+                              (playerProperties['player'], playerProperties['media'], playerProperties['playerid']))
+            query = {
+                "method": "Player.Stop",
+                "params": {"playerid": playerProperties['playerid']},
+            }
+            res = jsonrpc(query)
+            if 'result' in res and res['result'] == "OK":
+                handler.notifyLog('Player stopped')
+
+        handler.notifyLog('Currently playing channelid %s, switch to id %s' % (playerProperties['id'], channelId))
+        query = {
+            "method": "Player.Open",
+            "params": {"item": {"channelid": channelId}}
+        }
+        res = jsonrpc(query)
+        if 'result' in res and res['result'] == 'OK':
+            handler.notifyLog('Switched to channel \'%s\'' % (channel))
+        else:
+            handler.notifyLog('Couldn\'t switch to channel \'%s\'' % (channel))
+            handler.notifyOSD(__LS__(30000), __LS__(30025) % (channel), icon=IconAlert)
+
     def poll(self):
 
         while not XBMCMonitor.abortRequested(self):
@@ -119,6 +150,7 @@ class Service(XBMCMonitor):
 
             _now = time.time()
             _switchInstantly = False
+            plrProps = self.getPlayer()
 
             for _timer in self.timers:
 
@@ -137,9 +169,8 @@ class Service(XBMCMonitor):
                     chanIdTmr = self.channelName2channelId(_timer['channel'])
                     if chanIdTmr:
 
-                        # get player properties, switch if necessary
+                        # compare with player properties, switch if necessary
 
-                        plrProps = self.getPlayer()
                         if chanIdTmr == plrProps['id']:
                             handler.notifyLog('Channel switching unnecessary')
                             handler.notifyOSD(__LS__(30000), __LS__(30027) % (_timer['title'], _timer['channel']), time=self.__dispMsgTime)
@@ -185,33 +216,27 @@ class Service(XBMCMonitor):
 
                             if switchAborted: handler.notifyLog('Channelswitch cancelled by user')
                             else:
-                                if plrProps['player'] == 'audio' or (plrProps['player'] == 'video' and plrProps['media'] != 'channel'):
-
-                                    # stop all other players except pvr
-
-                                    handler.notifyLog('player:%s media:%s @id:%s is running' %
-                                                      (plrProps['player'], plrProps['media'], plrProps['playerid']))
-                                    query = {
-                                            "method": "Player.Stop",
-                                            "params": {"playerid": plrProps['playerid']},
-                                            }
-                                    res = jsonrpc(query)
-                                    if 'result' in res and res['result'] == "OK":
-                                        handler.notifyLog('Player stopped')
-
-                                handler.notifyLog('Currently playing channelid %s, switch to id %s' % (plrProps['id'], chanIdTmr))
-                                query = {
-                                        "method": "Player.Open",
-                                        "params": {"item": {"channelid": chanIdTmr}}
-                                        }
-                                res = jsonrpc(query)
-                                if 'result' in res and res['result'] == 'OK':
-                                    handler.notifyLog('Switched to channel \'%s\'' % (_timer['channel']))
-                                else:
-                                    handler.notifyLog('Couldn\'t switch to channel \'%s\'' % (_timer['channel']))
-                                    handler.notifyOSD(__LS__(30000), __LS__(30025) % (_timer['channel']), icon=__IconAlert__)
+                                self.has_started = False
+                                self.switchToChannelId(plrProps, chanIdTmr, _timer['channel'])
 
                     self.resetTmr(_timer['date'])
+
+            if self.has_started and self.switchOnInit and self.channel > 0:
+                handler.notifyLog('Channelswitch on startup enabled')
+                query = {
+                        "method": "PVR.GetChannels",
+                        "params": {"channelgroupid": "alltv", "properties": ["channelnumber"]}
+                        }
+                res = jsonrpc(query)
+                if 'result' in res:
+                    for _channel in res['result']['channels']:
+                        if _channel['channelnumber'] == self.channel:
+                            handler.notifyLog('Channelswitch on startup is enabled, switch to \'%s\'' % (_channel['label']))
+                            handler.notifyOSD(__LS__(30000), __LS__(30013) % (_channel['label']))
+                            self.switchToChannelId(plrProps, _channel['channelid'], _channel['label'])
+                            self.has_started = False
+                            break
+
             self.timers = handler.getTimer()
 
         handler.notifyLog('Service kicks off')

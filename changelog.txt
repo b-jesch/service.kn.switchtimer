@@ -1,5 +1,8 @@
 CHANGELOG
 
+2.0.8
+- Option for channel switching at startup added
+
 2.0.6
 - Cosmetics
 

@@ -17,11 +17,11 @@ __profiles__ = __addon__.getAddonInfo('profile')
 __version__ = __addon__.getAddonInfo('version')
 __LS__ = __addon__.getLocalizedString
 
-__IconDefault__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'default.png'))
-__IconAlert__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'alert.png'))
-__IconOk__ = xbmc.translatePath(os.path.join( __path__,'resources', 'media', 'ok.png'))
+IconDefault = xbmc.translatePath(os.path.join(__path__, 'resources', 'media', 'default.png'))
+IconAlert = xbmc.translatePath(os.path.join(__path__, 'resources', 'media', 'alert.png'))
+IconOk = xbmc.translatePath(os.path.join(__path__, 'resources', 'media', 'ok.png'))
 
-__confirmTmrAdded__ = True if __addon__.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
+confirmTmrAdded = True if __addon__.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
 
 OSD = xbmcgui.Dialog()
 OSDProgress = xbmcgui.DialogProgress()
@@ -55,7 +55,7 @@ def getSetting(setting):
 def notifyLog(message, level=xbmc.LOGDEBUG):
     xbmc.log('[%s]: %s' % (__addonid__, message.encode('utf-8')), level)
 
-def notifyOSD(header, message, icon=__IconDefault__, time=5000):
+def notifyOSD(header, message, icon=IconDefault, time=5000):
     OSD.notification(header.encode('utf-8'), message.encode('utf-8'), icon, time)
 
 def date2timeStamp(pdate, dayfirst=True):
@@ -73,7 +73,7 @@ def setTimer(params):
         utime =date2timeStamp(params['date'], dayfirst=False)
         if _now > utime:
             notifyLog('Timer date in the past or couldn\'t determine date format', xbmc.LOGNOTICE)
-            notifyOSD(__LS__(30000), __LS__(30022), icon=__IconAlert__)
+            notifyOSD(__LS__(30000), __LS__(30022), icon=IconAlert)
             return False
 
     timers = getTimer()
@@ -87,7 +87,7 @@ def setTimer(params):
 
     if len(timers) > 9:
         notifyLog('Timer limit exceeded, no free slot', xbmc.LOGFATAL)
-        notifyOSD(__LS__(30000), __LS__(30024), icon=__IconAlert__)
+        notifyOSD(__LS__(30000), __LS__(30024), icon=IconAlert)
         return False
 
     # append timer and sort timerlist
@@ -101,7 +101,7 @@ def setTimer(params):
 
     notifyLog('Timer added @%s, %s, %s' % (params['date'], params['channel'].decode('utf-8'), params['title'].decode('utf-8')), xbmc.LOGNOTICE)
     notifyLog('Plot: %s...' % (params['plot'].decode('utf-8')[0:63]))
-    if __confirmTmrAdded__: notifyOSD(__LS__(30000), __LS__(30021), icon=__IconOk__)
+    if confirmTmrAdded: notifyOSD(__LS__(30000), __LS__(30021), icon=IconOk)
     return True
 
 def setTimerProperties(timerlist):
