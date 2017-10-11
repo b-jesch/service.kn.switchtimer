@@ -111,7 +111,9 @@ class Service(XBMCMonitor):
                 if 'id' in res: props['id'] = res['id']
         return props
 
-    def switchToChannelId(self, playerProperties, channelId, channel):
+    @classmethod
+
+    def switchToChannelId(cls, playerProperties, channelId, channel):
 
         if playerProperties['player'] == 'audio' or (playerProperties['player'] == 'video' and playerProperties['media'] != 'channel'):
 
