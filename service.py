@@ -43,7 +43,7 @@ class Service(XBMCMonitor):
         XBMCMonitor.__init__(self)
         self.getSettings()
         handler.notifyLog('Init Service %s %s' % (__addonname__, __version__))
-        self.has_started = True
+        self.bootstrap = True
         self.timers = handler.getTimer()
         handler.setTimerProperties(self.timers)
 
@@ -60,7 +60,10 @@ class Service(XBMCMonitor):
         self.__confirmTmrAdded = True if handler.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
 
         self.switchOnInit = True if handler.getSetting('switchOnInit').upper() == 'TRUE' else False
-        self.channel = int(re.match('\d+', handler.getSetting('channel')).group() or '0')
+        try:
+            self.channel = int(re.match('\d+', handler.getSetting('channel')).group())
+        except AttributeError:
+            self.channel = 0
 
         self.SettingsChanged = False
 
@@ -218,12 +221,12 @@ class Service(XBMCMonitor):
 
                             if switchAborted: handler.notifyLog('Channelswitch cancelled by user')
                             else:
-                                self.has_started = False
+                                self.bootstrap = False
                                 self.switchToChannelId(plrProps, chanIdTmr, _timer['channel'])
 
                     self.resetTmr(_timer['date'])
 
-            if self.has_started and self.switchOnInit and self.channel > 0:
+            if self.bootstrap and self.switchOnInit and self.channel > 0:
                 handler.notifyLog('Channelswitch on startup enabled')
                 query = {
                         "method": "PVR.GetChannels",
@@ -236,7 +239,7 @@ class Service(XBMCMonitor):
                             handler.notifyLog('Channelswitch on startup is enabled, switch to \'%s\'' % (_channel['label']))
                             handler.notifyOSD(__LS__(30000), __LS__(30013) % (_channel['label']))
                             self.switchToChannelId(plrProps, _channel['channelid'], _channel['label'])
-                            self.has_started = False
+                            self.bootstrap = False
                             break
 
             self.timers = handler.getTimer()
