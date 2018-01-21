@@ -3,7 +3,6 @@
 
 import sys
 import time
-from dateutil import parser
 import xbmc, xbmcaddon, xbmcgui
 import os
 import operator
@@ -58,9 +57,11 @@ def notifyLog(message, level=xbmc.LOGDEBUG):
 def notifyOSD(header, message, icon=IconDefault, time=5000):
     OSD.notification(header.encode('utf-8'), message.encode('utf-8'), icon, time)
 
-def date2timeStamp(pdate, dayfirst=True):
-    df=xbmc.getRegion('dateshort')
-    dtt = parser.parse(pdate, fuzzy=True, dayfirst=dayfirst).timetuple()
+def date2timeStamp(pdate):
+    # Kodi bug: returns '%H%H' or '%I%I'
+    df=xbmc.getRegion('dateshort') + ' ' + xbmc.getRegion('time').replace('%H%H','%H').replace('%I%I','%I').replace(':%S','')
+    notifyLog(pdate + ' ' + df)
+    dtt = time.strptime(pdate, df)
     return int(time.mktime(dtt))
 
 def setTimer(params):
@@ -69,12 +70,9 @@ def setTimer(params):
 
     _now = int(time.time())
     if _now > utime:
-        notifyLog('Timer date possibly in the past, trying another date format', xbmc.LOGNOTICE)
-        utime =date2timeStamp(params['date'], dayfirst=False)
-        if _now > utime:
-            notifyLog('Timer date in the past or couldn\'t determine date format', xbmc.LOGNOTICE)
-            notifyOSD(__LS__(30000), __LS__(30022), icon=IconAlert)
-            return False
+        notifyLog('Timer date in the past', xbmc.LOGNOTICE)
+        notifyOSD(__LS__(30000), __LS__(30022), icon=IconAlert)
+        return False
 
     timers = getTimer()
     for timer in timers:

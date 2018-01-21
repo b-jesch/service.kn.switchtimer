@@ -2,7 +2,6 @@
 <addon id="service.kn.switchtimer" name="KN Switchtimer Service" provider-name="Birger Jesch" version="2.0.8">
     <requires>
         <import addon="xbmc.python" version="2.24.0"/>
-        <import addon="script.module.dateutil" version="2.5.3"/>
         <import addon="xbmc.json" version="6.20.0"/>
     </requires>
     <extension point="xbmc.service" library="service.py" start="login" />
