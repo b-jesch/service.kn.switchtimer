@@ -134,7 +134,7 @@ msgid "%s Seconds left to abort"
 msgstr "%s Seconden resterend om af te breken"
 
 msgctxt "#30030"
-msgid "There is no active timer yet. Please use the PVR OSD Guide context menue to set or reset switch timers."
+msgid "There is no active timer yet. Please use the PVR OSD Guide context menue to set switch timers."
 msgstr "Er is nog geen actieve timer. Gebruik het contextmenu van de PVR OSD-gids om schakeltimers in te stellen."
 
 msgctxt "#30031"
@@ -150,5 +150,9 @@ msgid "Add switchtimer"
 msgstr "Voeg overschakel timer toe"
 
 msgctxt "#30041"
+msgid "Reset switchtimer"
+msgstr "Reset Timer"
+
+msgctxt "#30042"
 msgid "Reset all switchtimers"
-msgstr "Reset alle timers"
+msgstr "Reset alle Timers"

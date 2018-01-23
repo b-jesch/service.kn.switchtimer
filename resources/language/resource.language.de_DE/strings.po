@@ -134,8 +134,8 @@ msgid "%s Seconds left to abort"
 msgstr "%s Sekunden verbleibend, um abzubrechen"
 
 msgctxt "#30030"
-msgid "There is no active timer yet. Please use the PVR OSD Guide context menue to set or reset switch timers."
-msgstr "Zur Zeit sind keine Timer aktiv. Benutze das Kontextmenü der EPG-Zeitleiste, um Umschalttimer zu setzen oder zu löschen."
+msgid "There is no active timer yet. Please use the PVR OSD Guide context menue to set switch timers."
+msgstr "Zur Zeit sind keine Timer aktiv. Benutze das Kontextmenü der EPG-Zeitleiste, um Umschalttimer zu setzen."
 
 msgctxt "#30031"
 msgid "Timer for this time already set (%s, %s). Would You replace this timer with the new one instead?"
@@ -150,5 +150,9 @@ msgid "Add switchtimer"
 msgstr "Umschalttimer setzen"
 
 msgctxt "#30041"
+msgid "Reset switchtimer"
+msgstr "Umschalttimer löschen"
+
+msgctxt "#30042"
 msgid "Reset all switchtimers"
 msgstr "alle Umschalttimer löschen"

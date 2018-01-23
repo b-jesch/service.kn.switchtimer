@@ -140,7 +140,7 @@ msgid "%s Seconds left to abort"
 msgstr "%s segundos restantes"
 
 msgctxt "#30030"
-msgid "There is no active timer yet. Please use the PVR OSD Guide context menue to set or reset switch timers."
+msgid "There is no active timer yet. Please use the PVR OSD Guide context menue to set switch timers."
 msgstr "Por favor, use o Guia para acionar ou resetar os lembretes"
 
 msgctxt "#30031"
@@ -159,5 +159,9 @@ msgid "Add switchtimer"
 msgstr "Adicionar lembrete"
 
 msgctxt "#30041"
+msgid "Reset switchtimer"
+msgstr "Remover lembrete"
+
+msgctxt "#30042"
 msgid "Reset all switchtimers"
 msgstr "Remover todos os lembretes"

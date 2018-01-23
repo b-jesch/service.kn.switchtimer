@@ -134,7 +134,7 @@ msgid "%s Seconds left to abort"
 msgstr "%s segundos restantes"
 
 msgctxt "#30030"
-msgid "There is no active timer yet. Please use the PVR OSD Guide context menue to set or reset switch timers."
+msgid "There is no active timer yet. Please use the PVR OSD Guide context menue to set switch timers."
 msgstr ""
 
 msgctxt "#30031"
@@ -150,5 +150,13 @@ msgid "Add switchtimer"
 msgstr "Novo temporizador de sintonização"
 
 msgctxt "#30041"
+msgid "Reset all switchtimers"
+msgstr "Reiniciar temporizadores de sintonização"
+
+msgctxt "#30041"
+msgid "Reset switchtimer"
+msgstr ""
+
+msgctxt "#30042"
 msgid "Reset all switchtimers"
 msgstr "Reiniciar temporizadores de sintonização"
