@@ -159,7 +159,7 @@ if __name__ ==  '__main__':
             elif args['action'] == 'delall':
                 for prefix in ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9']: clearTimerProperties()
     except IndexError:
-        if int(HOME.getProperty('SwitchTimerActiveItems')) > 0:
+        if int(HOME.getProperty('SwitchTimerActiveItems') or 0) > 0:
 
             _tlist = []
             timers = getTimer()
