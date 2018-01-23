@@ -90,8 +90,16 @@ msgctxt "#30013"
 msgid "Switch to '%s'"
 msgstr ""
 
+msgctxt "#30014"
+msgid "Lead Time"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Delete active Switch Timers"
+msgstr ""
+
 #Messages
-#empty strings from id 30014 to 30019
+#empty strings from id 30016 to 30019
 
 msgctxt "#30020"
 msgid "Date/Time of Timer could not calculated"
@@ -134,7 +142,7 @@ msgid "%s Seconds left to abort"
 msgstr ""
 
 msgctxt "#30030"
-msgid "Please use the PVR OSD Guide context menue to set or reset switch timers"
+msgid "There is no active timer yet. Please use the PVR OSD Guide context menue to set or reset switch timers."
 msgstr ""
 
 msgctxt "#30031"

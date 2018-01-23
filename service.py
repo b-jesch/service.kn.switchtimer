@@ -9,16 +9,16 @@ import re
 
 import handler
 
-__addon__ = xbmcaddon.Addon()
-__addonid__ = __addon__.getAddonInfo('id')
-__addonname__ = __addon__.getAddonInfo('name')
-__path__ = __addon__.getAddonInfo('path')
-__version__ = __addon__.getAddonInfo('version')
-__LS__ = __addon__.getLocalizedString
+addon = xbmcaddon.Addon()
+addonid = addon.getAddonInfo('id')
+addonname = addon.getAddonInfo('name')
+path = addon.getAddonInfo('path')
+version = addon.getAddonInfo('version')
+loc = addon.getLocalizedString
 
-IconDefault = xbmc.translatePath(os.path.join(__path__, 'resources', 'media', 'default.png'))
-IconAlert = xbmc.translatePath(os.path.join(__path__, 'resources', 'media', 'alert.png'))
-IconOk = xbmc.translatePath(os.path.join(__path__, 'resources', 'media', 'ok.png'))
+IconDefault = xbmc.translatePath(os.path.join(path, 'resources', 'media', 'default.png'))
+IconAlert = xbmc.translatePath(os.path.join(path, 'resources', 'media', 'alert.png'))
+IconOk = xbmc.translatePath(os.path.join(path, 'resources', 'media', 'ok.png'))
 
 INTERVAL = 10 # More than that will make switching too fuzzy because service isn't synchronized with real time
 HOME = xbmcgui.Window(10000)
@@ -42,7 +42,7 @@ class Service(XBMCMonitor):
     def __init__(self, *args):
         XBMCMonitor.__init__(self)
         self.getSettings()
-        handler.notifyLog('Init Service %s %s' % (__addonname__, __version__))
+        handler.notifyLog('Init Service %s %s' % (addonname, version))
         self.bootstrap = True
         self.timers = handler.getTimer()
         handler.setTimerProperties(self.timers)
@@ -55,15 +55,16 @@ class Service(XBMCMonitor):
 
         self.__showNoticeBeforeSw = True if handler.getSetting('showNoticeBeforeSw').upper() == 'TRUE' else False
         self.__useCountdownTimer = True if handler.getSetting('useCountdownTimer').upper() == 'TRUE' else False
+        self.__leadOffset = int(re.match('\d+', handler.getSetting('leadOffset')).group())
         self.__dispMsgTime = int(re.match('\d+', handler.getSetting('dispTime')).group())*1000
         self.__discardTmr = int(re.match('\d+', handler.getSetting('discardOldTmr')).group())*60
         self.__confirmTmrAdded = True if handler.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
 
-        self.switchOnInit = True if handler.getSetting('switchOnInit').upper() == 'TRUE' else False
+        self.__switchOnInit = True if handler.getSetting('switchOnInit').upper() == 'TRUE' else False
         try:
-            self.channel = int(re.match('\d+', handler.getSetting('channel')).group())
+            self.__channel = int(re.match('\d+', handler.getSetting('channel')).group())
         except AttributeError:
-            self.channel = 0
+            self.__channel = 0
 
         self.SettingsChanged = False
 
@@ -142,7 +143,7 @@ class Service(XBMCMonitor):
             handler.notifyLog('Switched to channel \'%s\'' % (channel))
         else:
             handler.notifyLog('Couldn\'t switch to channel \'%s\'' % (channel))
-            handler.notifyOSD(__LS__(30000), __LS__(30025) % (channel), icon=IconAlert)
+            handler.notifyOSD(loc(30000), loc(30025) % (channel), icon=IconAlert)
 
     def poll(self):
 
@@ -169,8 +170,8 @@ class Service(XBMCMonitor):
                     self.resetTmr(_timer['date'])
                     continue
 
-                if _timer['utime'] < _now: _switchInstantly = True
-                if (_timer['utime'] - _now < INTERVAL + self.__dispMsgTime / 1000) or _switchInstantly:
+                if _timer['utime'] - self.__leadOffset < _now: _switchInstantly = True
+                if (_timer['utime'] - _now < INTERVAL + self.__dispMsgTime / 1000 + self.__leadOffset) or _switchInstantly:
                     chanIdTmr = self.channelName2channelId(_timer['channel'])
                     if chanIdTmr:
 
@@ -178,7 +179,7 @@ class Service(XBMCMonitor):
 
                         if chanIdTmr == plrProps['id']:
                             handler.notifyLog('Channel switching unnecessary')
-                            handler.notifyOSD(__LS__(30000), __LS__(30027) % (_timer['title'], _timer['channel']), time=self.__dispMsgTime)
+                            handler.notifyOSD(loc(30000), loc(30027) % (_timer['title'], _timer['channel']), time=self.__dispMsgTime)
                         else:
                             switchAborted = False
                             secs = 0
@@ -186,20 +187,20 @@ class Service(XBMCMonitor):
 
                             if _switchInstantly:
                                 handler.notifyLog('immediate channel switching required')
-                                handler.notifyOSD(__LS__(30000), __LS__(30027) % (_timer['title'], _timer['channel']), time=5000)
+                                handler.notifyOSD(loc(30000), loc(30027) % (_timer['title'], _timer['channel']), time=5000)
 
                             elif not self.__showNoticeBeforeSw: xbmc.sleep(self.__dispMsgTime)
 
                             elif self.__useCountdownTimer:
-                                handler.OSDProgress.create(__LS__(30028), __LS__(30026) %
+                                handler.OSDProgress.create(loc(30028), loc(30026) %
                                                            (_timer['channel'], _timer['title']),
-                                                           __LS__(30029) % (int(self.__dispMsgTime / 1000 - secs)))
+                                                           loc(30029) % (int(self.__dispMsgTime / 1000 - secs)))
                                 while secs < self.__dispMsgTime /1000:
                                     secs += 1
                                     percent = int((secs * 100000) / self.__dispMsgTime)
-                                    handler.OSDProgress.update(percent, __LS__(30026) %
+                                    handler.OSDProgress.update(percent, loc(30026) %
                                                                (_timer['channel'], _timer['title']),
-                                                               __LS__(30029) % (int(self.__dispMsgTime / 1000 - secs)))
+                                                               loc(30029) % (int(self.__dispMsgTime / 1000 - secs)))
                                     xbmc.sleep(1000)
                                     if (handler.OSDProgress.iscanceled()):
                                         switchAborted = True
@@ -207,7 +208,7 @@ class Service(XBMCMonitor):
                                 handler.OSDProgress.close()
                             else:
                                 idleTime = xbmc.getGlobalIdleTime()
-                                handler.notifyOSD(__LS__(30000), __LS__(30026) %
+                                handler.notifyOSD(loc(30000), loc(30026) %
                                                   (_timer['channel'], _timer['title']), time=self.__dispMsgTime)
                                 while secs < self.__dispMsgTime /1000:
                                     if idleTime > xbmc.getGlobalIdleTime():
@@ -217,7 +218,7 @@ class Service(XBMCMonitor):
                                     xbmc.sleep(1000)
                                     idleTime += 1
                                     secs += 1
-                                if switchAborted: handler.notifyOSD(__LS__(30000), __LS__(30032))
+                                if switchAborted: handler.notifyOSD(loc(30000), loc(30032))
 
                             if switchAborted: handler.notifyLog('Channelswitch cancelled by user')
                             else:
@@ -226,7 +227,7 @@ class Service(XBMCMonitor):
 
                     self.resetTmr(_timer['date'])
 
-            if self.bootstrap and self.switchOnInit and self.channel > 0:
+            if self.bootstrap and self.__switchOnInit and self.__channel > 0:
                 handler.notifyLog('Channelswitch on startup enabled')
                 query = {
                         "method": "PVR.GetChannels",
@@ -235,9 +236,9 @@ class Service(XBMCMonitor):
                 res = jsonrpc(query)
                 if 'result' in res:
                     for _channel in res['result']['channels']:
-                        if _channel['channelnumber'] == self.channel:
+                        if _channel['channelnumber'] == self.__channel:
                             handler.notifyLog('Channelswitch on startup is enabled, switch to \'%s\'' % (_channel['label']))
-                            handler.notifyOSD(__LS__(30000), __LS__(30013) % (_channel['label']))
+                            handler.notifyOSD(loc(30000), loc(30013) % (_channel['label']))
                             self.switchToChannelId(plrProps, _channel['channelid'], _channel['label'])
                             self.bootstrap = False
                             break

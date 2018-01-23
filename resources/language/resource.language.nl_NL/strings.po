@@ -85,6 +85,14 @@ msgctxt "#30013"
 msgid "Switch to '%s'"
 msgstr ""
 
+msgctxt "#30014"
+msgid "Lead Time"
+msgstr "Doorlooptijd"
+
+msgctxt "#30015"
+msgid "Delete active Switch Timers"
+msgstr "Verwijder actieve schakeltimers"
+
 msgctxt "#30020"
 msgid "Date/Time of Timer could not calculated"
 msgstr "Datum/Tijd van timer kan niet berekend worden"
@@ -126,8 +134,8 @@ msgid "%s Seconds left to abort"
 msgstr "%s Seconden resterend om af te breken"
 
 msgctxt "#30030"
-msgid "Please use the PVR OSD Guide context menue to set or reset switch timers"
-msgstr ""
+msgid "There is no active timer yet. Please use the PVR OSD Guide context menue to set or reset switch timers."
+msgstr "Er is nog geen actieve timer. Gebruik het contextmenu van de PVR OSD-gids om schakeltimers in te stellen."
 
 msgctxt "#30031"
 msgid "Timer for this time already set (%s, %s). Would You replace this timer with the new one instead?"

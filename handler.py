@@ -8,25 +8,25 @@ import os
 import operator
 import json
 
-__addon__ = xbmcaddon.Addon()
-__addonid__ = __addon__.getAddonInfo('id')
-__addonname__ = __addon__.getAddonInfo('name')
-__path__ = __addon__.getAddonInfo('path')
-__profiles__ = __addon__.getAddonInfo('profile')
-__version__ = __addon__.getAddonInfo('version')
-__LS__ = __addon__.getLocalizedString
+addon = xbmcaddon.Addon()
+addonid = addon.getAddonInfo('id')
+addonname = addon.getAddonInfo('name')
+path = addon.getAddonInfo('path')
+profiles = addon.getAddonInfo('profile')
+version = addon.getAddonInfo('version')
+loc = addon.getLocalizedString
 
-IconDefault = xbmc.translatePath(os.path.join(__path__, 'resources', 'media', 'default.png'))
-IconAlert = xbmc.translatePath(os.path.join(__path__, 'resources', 'media', 'alert.png'))
-IconOk = xbmc.translatePath(os.path.join(__path__, 'resources', 'media', 'ok.png'))
+IconDefault = xbmc.translatePath(os.path.join(path, 'resources', 'media', 'default.png'))
+IconAlert = xbmc.translatePath(os.path.join(path, 'resources', 'media', 'alert.png'))
+IconOk = xbmc.translatePath(os.path.join(path, 'resources', 'media', 'ok.png'))
 
-confirmTmrAdded = True if __addon__.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
+confirmTmrAdded = True if addon.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
 
 OSD = xbmcgui.Dialog()
 OSDProgress = xbmcgui.DialogProgress()
 HOME = xbmcgui.Window(10000)
 
-__settingspath__ = xbmc.translatePath(__profiles__)
+__settingspath__ = xbmc.translatePath(profiles)
 if not os.path.exists(__settingspath__): os.makedirs(__settingspath__, 0755)
 __timer__ = os.path.join(__settingspath__, 'timer.json')
 
@@ -34,7 +34,7 @@ __timerdict__ = {'channel': None, 'icon': None, 'date': None, 'title': None, 'pl
 
 def putTimer(timers):
     for timer in timers:
-        if not timer['utime'] or timer['utime'] < time.time(): timers.pop(0)
+        if not timer['utime'] or timer['utime'] < time.time(): timers.remove(timer)
     with open(__timer__, 'w') as handle:
         json.dump(timers, handle)
     HOME.setProperty('SwitchTimerActiveItems', str(len(timers)))
@@ -49,17 +49,18 @@ def getTimer():
     return timers
 
 def getSetting(setting):
-    return __addon__.getSetting(setting)
+    return addon.getSetting(setting)
 
 def notifyLog(message, level=xbmc.LOGDEBUG):
-    xbmc.log('[%s]: %s' % (__addonid__, message.encode('utf-8')), level)
+    xbmc.log('[%s] %s' % (addonid, message.encode('utf-8')), level)
 
 def notifyOSD(header, message, icon=IconDefault, time=5000):
     OSD.notification(header.encode('utf-8'), message.encode('utf-8'), icon, time)
 
+
 def date2timeStamp(pdate):
     # Kodi bug: returns '%H%H' or '%I%I'
-    df=xbmc.getRegion('dateshort') + ' ' + xbmc.getRegion('time').replace('%H%H','%H').replace('%I%I','%I').replace(':%S','')
+    df = xbmc.getRegion('dateshort') + ' ' + xbmc.getRegion('time').replace('%H%H', '%H').replace('%I%I','%I').replace(':%S', '')
     notifyLog(pdate + ' ' + df)
     dtt = time.strptime(pdate, df)
     return int(time.mktime(dtt))
@@ -71,21 +72,21 @@ def setTimer(params):
     _now = int(time.time())
     if _now > utime:
         notifyLog('Timer date in the past', xbmc.LOGNOTICE)
-        notifyOSD(__LS__(30000), __LS__(30022), icon=IconAlert)
+        notifyOSD(loc(30000), loc(30022), icon=IconAlert)
         return False
 
     timers = getTimer()
     for timer in timers:
         if date2timeStamp(timer['date']) == utime:
             notifyLog('Timer already set, ask for replace', xbmc.LOGNOTICE)
-            _res = OSD.yesno(__addonname__, __LS__(30031) % (timer['channel'], timer['title']))
+            _res = OSD.yesno(addonname, loc(30031) % (timer['channel'], timer['title']))
 
             if not _res: return False
             timers.remove(timer)
 
     if len(timers) > 9:
         notifyLog('Timer limit exceeded, no free slot', xbmc.LOGFATAL)
-        notifyOSD(__LS__(30000), __LS__(30024), icon=IconAlert)
+        notifyOSD(loc(30000), loc(30024), icon=IconAlert)
         return False
 
     # append timer and sort timerlist
@@ -98,8 +99,7 @@ def setTimer(params):
     putTimer(timers)
 
     notifyLog('Timer added @%s, %s, %s' % (params['date'], params['channel'].decode('utf-8'), params['title'].decode('utf-8')), xbmc.LOGNOTICE)
-    notifyLog('Plot: %s...' % (params['plot'].decode('utf-8')[0:63]))
-    if confirmTmrAdded: notifyOSD(__LS__(30000), __LS__(30021), icon=IconOk)
+    if confirmTmrAdded: notifyOSD(loc(30000), loc(30021), icon=IconOk)
     return True
 
 def setTimerProperties(timerlist):
@@ -159,8 +159,28 @@ if __name__ ==  '__main__':
             elif args['action'] == 'delall':
                 for prefix in ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9']: clearTimerProperties()
     except IndexError:
-        notifyLog('Calling this script without parameters is not allowed', xbmc.LOGERROR)
-        OSD.ok(__LS__(30000),__LS__(30030))
+        if int(HOME.getProperty('SwitchTimerActiveItems')) > 0:
+
+            _tlist = []
+            timers = getTimer()
+            for timer in timers:
+                liz = xbmcgui.ListItem(label='%s: %s' % (timer['date'], timer['channel']),
+                                       label2=timer['title'], iconImage=timer['icon'])
+                liz.setProperty('utime', str(timer['utime']))
+                liz.setProperty('date', timer['date'])
+                _tlist.append(liz)
+
+            _idx = OSD.select(loc(30015), _tlist, useDetails=True)
+            if _idx > -1:
+                timers[_idx].update({'utime': None})
+                _date = timers[_idx].get('date', '')
+                for element in __timerdict__: HOME.clearProperty('t%s:%s' % (_idx, element))
+                putTimer(timers)
+                notifyLog('Properties for timer t%s @%s deleted' % (_idx, _date))
+
+        else:
+            notifyLog('No active timers yet', xbmc.LOGERROR)
+            OSD.ok(loc(30000), loc(30030))
     except Exception, e:
         notifyLog('Script error: %s' % (e.message), xbmc.LOGERROR)
 
