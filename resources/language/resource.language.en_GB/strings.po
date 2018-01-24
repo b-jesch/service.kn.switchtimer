@@ -79,7 +79,7 @@ msgid "Currently active Timers"
 msgstr ""
 
 msgctxt "#30011"
-msgid "Delete all Timers"
+msgid "Delete Timer from Timer List"
 msgstr ""
 
 msgctxt "#30012"

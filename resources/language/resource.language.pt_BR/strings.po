@@ -77,8 +77,8 @@ msgid "Currently active Timers"
 msgstr "Lembrete atualmente ativos"
 
 msgctxt "#30011"
-msgid "Delete all Timers"
-msgstr "Apagar todos os lembretes"
+msgid "Delete Timer from Timer List"
+msgstr ""
 
 msgctxt "#30012"
 msgid "Use Countdown Timer"

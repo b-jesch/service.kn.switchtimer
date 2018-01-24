@@ -12,5 +12,6 @@
     <setting id="confirmTmrAdded" type="bool" label="30003" default="true" />
     <setting id="discardOldTmr" type="labelenum" label="30004" values="5 min|10 min|15 min|20 min|30 min|45 min|60 min|90 min" default="10 min" />
     <setting type="lsep" label="30007" />
-    <setting type="action" label="30011" action="RunScript(service.kn.switchtimer,action=delall)" option="close" />
+    <setting type="action" label="30011" action="RunScript(service.kn.switchtimer)" option="close" />
+    <setting type="action" label="30042" action="RunScript(service.kn.switchtimer,action=delall)" option="close" />
 </settings>

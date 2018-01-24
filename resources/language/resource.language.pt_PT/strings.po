@@ -74,8 +74,8 @@ msgid "Currently active Timers"
 msgstr "Temporizadores atualmente ativos"
 
 msgctxt "#30011"
-msgid "Delete all Timers"
-msgstr "Eliminar todos os temporizadores"
+msgid "Delete Timer from Timer List"
+msgstr ""
 
 msgctxt "#30012"
 msgid "Use Countdown Timer"
