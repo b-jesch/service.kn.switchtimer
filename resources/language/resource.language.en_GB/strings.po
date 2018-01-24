@@ -153,8 +153,20 @@ msgctxt "#30032"
 msgid "Channel Switch aborted"
 msgstr ""
 
+msgctxt "#30033"
+msgid "TV Switchtimer Countdown"
+msgstr ""
+
+msgctxt "#30034"
+msgid "Switch now"
+msgstr ""
+
+msgctxt "#30035"
+msgid "Broadcast '%s' is about to begin on channel '%s'. If you want still continue watching your media, delete the actual timer now. Otherwise it will switch to channel '%s' in a few seconds."
+msgstr ""
+
 #Labels
-#empty strings from id 30033 to 30039
+#empty strings from id 30036 to 30039
 
 msgctxt "#30040"
 msgid "Add switchtimer"

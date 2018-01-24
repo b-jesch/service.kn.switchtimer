@@ -12,16 +12,18 @@ import handler
 addon = xbmcaddon.Addon()
 addonid = addon.getAddonInfo('id')
 addonname = addon.getAddonInfo('name')
-path = addon.getAddonInfo('path')
+path = xbmc.translatePath(addon.getAddonInfo('path'))
 version = addon.getAddonInfo('version')
 loc = addon.getLocalizedString
 
-IconDefault = xbmc.translatePath(os.path.join(path, 'resources', 'media', 'default.png'))
-IconAlert = xbmc.translatePath(os.path.join(path, 'resources', 'media', 'alert.png'))
-IconOk = xbmc.translatePath(os.path.join(path, 'resources', 'media', 'ok.png'))
+IconDefault = os.path.join(path, 'resources', 'media', 'default.png')
+IconAlert = os.path.join(path, 'resources', 'media', 'alert.png')
+IconOk = os.path.join(path, 'resources', 'media', 'ok.png')
 
 INTERVAL = 10 # More than that will make switching too fuzzy because service isn't synchronized with real time
 HOME = xbmcgui.Window(10000)
+
+SKINPATH = xbmc.translatePath('special://skin')
 
 def jsonrpc(query):
     querystring = {"jsonrpc": "2.0", "id": 1}
@@ -40,7 +42,10 @@ class XBMCMonitor(xbmc.Monitor):
 class Service(XBMCMonitor):
 
     def __init__(self, *args):
+
         XBMCMonitor.__init__(self)
+        self.skinPath = None
+
         self.getSettings()
         handler.notifyLog('Init Service %s %s' % (addonname, version))
         self.bootstrap = True
@@ -65,6 +70,11 @@ class Service(XBMCMonitor):
             self.__channel = int(re.match('\d+', handler.getSetting('channel')).group())
         except AttributeError:
             self.__channel = 0
+
+        for root, subfolders, files in os.walk(SKINPATH):
+            if 'CustomSwitchtimerInfo.xml' in files:
+                self.skinPath = os.path.join(root, 'CustomSwitchtimerInfo.xml')
+                break
 
         self.SettingsChanged = False
 
@@ -192,20 +202,26 @@ class Service(XBMCMonitor):
                             elif not self.__showNoticeBeforeSw: xbmc.sleep(self.__dispMsgTime)
 
                             elif self.__useCountdownTimer:
-                                handler.OSDProgress.create(loc(30028), loc(30026) %
-                                                           (_timer['channel'], _timer['title']),
-                                                           loc(30029) % (int(self.__dispMsgTime / 1000 - secs)))
-                                while secs < self.__dispMsgTime /1000:
-                                    secs += 1
-                                    percent = int((secs * 100000) / self.__dispMsgTime)
-                                    handler.OSDProgress.update(percent, loc(30026) %
+                                if self.skinPath is not None:
+                                    Popup = xbmcgui.WindowXMLDialog(self.skinPath, path)
+                                    Popup.show()
+                                    xbmc.sleep(5000)
+                                    Popup.close()
+                                else:
+                                    handler.OSDProgress.create(loc(30028), loc(30026) %
                                                                (_timer['channel'], _timer['title']),
                                                                loc(30029) % (int(self.__dispMsgTime / 1000 - secs)))
-                                    xbmc.sleep(1000)
-                                    if (handler.OSDProgress.iscanceled()):
-                                        switchAborted = True
-                                        break
-                                handler.OSDProgress.close()
+                                    while secs < self.__dispMsgTime /1000:
+                                        secs += 1
+                                        percent = int((secs * 100000) / self.__dispMsgTime)
+                                        handler.OSDProgress.update(percent, loc(30026) %
+                                                                   (_timer['channel'], _timer['title']),
+                                                                   loc(30029) % (int(self.__dispMsgTime / 1000 - secs)))
+                                        xbmc.sleep(1000)
+                                        if (handler.OSDProgress.iscanceled()):
+                                            switchAborted = True
+                                            break
+                                    handler.OSDProgress.close()
                             else:
                                 idleTime = xbmc.getGlobalIdleTime()
                                 handler.notifyOSD(loc(30000), loc(30026) %

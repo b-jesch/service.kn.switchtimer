@@ -11,14 +11,14 @@ import json
 addon = xbmcaddon.Addon()
 addonid = addon.getAddonInfo('id')
 addonname = addon.getAddonInfo('name')
-path = addon.getAddonInfo('path')
-profiles = addon.getAddonInfo('profile')
+path = xbmc.translatePath(addon.getAddonInfo('path'))
+profiles = xbmc.translatePath(addon.getAddonInfo('profile'))
 version = addon.getAddonInfo('version')
 loc = addon.getLocalizedString
 
-IconDefault = xbmc.translatePath(os.path.join(path, 'resources', 'media', 'default.png'))
-IconAlert = xbmc.translatePath(os.path.join(path, 'resources', 'media', 'alert.png'))
-IconOk = xbmc.translatePath(os.path.join(path, 'resources', 'media', 'ok.png'))
+IconDefault = os.path.join(path, 'resources', 'media', 'default.png')
+IconAlert = os.path.join(path, 'resources', 'media', 'alert.png')
+IconOk = os.path.join(path, 'resources', 'media', 'ok.png')
 
 confirmTmrAdded = True if addon.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
 
@@ -26,9 +26,8 @@ OSD = xbmcgui.Dialog()
 OSDProgress = xbmcgui.DialogProgress()
 HOME = xbmcgui.Window(10000)
 
-__settingspath__ = xbmc.translatePath(profiles)
-if not os.path.exists(__settingspath__): os.makedirs(__settingspath__, 0755)
-__timer__ = os.path.join(__settingspath__, 'timer.json')
+if not os.path.exists(profiles): os.makedirs(profiles, 0755)
+__timer__ = os.path.join(profiles, 'timer.json')
 
 __timerdict__ = {'channel': None, 'icon': None, 'date': None, 'title': None, 'plot': None}
 

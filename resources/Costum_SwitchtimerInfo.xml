@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol always="true">23</defaultcontrol>
+    <include>DefaultDialogButton</include>
+	<controls>
+		<control type="group" id="13579">
+			<left>-500</left>
+            <top>-250</top>
+            <include content="DialogBackgroundCommons">
+				<param name="width" value="450" />
+				<param name="height" value="200" />
+				<param name="header_label" value="$ADDON[service.kn.switchtimer 30033]" />
+				<param name="header_id" value="1" />
+			</include>
+            <control type="textbox" id="990">
+                      <left>10</left>
+                      <top>70</top>
+                      <width>430</width>
+                      <height>100</height>
+                      <align>left</align>
+                      <aligny>center</aligny>
+            </control>
+            <control type="grouplist">
+                <orientation>horizontal</orientation>
+                <left>0</left>
+                <top>180</top>
+                <width>430</width>
+                <align>center</align>
+                <include content="DefaultDialogButton">
+                    <description>Delete Timer</description>
+                    <param name="id" value="991" />
+                    <param name="width" value="200"/>
+                    <param name="label" value="$ADDON[service.kn.switchtimer 30041]"/>
+                    <param name="onclick" value="RunScript(service.kn.switchtimer,action=del,timer=t0)"/>
+                    <param name="onclick_2" value="Dialog.Close(all)"/>
+                    <param name="visible">!IsEmpty(Window(Home).Property(GTO.Info.isInFuture)) + !String.IsEqual(Window(Home).Property(GTO.Info.ChannelID),False) + System.HasAddon(service.kn.switchtimer)</param>
+                </include>
+                <include content="DefaultDialogButton">
+                    <description>Switch now button</description>
+                    <param name="id" value="992" />
+                    <param name="width" value="200"/>
+                    <param name="label" value="$ADDON[script.service.gto 30034]"/>
+                    <param name="onclick" value="RunScript(service.kn.switchtimer,action=switch_channel=$INFO[Window(Home).Property(t0:channel)])"/>
+                    <param name="onclick_2" value="Dialog.Close(all)"/>
+                    <param name="visible">!IsEmpty(Window(Home).Property(GTO.Info.isRunning)) + !String.IsEqual(Window(Home).Property(GTO.Info.ChannelID),False) + System.HasAddon(service.kn.switchtimer)</param>
+                </include>
+				<onup>1</onup>
+                <ondown>1</ondown>
+            </control>
+        </control>
+	</controls>
+</window>
