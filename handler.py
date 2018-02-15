@@ -44,7 +44,8 @@ def getTimer():
         with open(__timer__, 'r') as handle:
             timers = json.load(handle)
     except IOError:
-        return []
+        timers = []
+    HOME.setProperty('SwitchTimerActiveItems', str(len(timers)))
     return timers
 
 def getSetting(setting):
@@ -158,10 +159,9 @@ if __name__ ==  '__main__':
             elif args['action'] == 'delall':
                 for prefix in ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9']: clearTimerProperties()
     except IndexError:
-        if int(HOME.getProperty('SwitchTimerActiveItems') or 0) > 0:
-
-            _tlist = []
-            timers = getTimer()
+        _tlist = []
+        timers = getTimer()
+        if len(timers) > 0:
             for timer in timers:
                 liz = xbmcgui.ListItem(label='%s: %s' % (timer['date'], timer['channel']),
                                        label2=timer['title'], iconImage=timer['icon'])

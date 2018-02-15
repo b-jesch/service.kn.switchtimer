@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol always="true">1153</defaultcontrol>
+    <include>DefaultDialogButton</include>
+	<controls>
+		<control type="group" id="1150">
+			<left>1280</left>
+            <top>680</top>
+            <include content="DialogBackgroundCommons">
+				<param name="width" value="620" />
+				<param name="height" value="380" />
+				<param name="header_label" value="$ADDON[service.kn.switchtimer 30033]" />
+				<param name="header_id" value="1" />
+			</include>
+            <control type="image" id="1156">
+                <left>10</left>
+                <top>80</top>
+                <width>180</width>
+                <height>160</height>
+                <aspectratio>keep</aspectratio>
+                <texture></texture>
+            </control>
+            <control type="textbox" id="1151">
+                <left>200</left>
+                <top>80</top>
+                <width>400</width>
+                <height>150</height>
+                <align>left</align>
+                <aligny>top</aligny>
+                <font>font10</font>
+            </control>
+            <control type="progress" id="1155">
+                <left>40</left>
+                <top>250</top>
+                <width>540</width>
+                <height>15</height>
+            </control>
+            <control type="grouplist">
+                <orientation>horizontal</orientation>
+                <left>0</left>
+                <top>260</top>
+                <width>620</width>
+                <align>center</align>
+                <include content="DefaultDialogButton">
+                    <description>Delete Timer</description>
+                    <param name="id" value="1152" />
+                    <param name="width" value="300"/>
+                    <param name="label" value="$ADDON[service.kn.switchtimer 30041]"/>
+                </include>
+                <include content="DefaultDialogButton">
+                    <description>Switch now button</description>
+                    <param name="id" value="1153" />
+                    <param name="width" value="300"/>
+                    <param name="label" value="$ADDON[service.kn.switchtimer 30043]"/>
+                </include>
+				<onup>1</onup>
+                <ondown>1</ondown>
+            </control>
+        </control>
+	</controls>
+</window>

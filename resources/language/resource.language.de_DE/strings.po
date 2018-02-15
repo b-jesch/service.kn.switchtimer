@@ -145,6 +145,18 @@ msgctxt "#30032"
 msgid "Channel Switch aborted"
 msgstr "Kanalumschaltung abgebrochen"
 
+msgctxt "#30033"
+msgid "TV Switchtimer Countdown"
+msgstr "TV Switchtimer Countdown"
+
+msgctxt "#30034"
+msgid "Switch now"
+msgstr "Jetzt umschalten"
+
+msgctxt "#30035"
+msgid "Broadcast '%s' is about to begin on %s. If you want still continue watching your media, cancel the switchtimer now."
+msgstr "Die Sendung '%s' startet gleich auf %s. Wenn Du Deine bisherige Sendung weiterschauen möchtest, breche den Timer ab."
+
 msgctxt "#30040"
 msgid "Add switchtimer"
 msgstr "Umschalttimer setzen"
@@ -156,3 +168,7 @@ msgstr "Umschalttimer löschen"
 msgctxt "#30042"
 msgid "Reset all switchtimers"
 msgstr "alle Umschalttimer löschen"
+
+msgctxt "#30043"
+msgid "Switch now"
+msgstr "Jetzt umschalten"

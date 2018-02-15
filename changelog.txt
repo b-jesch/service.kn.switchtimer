@@ -1,5 +1,11 @@
 CHANGELOG
 
+2.0.10
+- special notification window added
+
+2.0.9
+- Timerlist for showing and deleting timers, adding leading time offset in settings
+
 2.0.8
 - Option for channel switching at startup added
 

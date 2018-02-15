@@ -23,7 +23,7 @@ IconOk = os.path.join(path, 'resources', 'media', 'ok.png')
 INTERVAL = 10 # More than that will make switching too fuzzy because service isn't synchronized with real time
 HOME = xbmcgui.Window(10000)
 
-SKINPATH = xbmc.translatePath('special://skin')
+SKIN = xbmc.translatePath('special://skin').split(os.sep)[-2] + '.st_notification.xml'
 
 def jsonrpc(query):
     querystring = {"jsonrpc": "2.0", "id": 1}
@@ -38,6 +38,63 @@ class XBMCMonitor(xbmc.Monitor):
 
     def onSettingsChanged(self):
         self.SettingsChanged = True
+
+
+class cNotification(xbmcgui.WindowXMLDialog):
+
+    TEXT = 1151
+    PROGRESS = 1155
+    THUMB = 1156
+    BUTTON_LEFT = 1152
+    BUTTON_RIGHT = 1153
+
+    ACTION_SELECT = 7
+    ACTION_NAV_BACK = 92
+
+
+    def __init__(self, *args, **kwargs):
+
+        self.timer = int(kwargs.get('timer', 5))
+        self.text = kwargs.get('message', '')
+        self.icon = kwargs.get('icon', '')
+
+    def onInit(self):
+        self.textControl = self.getControl(self.TEXT)  # Notification text field
+        self.progressControl = self.getControl(self.PROGRESS)  # Notification progress bar
+        self.imageControl = self.getControl(self.THUMB)  # Notification channel thumb
+        self.buttonControl_1 = self.getControl(self.BUTTON_LEFT)  # Button 1 (switch)
+        self.buttonControl_2 = self.getControl(self.BUTTON_RIGHT)  # Button 2 (close)
+
+        self.isCanceled = False
+        self.requestSwitch = False
+
+        self.textControl.setText(self.text)
+        self.imageControl.setImage(self.icon)
+
+        for t in range(100, -1, -1):
+            self.progressControl.setPercent(t)
+            xbmc.sleep(self.timer * 10)
+
+        self.close()
+
+    def onClick(self, controlId):
+        if controlId == self.BUTTON_LEFT:
+            self.isCanceled = True
+            self.close()
+        elif controlId == self.BUTTON_RIGHT:
+            self.requestSwitch = True
+            self.close()
+
+    def onAction(self, action):
+        if action == self.ACTION_NAV_BACK: self.close()
+
+
+    def set_text(self, p):
+        self.textControl.setText(p)
+
+    def close(self):
+        xbmcgui.WindowXMLDialog.close(self)
+
 
 class Service(XBMCMonitor):
 
@@ -70,11 +127,6 @@ class Service(XBMCMonitor):
             self.__channel = int(re.match('\d+', handler.getSetting('channel')).group())
         except AttributeError:
             self.__channel = 0
-
-        for root, subfolders, files in os.walk(SKINPATH):
-            if 'CustomSwitchtimerInfo.xml' in files:
-                self.skinPath = os.path.join(root, 'CustomSwitchtimerInfo.xml')
-                break
 
         self.SettingsChanged = False
 
@@ -155,12 +207,12 @@ class Service(XBMCMonitor):
             handler.notifyLog('Couldn\'t switch to channel \'%s\'' % (channel))
             handler.notifyOSD(loc(30000), loc(30025) % (channel), icon=IconAlert)
 
+
     def poll(self):
 
         while not XBMCMonitor.abortRequested(self):
 
-            if XBMCMonitor.waitForAbort(self, INTERVAL): 
-                break
+            if XBMCMonitor.waitForAbort(self, INTERVAL): break
             if self.SettingsChanged:
                 self.getSettings()
 
@@ -202,11 +254,11 @@ class Service(XBMCMonitor):
                             elif not self.__showNoticeBeforeSw: xbmc.sleep(self.__dispMsgTime)
 
                             elif self.__useCountdownTimer:
-                                if self.skinPath is not None:
-                                    Popup = xbmcgui.WindowXMLDialog(self.skinPath, path)
-                                    Popup.show()
-                                    xbmc.sleep(5000)
-                                    Popup.close()
+                                if os.path.exists(os.path.join(path, 'resources', 'skins', 'Default', '1080i', SKIN)):
+                                    Popup = cNotification(SKIN, path, message=loc(30035) % (_timer['title'], _timer['channel']),
+                                                          timer=self.__dispMsgTime/1000, icon=_timer['icon'])
+                                    Popup.doModal()
+                                    if Popup.isCanceled: switchAborted = True
                                 else:
                                     handler.OSDProgress.create(loc(30028), loc(30026) %
                                                                (_timer['channel'], _timer['title']),

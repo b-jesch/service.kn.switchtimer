@@ -162,7 +162,7 @@ msgid "Switch now"
 msgstr ""
 
 msgctxt "#30035"
-msgid "Broadcast '%s' is about to begin on channel '%s'. If you want still continue watching your media, delete the actual timer now. Otherwise it will switch to channel '%s' in a few seconds."
+msgid "Broadcast '%s' is about to begin on %s. If you want still continue watching your media, cancel the switchtimer now."
 msgstr ""
 
 #Labels
@@ -178,4 +178,8 @@ msgstr ""
 
 msgctxt "#30042"
 msgid "Reset all switchtimers"
+msgstr ""
+
+msgctxt "#30043"
+msgid "Switch now"
 msgstr ""
