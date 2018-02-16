@@ -8,19 +8,21 @@ import os
 import operator
 import json
 
+import resources.lib.knClasses as knClasses
+
 addon = xbmcaddon.Addon()
-addonid = addon.getAddonInfo('id')
-addonname = addon.getAddonInfo('name')
-path = xbmc.translatePath(addon.getAddonInfo('path'))
-profiles = xbmc.translatePath(addon.getAddonInfo('profile'))
-version = addon.getAddonInfo('version')
-loc = addon.getLocalizedString
+addonid = xbmcaddon.Addon().getAddonInfo('id')
+addonname = xbmcaddon.Addon().getAddonInfo('name')
+path = xbmc.translatePath(xbmcaddon.Addon().getAddonInfo('path'))
+profiles = xbmc.translatePath(xbmcaddon.Addon().getAddonInfo('profile'))
+version = xbmcaddon.Addon().getAddonInfo('version')
+loc = xbmcaddon.Addon().getLocalizedString
 
 IconDefault = os.path.join(path, 'resources', 'media', 'default.png')
 IconAlert = os.path.join(path, 'resources', 'media', 'alert.png')
 IconOk = os.path.join(path, 'resources', 'media', 'ok.png')
 
-confirmTmrAdded = True if addon.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
+confirmTmrAdded = True if xbmcaddon.Addon().getSetting('confirmTmrAdded').upper() == 'TRUE' else False
 
 OSD = xbmcgui.Dialog()
 OSDProgress = xbmcgui.DialogProgress()
@@ -49,7 +51,7 @@ def getTimer():
     return timers
 
 def getSetting(setting):
-    return addon.getSetting(setting)
+    return xbmcaddon.Addon().getSetting(setting)
 
 def notifyLog(message, level=xbmc.LOGDEBUG):
     xbmc.log('[%s] %s' % (addonid, message.encode('utf-8')), level)
@@ -57,16 +59,8 @@ def notifyLog(message, level=xbmc.LOGDEBUG):
 def notifyOSD(header, message, icon=IconDefault, time=5000):
     OSD.notification(header.encode('utf-8'), message.encode('utf-8'), icon, time)
 
-
-def date2timeStamp(pdate):
-    # Kodi bug: returns '%H%H' or '%I%I'
-    df = xbmc.getRegion('dateshort') + ' ' + xbmc.getRegion('time').replace('%H%H', '%H').replace('%I%I','%I').replace(':%S', '')
-    notifyLog(pdate + ' ' + df)
-    dtt = time.strptime(pdate, df)
-    return int(time.mktime(dtt))
-
 def setTimer(params):
-    utime = date2timeStamp(params['date'])
+    utime = knClasses.date2timeStamp(params['date'])
     if not utime: return False
 
     _now = int(time.time())
@@ -77,7 +71,7 @@ def setTimer(params):
 
     timers = getTimer()
     for timer in timers:
-        if date2timeStamp(timer['date']) == utime:
+        if knClasses.date2timeStamp(timer['date']) == utime:
             notifyLog('Timer already set, ask for replace', xbmc.LOGNOTICE)
             _res = OSD.yesno(addonname, loc(30031) % (timer['channel'], timer['title']))
 

@@ -8,6 +8,7 @@ import os
 import re
 
 import handler
+import resources.lib.knClasses as knClasses
 
 addon = xbmcaddon.Addon()
 addonid = addon.getAddonInfo('id')
@@ -30,77 +31,12 @@ def jsonrpc(query):
     querystring.update(query)
     return json.loads(xbmc.executeJSONRPC(json.dumps(querystring, encoding='utf-8')))
 
-class XBMCMonitor(xbmc.Monitor):
 
-    def __init__(self, *args, **kwargs):
-        xbmc.Monitor.__init__(self)
-        self.SettingsChanged = False
-
-    def onSettingsChanged(self):
-        self.SettingsChanged = True
-
-
-class cNotification(xbmcgui.WindowXMLDialog):
-
-    TEXT = 1151
-    PROGRESS = 1155
-    THUMB = 1156
-    BUTTON_LEFT = 1152
-    BUTTON_RIGHT = 1153
-
-    ACTION_SELECT = 7
-    ACTION_NAV_BACK = 92
-
-
-    def __init__(self, *args, **kwargs):
-
-        self.timer = int(kwargs.get('timer', 5))
-        self.text = kwargs.get('message', '')
-        self.icon = kwargs.get('icon', '')
-
-    def onInit(self):
-        self.textControl = self.getControl(self.TEXT)  # Notification text field
-        self.progressControl = self.getControl(self.PROGRESS)  # Notification progress bar
-        self.imageControl = self.getControl(self.THUMB)  # Notification channel thumb
-        self.buttonControl_1 = self.getControl(self.BUTTON_LEFT)  # Button 1 (switch)
-        self.buttonControl_2 = self.getControl(self.BUTTON_RIGHT)  # Button 2 (close)
-
-        self.isCanceled = False
-        self.requestSwitch = False
-
-        self.textControl.setText(self.text)
-        self.imageControl.setImage(self.icon)
-
-        for t in range(100, -1, -1):
-            self.progressControl.setPercent(t)
-            xbmc.sleep(self.timer * 10)
-
-        self.close()
-
-    def onClick(self, controlId):
-        if controlId == self.BUTTON_LEFT:
-            self.isCanceled = True
-            self.close()
-        elif controlId == self.BUTTON_RIGHT:
-            self.requestSwitch = True
-            self.close()
-
-    def onAction(self, action):
-        if action == self.ACTION_NAV_BACK: self.close()
-
-
-    def set_text(self, p):
-        self.textControl.setText(p)
-
-    def close(self):
-        xbmcgui.WindowXMLDialog.close(self)
-
-
-class Service(XBMCMonitor):
+class Service(knClasses.XBMCMonitor):
 
     def __init__(self, *args):
 
-        XBMCMonitor.__init__(self)
+        knClasses.XBMCMonitor.__init__(self)
         self.skinPath = None
 
         self.getSettings()
@@ -210,9 +146,9 @@ class Service(XBMCMonitor):
 
     def poll(self):
 
-        while not XBMCMonitor.abortRequested(self):
+        while not knClasses.XBMCMonitor.abortRequested(self):
 
-            if XBMCMonitor.waitForAbort(self, INTERVAL): break
+            if knClasses.XBMCMonitor.waitForAbort(self, INTERVAL): break
             if self.SettingsChanged:
                 self.getSettings()
 
@@ -255,10 +191,24 @@ class Service(XBMCMonitor):
 
                             elif self.__useCountdownTimer:
                                 if os.path.exists(os.path.join(path, 'resources', 'skins', 'Default', '1080i', SKIN)):
-                                    Popup = cNotification(SKIN, path, message=loc(30035) % (_timer['title'], _timer['channel']),
-                                                          timer=self.__dispMsgTime/1000, icon=_timer['icon'])
+                                    pvr = knClasses.cPvrProperties()
+                                    pvrprops = dict()
+                                    recEnabled = False
+                                    pvrprops.update(pvr.getRecordingCapabilities(
+                                        self.channelName2channelId(_timer['channel']), _timer['utime']))
+                                    handler.notifyLog(str(pvrprops))
+                                    if pvrprops['broadcastid'] is not None and not pvrprops['hastimer']: recEnabled = True
+                                    Popup = knClasses.cNotification(SKIN, path, message=loc(30035) % (_timer['title'], _timer['channel']),
+                                                          timer=self.__dispMsgTime/1000, icon=_timer['icon'], recEnabled=recEnabled)
                                     Popup.doModal()
                                     if Popup.isCanceled: switchAborted = True
+                                    elif Popup.initRecording:
+                                        pvr.setTimer(pvrprops['broadcastid'])
+                                        switchAborted = True
+                                    else:
+                                        pass
+                                    #
+                                    # ToDo:     Implement Recording based on broadcast ID and channel ID
                                 else:
                                     handler.OSDProgress.create(loc(30028), loc(30026) %
                                                                (_timer['channel'], _timer['title']),

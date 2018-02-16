@@ -162,7 +162,7 @@ msgid "Switch now"
 msgstr ""
 
 msgctxt "#30035"
-msgid "Broadcast '%s' is about to begin on %s. If you want still continue watching your media, cancel the switchtimer now."
+msgid "Broadcast '%s' is about to begin on %s. If you want still continue watching your media, cancel the switchtimer now or record the other broadcast."
 msgstr ""
 
 #Labels
@@ -181,5 +181,13 @@ msgid "Reset all switchtimers"
 msgstr ""
 
 msgctxt "#30043"
+msgid "Record"
+msgstr ""
+
+msgctxt "#30044"
 msgid "Switch now"
+msgstr ""
+
+msgctxt "#30045"
+msgid "Cancel"
 msgstr ""

@@ -9,7 +9,7 @@
             <include content="DialogBackgroundCommons">
 				<param name="width" value="620" />
 				<param name="height" value="380" />
-				<param name="header_label" value="$ADDON[service.kn.switchtimer 30033]" />
+				<param name="header_label" value="$ADDON[service.kn.switchtimer 30000]" />
 				<param name="header_id" value="1" />
 			</include>
             <control type="image" id="1156">
@@ -42,16 +42,22 @@
                 <width>620</width>
                 <align>center</align>
                 <include content="DefaultDialogButton">
-                    <description>Delete Timer</description>
+                    <description>Record</description>
                     <param name="id" value="1152" />
-                    <param name="width" value="300"/>
-                    <param name="label" value="$ADDON[service.kn.switchtimer 30041]"/>
+                    <param name="width" value="190"/>
+                    <param name="label" value="$ADDON[service.kn.switchtimer 30043]"/>
                 </include>
                 <include content="DefaultDialogButton">
-                    <description>Switch now button</description>
+                    <description>Switch now</description>
                     <param name="id" value="1153" />
-                    <param name="width" value="300"/>
-                    <param name="label" value="$ADDON[service.kn.switchtimer 30043]"/>
+                    <param name="width" value="190"/>
+                    <param name="label" value="$ADDON[service.kn.switchtimer 30044]"/>
+                </include>
+                <include content="DefaultDialogButton">
+                    <description>Cancel</description>
+                    <param name="id" value="1154" />
+                    <param name="width" value="190"/>
+                    <param name="label" value="$ADDON[service.kn.switchtimer 30045]"/>
                 </include>
 				<onup>1</onup>
                 <ondown>1</ondown>
