@@ -5,7 +5,7 @@ import time, datetime
 
 EPOCH = datetime.datetime(1970, 1, 1)
 JSON_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
-UTC_OFFSET = int((datetime.datetime.now() - datetime.datetime.utcnow()).seconds)
+UTC_OFFSET = int(round((datetime.datetime.now() - datetime.datetime.utcnow()).seconds, -1))
 
 def date2timeStamp(date, dFormat=None, utc=False):
     # Kodi bug: returns '%H%H' or '%I%I'
@@ -15,11 +15,9 @@ def date2timeStamp(date, dFormat=None, utc=False):
         df = xbmc.getRegion('dateshort') + ' ' + xbmc.getRegion('time').replace('%H%H', '%H').replace('%I%I','%I').replace(':%S', '')
     else:
         df = dFormat
-
     dtt = time.strptime(date, df)
-    if utc:
-        return int(time.mktime(dtt)) + UTC_OFFSET
-    return int(time.mktime(dtt))
+    if not utc: return int(time.mktime(dtt))
+    return int(time.mktime(dtt)) + UTC_OFFSET
 
 
 class XBMCMonitor(xbmc.Monitor):
@@ -71,6 +69,7 @@ class cNotification(xbmcgui.WindowXMLDialog):
         for t in range(100, -1, -1):
             self.progressControl.setPercent(t)
             xbmc.sleep(self.timer * 10)
+            if self.isCanceled or self.requestSwitch or self.initRecording: break
         self.close()
 
     def onClick(self, controlId):
@@ -130,11 +129,10 @@ class cPvrProperties(object):
             for broadcast in res.get('broadcasts'):
                 if timestamp == date2timeStamp(broadcast['starttime'], dFormat=JSON_TIME_FORMAT, utc=True):
                     params.update({'broadcastid': broadcast['broadcastid'], 'hastimer': broadcast['hastimer']})
-                    break
+                    return params
+            raise self.PvrAddTimerException('No broadcast found for pvr ID %s@%s' % (pvrid, timestamp))
         except (TypeError, AttributeError), e:
-            raise self.PvrAddTimerException('Couldn\'t determine broadcast for pvr ID %s: %s' % (pvrid, e.message))
-        return params
-
+            raise self.PvrAddTimerException('Error on determining broadcast for pvr ID %s: %s' % (pvrid, e.message))
 
     def setTimer(self, broadcastId):
         '''
@@ -148,4 +146,4 @@ class cPvrProperties(object):
         res = self.jsonrpc(query)
         if res == 'OK': return
         else:
-            raise self.PvrAddTimerException('Timer couldn\'t added')
+            raise self.PvrAddTimerException('Timer for braodcast %s couldn\'t added' % broadcastId)

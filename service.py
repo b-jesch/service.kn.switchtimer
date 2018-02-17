@@ -186,29 +186,37 @@ class Service(knClasses.XBMCMonitor):
                             if _switchInstantly:
                                 handler.notifyLog('immediate channel switching required')
                                 handler.notifyOSD(loc(30000), loc(30027) % (_timer['title'], _timer['channel']), time=5000)
-
                             elif not self.__showNoticeBeforeSw: xbmc.sleep(self.__dispMsgTime)
-
                             elif self.__useCountdownTimer:
                                 if os.path.exists(os.path.join(path, 'resources', 'skins', 'Default', '1080i', SKIN)):
-                                    pvr = knClasses.cPvrProperties()
-                                    pvrprops = dict()
-                                    recEnabled = False
-                                    pvrprops.update(pvr.getRecordingCapabilities(
-                                        self.channelName2channelId(_timer['channel']), _timer['utime']))
-                                    handler.notifyLog(str(pvrprops))
-                                    if pvrprops['broadcastid'] is not None and not pvrprops['hastimer']: recEnabled = True
+
+                                    try:
+                                        pvr = knClasses.cPvrProperties()
+                                        pvrprops = dict()
+                                        recEnabled = True
+                                        pvrprops.update(pvr.getRecordingCapabilities(
+                                            self.channelName2channelId(_timer['channel']), _timer['utime']))
+                                        if pvrprops['hastimer']: recEnabled = False
+                                    except (pvr.PvrAddTimerException, pvr.JsonExecException), e:
+                                        handler.notifyLog(str(e), xbmc.LOGERROR)
+                                        recEnabled = False
+
                                     Popup = knClasses.cNotification(SKIN, path, message=loc(30035) % (_timer['title'], _timer['channel']),
                                                           timer=self.__dispMsgTime/1000, icon=_timer['icon'], recEnabled=recEnabled)
                                     Popup.doModal()
                                     if Popup.isCanceled: switchAborted = True
                                     elif Popup.initRecording:
-                                        pvr.setTimer(pvrprops['broadcastid'])
-                                        switchAborted = True
+                                        try:
+                                            pvr.setTimer(pvrprops['broadcastid'])
+                                            handler.notifyLog('Recording schedule set for %s: %s' % (_timer['channel'], _timer['title']), xbmc.LOGNOTICE)
+                                            switchAborted = True
+                                        except (pvr.PvrAddTimerException, pvr.JsonExecException), e:
+                                            handler.notifyOSD(loc(30000), loc(30036) % (_timer['title'], _timer['channel']), icon=IconAlert)
+                                            handler.notifyLog(str(e), xbmc.LOGERROR)
+                                    elif Popup.requestSwitch:
+                                        handler.notifyLog('immediate channel switch initate by user')
                                     else:
-                                        pass
-                                    #
-                                    # ToDo:     Implement Recording based on broadcast ID and channel ID
+                                        handler.notifyLog('Window countdown completed without user action')
                                 else:
                                     handler.OSDProgress.create(loc(30028), loc(30026) %
                                                                (_timer['channel'], _timer['title']),

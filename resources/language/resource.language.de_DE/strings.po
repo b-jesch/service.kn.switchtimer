@@ -157,6 +157,10 @@ msgctxt "#30035"
 msgid "Broadcast '%s' is about to begin on %s. If you want still continue watching your media, cancel the switchtimer now or record the other broadcast."
 msgstr "Die Sendung '%s' startet gleich auf %s. Wenn Du Deine bisherige Sendung weiterschauen möchtest, breche den Timer ab oder nehme die andere Sendung auf."
 
+msgctxt "#30036"
+msgid "Couldn\t record %s on %s, switch instead."
+msgstr "Kann %s auf %s nicht aufnehmen, schalte um."
+
 msgctxt "#30040"
 msgid "Add switchtimer"
 msgstr "Umschalttimer setzen"
