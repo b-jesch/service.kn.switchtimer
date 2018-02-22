@@ -3,6 +3,8 @@ No more forgotten football matches or formula one races! Avoid discussion with y
 
 This service adds items to the context menu of the pvr osd guide window (PVROSDGuide) automatically (add switchtimer, delete all switchtimer). Currently the skins Aeon Flex, Destiny and a Confluence Mod from Kodinerds fully supports this service with additional windows but other skins can this service implement too. Hints for integration see below here. If you aren't a skinner or don't need special windows for editing/deleting switchtimers just ignore the skinners section and install this service as usual. All can be done with the context menu of pvr osd guide.
 
+Also if you call the switchtimer from the addon list directly, you get a list of active timers where you can delete timers from this point.
+
 Skinners only:
 
 If you want or need to call this service inside of another window different from PVROSDGuide, use:
@@ -28,18 +30,12 @@ where tx is a timer from t0 to t9, or delete all timers with
     <label>$ADDON[service.kn.switchtimer 30041]</label>
     <onclick>RunScript(service.kn.switchtimer,action=delall)</onclick>
 
-Timers are available as properties within the home window (ID 10000) as follows. Empty strings are inactive timers. All timers are sorted by datetime where t0 is the nearest and t9 the latest timer.
-
-    $INFO[Window(Home).Property(t0:channel)]      # channel name
-    $INFO[Window(Home).Property(t0:icon)]         # channel icon
-    $INFO[Window(Home).Property(t0:date)]         # datetime of broadcast
-    $INFO[Window(Home).Property(t0:title)]        # title of broadcast
-    $INFO[Window(Home).Property(t0:plot)]         # plot of broadcast
-    ...
-    $INFO[Window(Home).Property(t9:channel)]
-    $INFO[Window(Home).Property(t9:icon)]
-    $INFO[Window(Home).Property(t9:date)]
-    $INFO[Window(Home).Property(t9:title)]
-    $INFO[Window(Home).Property(t9:plot)]
-
+All timers are available as a JSON property file within the userdata folder of the addon. There is a window property too:
+ 
     $INFO[Window(Home).Property(SwitchTimerActiveItems)]  # No. of active timers
+
+KN Switchtimer provides an own messaging window. If you want to adapt this to your skin, this window (WindowXMLDialog) musst named to the following scheme and resides within the skins/Default/1080i/ folder of this addon:
+
+    <skin-id>.st_notification.xml
+    
+Look into the folder skins/Default/1080i for exapmles. If the skin file doesn't exist a standard countdown dialog will be used instead.
