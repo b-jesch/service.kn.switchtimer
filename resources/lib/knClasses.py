@@ -1,7 +1,8 @@
 import xbmc
 import xbmcgui
 import json
-import time, datetime
+import time
+import datetime
 
 EPOCH = datetime.datetime(1970, 1, 1)
 JSON_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
@@ -42,7 +43,6 @@ class cNotification(xbmcgui.WindowXMLDialog):
     ACTION_SELECT = 7
     ACTION_NAV_BACK = 92
 
-
     def __init__(self, *args, **kwargs):
 
         self.timer = int(kwargs.get('timer', 5))
@@ -81,10 +81,8 @@ class cNotification(xbmcgui.WindowXMLDialog):
     def onAction(self, action):
         if action == self.ACTION_NAV_BACK: self.close()
 
-
     def set_text(self, p):
         self.textControl.setText(p)
-
 
     def close(self):
         xbmcgui.WindowXMLDialog.close(self)
@@ -98,7 +96,6 @@ class cPvrProperties(object):
     class JsonExecException(Exception):
         pass
 
-
     def __init__(self, *args, **kwargs):
         pass
 
@@ -108,16 +105,16 @@ class cPvrProperties(object):
         try:
             response = json.loads(xbmc.executeJSONRPC(json.dumps(querystring, encoding='utf-8')))
             if 'result' in response: return response['result']
-        except TypeError, e:
-            raise self.JsonExecException('Error executing JSON RPC: %s' % e.message)
+        except TypeError as e:
+            raise self.JsonExecException('Error executing JSON RPC: %s' % e)
         return None
 
     def getRecordingCapabilities(self, pvrid, timestamp):
-        '''
+        """
         :param pvrid:       str PVR-ID of the broadcast station
         :param timestamp:   int UNIX timestamp
         :return:            dict: int unique broadcastID of the broadcast or None, bool hastimer
-        '''
+        """
         params = {'broadcastid': None, 'hastimer': False}
         query = {
             "method": "PVR.GetBroadcasts",
@@ -131,14 +128,14 @@ class cPvrProperties(object):
                     params.update({'broadcastid': broadcast['broadcastid'], 'hastimer': broadcast['hastimer']})
                     return params
             raise self.PvrAddTimerException('No broadcast found for pvr ID %s@%s' % (pvrid, timestamp))
-        except (TypeError, AttributeError), e:
-            raise self.PvrAddTimerException('Error on determining broadcast for pvr ID %s: %s' % (pvrid, e.message))
+        except (TypeError, AttributeError) as e:
+            raise self.PvrAddTimerException('Error on determining broadcast for pvr ID %s: %s' % (pvrid, e))
 
     def setTimer(self, broadcastId):
-        '''
+        """
         :param broadcastId: int unique broadcastID of the broadcast
         :return:            none
-        '''
+        """
         query = {
             "method": "PVR.AddTimer",
             "params": {"broadcastid": broadcastId}
@@ -146,4 +143,4 @@ class cPvrProperties(object):
         res = self.jsonrpc(query)
         if res == 'OK': return
         else:
-            raise self.PvrAddTimerException('Timer for braodcast %s couldn\'t added' % broadcastId)
+            raise self.PvrAddTimerException('Timer for broadcast %s couldn\'t added' % broadcastId)

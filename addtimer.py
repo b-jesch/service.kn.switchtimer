@@ -4,7 +4,7 @@
 import xbmc
 import handler
 
-if __name__ ==  '__main__':
+if __name__ == '__main__':
 
     handler.notifyLog('Parameter handler called: add timer')
     args = {'channel': xbmc.getInfoLabel('ListItem.ChannelName'),

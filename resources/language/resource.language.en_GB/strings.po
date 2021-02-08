@@ -126,7 +126,7 @@ msgid "Could not switch to %s"
 msgstr ""
 
 msgctxt "#30026"
-msgid "Switching at '%s' to '%s' in a few seconds"
+msgid "Switching at '%s' to '%s' in a few seconds. % Seconds left to abort."
 msgstr ""
 
 msgctxt "#30027"

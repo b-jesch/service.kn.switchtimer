@@ -118,8 +118,8 @@ msgid "Could not switch to %s"
 msgstr "Kann nicht umschalten zu '%s'"
 
 msgctxt "#30026"
-msgid "Switching at '%s' to '%s' in a few seconds"
-msgstr "Schalte um auf '%s' zu '%s'"
+msgid "Switching at '%s' to '%s' in a few seconds. % Seconds left to abort."
+msgstr "Schalte um auf '%s' zu '%s'. %s Sekunden verbleibend, um abzubrechen."
 
 msgctxt "#30027"
 msgid "'%s' on '%s' starts now"

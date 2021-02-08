@@ -118,8 +118,8 @@ msgid "Could not switch to %s"
 msgstr "Kan niet overschakelen naar %s"
 
 msgctxt "#30026"
-msgid "Switching at '%s' to '%s' in a few seconds"
-msgstr "Schakel nu over naar '%s' to '%s'."
+msgid "Switching at '%s' to '%s' in a few seconds. % Seconds left to abort."
+msgstr "Schakel nu over naar '%s' to '%s'. %s Seconden resterend om af te breken."
 
 msgctxt "#30027"
 msgid "'%s' on '%s' starts now"
@@ -128,10 +128,6 @@ msgstr "'%s' op '%s' begint nu"
 msgctxt "#30028"
 msgid "Channel Switch requested"
 msgstr "Kanaal overschakelen aangevraagd"
-
-msgctxt "#30029"
-msgid "%s Seconds left to abort"
-msgstr "%s Seconden resterend om af te breken"
 
 msgctxt "#30030"
 msgid "There is no active timer yet. Please use the PVR OSD Guide context menue to set switch timers."

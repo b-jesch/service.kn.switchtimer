@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import time
-import xbmc, xbmcaddon, xbmcgui
+import xbmc
+import xbmcaddon
+import xbmcgui
+import xbmcvfs
 import json
 import os
 import re
@@ -13,7 +16,7 @@ import resources.lib.knClasses as knClasses
 addon = xbmcaddon.Addon()
 addonid = addon.getAddonInfo('id')
 addonname = addon.getAddonInfo('name')
-path = xbmc.translatePath(addon.getAddonInfo('path'))
+path = xbmcvfs.translatePath(addon.getAddonInfo('path'))
 version = addon.getAddonInfo('version')
 loc = addon.getLocalizedString
 
@@ -21,15 +24,16 @@ IconDefault = os.path.join(path, 'resources', 'media', 'default.png')
 IconAlert = os.path.join(path, 'resources', 'media', 'alert.png')
 IconOk = os.path.join(path, 'resources', 'media', 'ok.png')
 
-INTERVAL = 10 # More than that will make switching too fuzzy because service isn't synchronized with real time
+INTERVAL = 10  # More than that will make switching too fuzzy because service isn't synchronized with real time
 HOME = xbmcgui.Window(10000)
 
 SKIN = xbmc.translatePath('special://skin').split(os.sep)[-2] + '.st_notification.xml'
 
+
 def jsonrpc(query):
     querystring = {"jsonrpc": "2.0", "id": 1}
     querystring.update(query)
-    return json.loads(xbmc.executeJSONRPC(json.dumps(querystring, encoding='utf-8')))
+    return json.loads(xbmc.executeJSONRPC(json.dumps(querystring)))
 
 
 class Service(knClasses.XBMCMonitor):
@@ -67,14 +71,12 @@ class Service(knClasses.XBMCMonitor):
         self.SettingsChanged = False
 
     @classmethod
-
     def resetTmr(cls, date):
         for prefix in ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9']:
             if HOME.getProperty('%s:date' % (prefix)) == '': continue
             elif HOME.getProperty('%s:date' % (prefix)) == date: handler.clearTimerProperties(prefix)
 
     @classmethod
-
     def channelName2channelId(cls, channelname):
         query = {
                 "method": "PVR.GetChannels",
@@ -88,7 +90,6 @@ class Service(knClasses.XBMCMonitor):
         return False
 
     @classmethod
-
     def getPlayer(cls):
         props = {'player': None, 'playerid': None, 'media': None, 'id': None}
         query = {
@@ -114,7 +115,6 @@ class Service(knClasses.XBMCMonitor):
         return props
 
     @classmethod
-
     def switchToChannelId(cls, playerProperties, channelId, channel):
 
         if playerProperties['player'] == 'audio' or (playerProperties['player'] == 'video' and playerProperties['media'] != 'channel'):
@@ -142,7 +142,6 @@ class Service(knClasses.XBMCMonitor):
         else:
             handler.notifyLog('Couldn\'t switch to channel \'%s\'' % (channel))
             handler.notifyOSD(loc(30000), loc(30025) % (channel), icon=IconAlert)
-
 
     def poll(self):
 
@@ -177,7 +176,8 @@ class Service(knClasses.XBMCMonitor):
 
                         if chanIdTmr == plrProps['id']:
                             handler.notifyLog('Channel switching unnecessary')
-                            handler.notifyOSD(loc(30000), loc(30027) % (_timer['title'], _timer['channel']), time=self.__dispMsgTime)
+                            handler.notifyOSD(loc(30000), loc(30027) % (_timer['title'], _timer['channel']),
+                                              time=self.__dispMsgTime)
                         else:
                             switchAborted = False
                             secs = 0
@@ -185,50 +185,61 @@ class Service(knClasses.XBMCMonitor):
 
                             if _switchInstantly:
                                 handler.notifyLog('immediate channel switching required')
-                                handler.notifyOSD(loc(30000), loc(30027) % (_timer['title'], _timer['channel']), time=5000)
+                                handler.notifyOSD(loc(30000), loc(30027) % (_timer['title'], _timer['channel']),
+                                                  time=5000)
                             elif not self.__showNoticeBeforeSw: xbmc.sleep(self.__dispMsgTime)
                             elif self.__useCountdownTimer:
                                 if os.path.exists(os.path.join(path, 'resources', 'skins', 'Default', '1080i', SKIN)):
 
+                                    pvr = knClasses.cPvrProperties()
                                     try:
-                                        pvr = knClasses.cPvrProperties()
                                         pvrprops = dict()
                                         recEnabled = True
                                         pvrprops.update(pvr.getRecordingCapabilities(
                                             self.channelName2channelId(_timer['channel']), _timer['utime']))
                                         if pvrprops['hastimer']: recEnabled = False
-                                    except (pvr.PvrAddTimerException, pvr.JsonExecException), e:
+                                    except (pvr.PvrAddTimerException, pvr.JsonExecException) as e:
                                         handler.notifyLog(str(e), xbmc.LOGERROR)
                                         recEnabled = False
 
-                                    Popup = knClasses.cNotification(SKIN, path, message=loc(30035) % (_timer['title'], _timer['channel']),
-                                                          timer=self.__dispMsgTime/1000, icon=_timer['icon'], recEnabled=recEnabled)
+                                    Popup = knClasses.cNotification(SKIN, path,
+                                                                    message=loc(30035) % (_timer['title'],
+                                                                                          _timer['channel']),
+                                                                    timer=self.__dispMsgTime/1000, icon=_timer['icon'],
+                                                                    recEnabled=recEnabled)
                                     Popup.doModal()
                                     if Popup.isCanceled: switchAborted = True
                                     elif Popup.initRecording:
                                         try:
                                             pvr.setTimer(pvrprops['broadcastid'])
-                                            handler.notifyLog('Recording schedule set for %s: %s' % (_timer['channel'], _timer['title']), xbmc.LOGNOTICE)
+                                            handler.notifyLog('Recording schedule set for %s: %s' % (_timer['channel'],
+                                                                                                     _timer['title']),
+                                                              xbmc.LOGINFO)
                                             switchAborted = True
-                                        except (pvr.PvrAddTimerException, pvr.JsonExecException), e:
-                                            handler.notifyOSD(loc(30000), loc(30036) % (_timer['title'], _timer['channel']), icon=IconAlert)
+                                        except (pvr.PvrAddTimerException, pvr.JsonExecException) as e:
+                                            handler.notifyOSD(loc(30000), loc(30036) % (_timer['title'],
+                                                                                        _timer['channel']),
+                                                              icon=IconAlert)
                                             handler.notifyLog(str(e), xbmc.LOGERROR)
                                     elif Popup.requestSwitch:
                                         handler.notifyLog('immediate channel switch initate by user')
                                     else:
                                         handler.notifyLog('Window countdown completed without user action')
                                 else:
-                                    handler.OSDProgress.create(loc(30028), loc(30026) %
-                                                               (_timer['channel'], _timer['title']),
-                                                               loc(30029) % (int(self.__dispMsgTime / 1000 - secs)))
-                                    while secs < self.__dispMsgTime /1000:
-                                        secs += 1
+                                    handler.OSDProgress.create(loc(30028),
+                                                               loc(30026) % (_timer['channel'],
+                                                                             _timer['title'],
+                                                                             self.__dispMsgTime // 1000 - secs))
+
+                                    while secs < self.__dispMsgTime / 1000:
                                         percent = int((secs * 100000) / self.__dispMsgTime)
-                                        handler.OSDProgress.update(percent, loc(30026) %
-                                                                   (_timer['channel'], _timer['title']),
-                                                                   loc(30029) % (int(self.__dispMsgTime / 1000 - secs)))
+                                        handler.OSDProgress.update(percent,
+                                                                   loc(30026) % (_timer['channel'],
+                                                                                 _timer['title'],
+                                                                                 self.__dispMsgTime // 1000 - secs))
                                         xbmc.sleep(1000)
-                                        if (handler.OSDProgress.iscanceled()):
+                                        secs += 1
+                                        if handler.OSDProgress.iscanceled():
                                             switchAborted = True
                                             break
                                     handler.OSDProgress.close()
@@ -236,7 +247,7 @@ class Service(knClasses.XBMCMonitor):
                                 idleTime = xbmc.getGlobalIdleTime()
                                 handler.notifyOSD(loc(30000), loc(30026) %
                                                   (_timer['channel'], _timer['title']), time=self.__dispMsgTime)
-                                while secs < self.__dispMsgTime /1000:
+                                while secs < self.__dispMsgTime / 1000:
                                     if idleTime > xbmc.getGlobalIdleTime():
                                         switchAborted = True
                                         break
@@ -263,7 +274,7 @@ class Service(knClasses.XBMCMonitor):
                 if 'result' in res:
                     for _channel in res['result']['channels']:
                         if _channel['channelnumber'] == self.__channel:
-                            handler.notifyLog('Channelswitch on startup is enabled, switch to \'%s\'' % (_channel['label']))
+                            handler.notifyLog('Channelswitch on startup is enabled, switch to \'%s\'' % _channel['label'])
                             handler.notifyOSD(loc(30000), loc(30013) % (_channel['label']))
                             self.switchToChannelId(plrProps, _channel['channelid'], _channel['label'])
                             self.bootstrap = False
@@ -272,6 +283,7 @@ class Service(knClasses.XBMCMonitor):
             self.timers = handler.getTimer()
 
         handler.notifyLog('Service kicks off')
+
 
 service = Service()
 service.poll()
