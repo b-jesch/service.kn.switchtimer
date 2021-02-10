@@ -41,7 +41,7 @@ def putTimer(timers):
     for timer in timers:
         if not timer['utime'] or timer['utime'] < time.time(): timers.remove(timer)
     with open(__timer__, 'w') as handle:
-        json.dump(timers, handle)
+        json.dump(timers, handle, indent=4)
     HOME.setProperty('SwitchTimerActiveItems', str(len(timers)))
     notifyLog('%s timer(s) written' % (len(timers)), xbmc.LOGINFO)
 
@@ -98,7 +98,7 @@ def setTimer(params):
     timers.append(params)
     timers.sort(key=operator.itemgetter('utime'))
 
-    setTimerProperties(timers)
+    # setTimerProperties(timers)
     putTimer(timers)
 
     notifyLog('Timer added @%s, %s, %s' % (params['date'], params['channel'], params['title']), xbmc.LOGINFO)
@@ -106,38 +106,15 @@ def setTimer(params):
     return True
 
 
-def setTimerProperties(timerlist):
-    _idx = 0
-    for prefix in ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9']:
-
-        if _idx < len(timerlist):
-            # Set timer properties
-            for element in __timerdict__:
-                try:
-                    HOME.setProperty('%s:%s' % (prefix, element), timerlist[_idx][element])
-                except KeyError:
-                    pass
-            _idx += 1
-        else:
-            # Clear remaining properties
-            clearTimerProperties(prefix)
-
-
-def clearTimerProperties(prefix=None):
-    if not prefix:
-        for prefix in ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9']:
-            for element in __timerdict__: HOME.clearProperty('%s:%s' % (prefix, element))
+def clearTimer(date=None):
+    if not date:
         timers = []
         notifyLog('Properties of all timers deleted, timerlist cleared')
     else:
-        _date = HOME.getProperty('%s:date' % prefix)
-        if _date == '': return False
         timers = getTimer()
         for timer in timers:
-            if timer['date'] == _date: timer['utime'] = None
-            for element in __timerdict__: HOME.clearProperty('%s:%s' % (prefix, element))
-            notifyLog('Properties for timer %s @%s deleted' % (prefix, _date))
-
+            if timer['date'] == date: timer['utime'] = None
+            notifyLog('Timer @%s deleted' % (date))
     putTimer(timers)
     return True
 
@@ -152,7 +129,7 @@ if __name__ ==  '__main__':
             for par in pars:
                 try:
                     item, value = par.split('=')
-                    args[item] = value.replace(',', '&comma;').decode('utf-8')
+                    args[item] = value.replace(',', '&comma;')
                     notifyLog('Provided parameter %s: %s' % (item, args[item]))
                 except ValueError:
                     args[item] += ', ' + par
@@ -161,9 +138,9 @@ if __name__ ==  '__main__':
                 if not setTimer(args):
                     notifyLog('Timer couldn\'t or wouldn\'t set', xbmc.LOGERROR)
             elif args['action'] == 'del':
-                clearTimerProperties(args['timer'])
+                clearTimer(args['timer'])
             elif args['action'] == 'delall':
-                for prefix in ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9']: clearTimerProperties()
+                clearTimer()
     except IndexError:
         _tlist = []
         timers = getTimer()
@@ -180,7 +157,6 @@ if __name__ ==  '__main__':
             if _idx > -1:
                 timers[_idx].update({'utime': None})
                 _date = timers[_idx].get('date', '')
-                for element in __timerdict__: HOME.clearProperty('t%s:%s' % (_idx, element))
                 putTimer(timers)
                 notifyLog('Properties for timer t%s @%s deleted' % (_idx, _date))
 

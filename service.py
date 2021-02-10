@@ -47,7 +47,6 @@ class Service(knClasses.XBMCMonitor):
         handler.notifyLog('Init Service %s %s' % (addonname, version))
         self.bootstrap = True
         self.timers = handler.getTimer()
-        handler.setTimerProperties(self.timers)
 
     def getSettings(self):
 
@@ -69,12 +68,6 @@ class Service(knClasses.XBMCMonitor):
             self.__channel = 0
 
         self.SettingsChanged = False
-
-    @classmethod
-    def resetTmr(cls, date):
-        for prefix in ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9']:
-            if HOME.getProperty('%s:date' % (prefix)) == '': continue
-            elif HOME.getProperty('%s:date' % (prefix)) == date: handler.clearTimerProperties(prefix)
 
     @classmethod
     def channelName2channelId(cls, channelname):
@@ -159,12 +152,13 @@ class Service(knClasses.XBMCMonitor):
 
                 if not _timer['utime']:
                     handler.notifyLog('Couldn\'t calculate timestamp, delete timer', xbmc.LOGERROR)
-                    self.resetTmr(_timer['date'])
+                    handler.putTimer(self.timers)
                     break
 
                 # delete old/discarded timers
                 if _timer['utime'] + self.__discardTmr < _now:
-                    self.resetTmr(_timer['date'])
+                    self.timers.remove(_timer)
+                    handler.putTimer(self.timers)
                     continue
 
                 if _timer['utime'] - self.__leadOffset < _now: _switchInstantly = True
@@ -262,7 +256,7 @@ class Service(knClasses.XBMCMonitor):
                                 self.bootstrap = False
                                 self.switchToChannelId(plrProps, chanIdTmr, _timer['channel'])
 
-                    self.resetTmr(_timer['date'])
+                    handler.clearTimer(_timer['date'])
 
             if self.bootstrap and self.__switchOnInit and self.__channel > 0:
                 handler.notifyLog('Channelswitch on startup enabled')

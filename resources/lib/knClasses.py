@@ -8,6 +8,7 @@ EPOCH = datetime.datetime(1970, 1, 1)
 JSON_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 UTC_OFFSET = int(round((datetime.datetime.now() - datetime.datetime.utcnow()).seconds, -1))
 
+
 def date2timeStamp(date, dFormat=None, utc=False):
     # Kodi bug: returns '%H%H' or '%I%I'
 
@@ -103,11 +104,10 @@ class cPvrProperties(object):
         querystring = {"jsonrpc": "2.0", "id": 1}
         querystring.update(query)
         try:
-            response = json.loads(xbmc.executeJSONRPC(json.dumps(querystring, encoding='utf-8')))
+            response = json.loads(xbmc.executeJSONRPC(json.dumps(querystring)))
             if 'result' in response: return response['result']
         except TypeError as e:
             raise self.JsonExecException('Error executing JSON RPC: %s' % e)
-        return None
 
     def getRecordingCapabilities(self, pvrid, timestamp):
         """
