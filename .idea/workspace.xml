@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1813deb3-1834-494e-9816-fb94b4549df5" name="Default Changelist" comment="" />
+    <list default="true" id="1813deb3-1834-494e-9816-fb94b4549df5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/addon.xml" beforeDir="false" afterPath="$PROJECT_DIR$/addon.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/service.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,6 +53,7 @@
       <workItem from="1612804367126" duration="7334000" />
       <workItem from="1612954921290" duration="9494000" />
       <workItem from="1612975500365" duration="1657000" />
+      <workItem from="1612982275969" duration="385000" />
     </task>
     <task id="LOCAL-00001" summary="Matrix initial release">
       <created>1612812651856</created>
@@ -79,7 +83,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612981730012</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Bug on skin change fixed">
+      <created>1612982381110</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1612982381110</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
