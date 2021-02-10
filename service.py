@@ -27,8 +27,6 @@ IconOk = os.path.join(path, 'resources', 'media', 'ok.png')
 INTERVAL = 10  # More than that will make switching too fuzzy because service isn't synchronized with real time
 HOME = xbmcgui.Window(10000)
 
-SKIN = xbmc.translatePath('special://skin').split(os.sep)[-2] + '.st_notification.xml'
-
 
 def jsonrpc(query):
     querystring = {"jsonrpc": "2.0", "id": 1}
@@ -183,7 +181,8 @@ class Service(knClasses.XBMCMonitor):
                                                   time=5000)
                             elif not self.__showNoticeBeforeSw: xbmc.sleep(self.__dispMsgTime)
                             elif self.__useCountdownTimer:
-                                if os.path.exists(os.path.join(path, 'resources', 'skins', 'Default', '1080i', SKIN)):
+                                skin_id = xbmc.translatePath('special://skin').split(os.sep)[-2] + '.st_notification.xml'
+                                if os.path.exists(os.path.join(path, 'resources', 'skins', 'Default', '1080i', skin_id)):
 
                                     pvr = knClasses.cPvrProperties()
                                     try:
@@ -196,7 +195,7 @@ class Service(knClasses.XBMCMonitor):
                                         handler.notifyLog(str(e), xbmc.LOGERROR)
                                         recEnabled = False
 
-                                    Popup = knClasses.cNotification(SKIN, path,
+                                    Popup = knClasses.cNotification(skin_id, path,
                                                                     message=loc(30035) % (_timer['title'],
                                                                                           _timer['channel']),
                                                                     timer=self.__dispMsgTime/1000, icon=_timer['icon'],
