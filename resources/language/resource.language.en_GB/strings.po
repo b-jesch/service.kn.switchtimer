@@ -118,7 +118,7 @@ msgid "Timer for this time already set"
 msgstr ""
 
 msgctxt "#30024"
-msgid "Timer Limit exceed, no free Slots"
+msgid "Reset Timer list"
 msgstr ""
 
 msgctxt "#30025"

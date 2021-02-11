@@ -116,8 +116,8 @@ msgid "Timer for this time already set"
 msgstr "Já existe um lembrete para esta hora"
 
 msgctxt "#30024"
-msgid "Timer Limit exceed, no free Slots"
-msgstr "Limite de lembretes atingido, não existem vagas"
+msgid "Reset Timer list"
+msgstr ""
 
 msgctxt "#30025"
 msgid "Could not switch to %s"

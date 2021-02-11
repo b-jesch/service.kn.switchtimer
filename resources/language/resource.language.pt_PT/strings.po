@@ -111,7 +111,7 @@ msgstr "Já existe um temporizador para esta hora"
 
 msgctxt "#30024"
 msgid "Timer Limit exceed, no free Slots"
-msgstr "Limite de temporizadores atingido, não existem vagas"
+msgstr ""
 
 msgctxt "#30025"
 msgid "Could not switch to %s"

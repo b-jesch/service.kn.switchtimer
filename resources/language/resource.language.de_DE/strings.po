@@ -110,8 +110,8 @@ msgid "Timer for this time already set"
 msgstr "Timer für diesen Zeitpunkt bereits aktiv"
 
 msgctxt "#30024"
-msgid "Timer Limit exceed, no free Slots"
-msgstr "max. Anzahl Timer erreicht, kein freier Speicher"
+msgid "Reset Timer list"
+msgstr "Timerliste zurücksetzen"
 
 msgctxt "#30025"
 msgid "Could not switch to %s"

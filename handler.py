@@ -87,11 +87,6 @@ def setTimer(params):
             if not _res: return False
             timers.remove(timer)
 
-    if len(timers) > 9:
-        notifyLog('Timer limit exceeded, no free slot', xbmc.LOGFATAL)
-        notifyOSD(loc(30000), loc(30024), icon=IconAlert)
-        return False
-
     # append timer and sort timerlist
 
     params['utime'] = utime
@@ -109,7 +104,7 @@ def setTimer(params):
 def clearTimer(date=None):
     if not date:
         timers = []
-        notifyLog('Properties of all timers deleted, timerlist cleared')
+        notifyLog('all timers deleted, timer list cleared')
     else:
         timers = getTimer()
         for timer in timers:
@@ -153,13 +148,17 @@ if __name__ ==  '__main__':
                 liz.setProperty('date', timer['date'])
                 _tlist.append(liz)
 
+            # set last entry for deleting all timers
+            liz = xbmcgui.ListItem(label=loc(30042), label2=loc(30024))
+            liz.setArt({'icon': IconDefault})
+            liz.setProperty('utime', '')
+            liz.setProperty('date', '')
+            _tlist.append(liz)
+
             _idx = OSD.select(loc(30015), _tlist, useDetails=True)
             if _idx > -1:
-                timers[_idx].update({'utime': None})
-                _date = timers[_idx].get('date', '')
-                putTimer(timers)
-                notifyLog('Properties for timer t%s @%s deleted' % (_idx, _date))
-
+                date = _tlist[_idx].getProperty('date')
+                clearTimer(date=None if date == '' else date)
         else:
             notifyLog('No active timers yet', xbmc.LOGERROR)
             OSD.ok(loc(30000), loc(30030))
