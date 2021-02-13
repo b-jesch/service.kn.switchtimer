@@ -184,3 +184,85 @@ msgstr "Jetzt umschalten"
 msgctxt "#30045"
 msgid "Cancel"
 msgstr "Abbrechen"
+
+# numeric values
+
+msgctxt "#30050"
+msgid "0 (off)"
+msgstr "0 (aus)"
+
+msgctxt "#30051"
+msgid "3 sec"
+msgstr "3 Sek"
+
+msgctxt "#30052"
+msgid "5 sec"
+msgstr "5 Sek"
+
+msgctxt "#30053"
+msgid "7 sec"
+msgstr "7 Sek"
+
+msgctxt "#30054"
+msgid "10 sec"
+msgstr "10 Sek"
+
+msgctxt "#30055"
+msgid "15 sec"
+msgstr "15 Sek"
+
+msgctxt "#30056"
+msgid "20 sec"
+msgstr "20 Sek"
+
+msgctxt "#30057"
+msgid "30 sec"
+msgstr "30 Sek"
+
+msgctxt "#30058"
+msgid "45 sec"
+msgstr "45 Sek"
+
+msgctxt "#30059"
+msgid "60 sec"
+msgstr "60 Sek"
+
+msgctxt "#30060"
+msgid "90 sec"
+msgstr "90 Sek"
+
+msgctxt "#30061"
+msgid "120 sec"
+msgstr "120 Sek"
+
+msgctxt "#30070"
+msgid "5 min"
+msgstr "5 Min"
+
+msgctxt "#30071"
+msgid "10 min"
+msgstr "10 Min"
+
+msgctxt "#30072"
+msgid "15 min"
+msgstr "15 Min"
+
+msgctxt "#30073"
+msgid "20 min"
+msgstr "20 Min"
+
+msgctxt "#30074"
+msgid "30 min"
+msgstr "30 Min"
+
+msgctxt "#30075"
+msgid "45 min"
+msgstr "45 Min"
+
+msgctxt "#30076"
+msgid "60 min"
+msgstr "60 Min"
+
+msgctxt "#30077"
+msgid "90 min"
+msgstr "90 Min"

@@ -3,14 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="1813deb3-1834-494e-9816-fb94b4549df5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/addon.xml" beforeDir="false" afterPath="$PROJECT_DIR$/addon.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deltimer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/handler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/language/resource.language.de_DE/strings.po" beforeDir="false" afterPath="$PROJECT_DIR$/resources/language/resource.language.de_DE/strings.po" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/language/resource.language.en_GB/strings.po" beforeDir="false" afterPath="$PROJECT_DIR$/resources/language/resource.language.en_GB/strings.po" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/language/resource.language.nl_NL/strings.po" beforeDir="false" afterPath="$PROJECT_DIR$/resources/language/resource.language.nl_NL/strings.po" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/language/resource.language.pt_BR/strings.po" beforeDir="false" afterPath="$PROJECT_DIR$/resources/language/resource.language.pt_BR/strings.po" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/language/resource.language.pt_PT/strings.po" beforeDir="false" afterPath="$PROJECT_DIR$/resources/language/resource.language.pt_PT/strings.po" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/resources/settings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +59,8 @@
       <workItem from="1612954921290" duration="9494000" />
       <workItem from="1612975500365" duration="1657000" />
       <workItem from="1612982275969" duration="976000" />
-      <workItem from="1613057624300" duration="2170000" />
+      <workItem from="1613057624300" duration="3288000" />
+      <workItem from="1613213533354" duration="2151000" />
     </task>
     <task id="LOCAL-00001" summary="Matrix initial release">
       <created>1612812651856</created>
@@ -112,7 +111,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612982932929</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Improved handling, delete all timers is now part of timer list">
+      <created>1613059870753</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1613059870753</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -122,6 +128,7 @@
     <MESSAGE value="Matrix initial release" />
     <MESSAGE value="Improved timer handling" />
     <MESSAGE value="Bug on skin change fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bug on skin change fixed" />
+    <MESSAGE value="Improved handling, delete all timers is now part of timer list" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improved handling, delete all timers is now part of timer list" />
   </component>
 </project>

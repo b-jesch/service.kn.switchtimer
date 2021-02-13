@@ -195,3 +195,85 @@ msgstr ""
 msgctxt "#30045"
 msgid "Cancel"
 msgstr ""
+
+# numeric values
+
+msgctxt "#30050"
+msgid "0 (off)"
+msgstr ""
+
+msgctxt "#30051"
+msgid "3 sec"
+msgstr ""
+
+msgctxt "#30052"
+msgid "5 sec"
+msgstr ""
+
+msgctxt "#30053"
+msgid "7 sec"
+msgstr ""
+
+msgctxt "#30054"
+msgid "10 sec"
+msgstr ""
+
+msgctxt "#30055"
+msgid "15 sec"
+msgstr ""
+
+msgctxt "#30056"
+msgid "20 sec"
+msgstr ""
+
+msgctxt "#30057"
+msgid "30 sec"
+msgstr ""
+
+msgctxt "#30058"
+msgid "45 sec"
+msgstr ""
+
+msgctxt "#30059"
+msgid "60 sec"
+msgstr ""
+
+msgctxt "#30060"
+msgid "90 sec"
+msgstr ""
+
+msgctxt "#30061"
+msgid "120 sec"
+msgstr ""
+
+msgctxt "#30070"
+msgid "5 min"
+msgstr ""
+
+msgctxt "#30071"
+msgid "10 min"
+msgstr ""
+
+msgctxt "#30072"
+msgid "15 min"
+msgstr ""
+
+msgctxt "#30073"
+msgid "20 min"
+msgstr ""
+
+msgctxt "#30074"
+msgid "30 min"
+msgstr ""
+
+msgctxt "#30075"
+msgid "45 min"
+msgstr ""
+
+msgctxt "#30076"
+msgid "60 min"
+msgstr ""
+
+msgctxt "#30077"
+msgid "90 min"
+msgstr ""

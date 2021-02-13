@@ -1,17 +1,124 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<settings>
-    <setting type="lsep" label="30005" />
-    <setting id="switchOnInit" type="bool" label="30008" default="false" />
-    <setting id="channel" type="number" label="30009" enable="eq(-1,true)" />
-    <!-- Service Addon settings -->
-    <setting type="lsep" label="30006" />
-    <setting id="leadOffset" type="labelenum" label="30014" values="0 (off)|15 sec|30 sec|45 sec|60 sec|90sec|120 sec" default="0 (off)" />
-    <setting id="showNoticeBeforeSw" type="bool" label="30001" default="true" />
-    <setting id="dispTime" type="labelenum" label="30002" values="3 sec|5 sec|7 sec|10 sec|15 sec|20 sec|30 sec" default="15 sec" enable="eq(-1,true)" />
-    <setting id="useCountdownTimer" type="bool" label="30012" default="true" enable="eq(-2,true)" />
-    <setting id="confirmTmrAdded" type="bool" label="30003" default="true" />
-    <setting id="discardOldTmr" type="labelenum" label="30004" values="5 min|10 min|15 min|20 min|30 min|45 min|60 min|90 min" default="10 min" />
-    <setting type="lsep" label="30007" />
-    <setting type="action" label="30011" action="RunScript(service.kn.switchtimer)" option="close" />
-    <setting type="action" label="30042" action="RunScript(service.kn.switchtimer,action=delall)" option="close" />
+<?xml version="1.0" ?>
+<settings version="1">
+	<section id="service.kn.switchtimer">
+		<category help="" id="einstellungen" label="5">
+			<group id="1" label="30005">
+				<setting help="" id="switchOnInit" label="30008" type="boolean">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting help="" id="channel" label="30009" type="integer">
+					<level>0</level>
+					<default>0</default>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="switchOnInit">true</condition>
+						</dependency>
+					</dependencies>
+					<control format="integer" type="edit">
+						<heading>30009</heading>
+					</control>
+				</setting>
+			</group>
+			<group id="2" label="30006">
+				<setting help="" id="leadOffset" label="30014" type="string">
+					<level>0</level>
+					<default>15</default>
+					<constraints>
+						<options>
+							<option label="30050">0</option>
+							<option label="30055">15</option>
+							<option label="30057">30</option>
+							<option label="30058">45</option>
+							<option label="30059">60</option>
+							<option label="30060">90</option>
+							<option label="30061">120</option>
+						</options>
+					</constraints>
+					<control format="string" type="spinner"/>
+				</setting>
+				<setting help="" id="showNoticeBeforeSw" label="30001" type="boolean">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting help="" id="dispTime" label="30002" type="string">
+					<level>0</level>
+					<default>15</default>
+					<constraints>
+						<options>
+							<option label="30051">3</option>
+							<option label="30052">5</option>
+							<option label="30053">7</option>
+							<option label="30054">10</option>
+							<option label="30055">15</option>
+							<option label="30056">20</option>
+							<option label="30057">30</option>
+						</options>
+					</constraints>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="showNoticeBeforeSw">true</condition>
+						</dependency>
+					</dependencies>
+					<control format="string" type="spinner"/>
+				</setting>
+				<setting help="" id="useCountdownTimer" label="30012" type="boolean">
+					<level>0</level>
+					<default>true</default>
+					<dependencies>
+						<dependency type="enable">
+							<condition operator="is" setting="showNoticeBeforeSw">true</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+				<setting help="" id="confirmTmrAdded" label="30003" type="boolean">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
+				<setting help="" id="discardOldTmr" label="30004" type="string">
+					<level>0</level>
+					<default>10</default>
+					<constraints>
+						<options>
+							<option label="30070">5</option>
+							<option label="30071">10</option>
+							<option label="30072">15</option>
+							<option label="30073">20</option>
+							<option label="30074">30</option>
+							<option label="30075">45</option>
+							<option label="30076">60</option>
+							<option label="30077">90</option>
+						</options>
+					</constraints>
+					<control format="string" type="spinner"/>
+				</setting>
+			</group>
+			<group id="3" label="30007">
+				<setting help="" id="timer_show" label="30011" type="action">
+					<level>0</level>
+					<data>RunScript(service.kn.switchtimer)</data>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control format="action" type="button">
+						<close>false</close>
+					</control>
+				</setting>
+				<setting help="" id="timer_delall" label="30042" type="action">
+					<level>0</level>
+					<data>RunScript(service.kn.switchtimer,action=delall)</data>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control format="action" type="button">
+						<close>true</close>
+					</control>
+				</setting>
+			</group>
+		</category>
+	</section>
 </settings>
