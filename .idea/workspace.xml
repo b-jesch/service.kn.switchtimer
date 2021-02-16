@@ -3,12 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="1813deb3-1834-494e-9816-fb94b4549df5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/language/resource.language.de_DE/strings.po" beforeDir="false" afterPath="$PROJECT_DIR$/resources/language/resource.language.de_DE/strings.po" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/language/resource.language.en_GB/strings.po" beforeDir="false" afterPath="$PROJECT_DIR$/resources/language/resource.language.en_GB/strings.po" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/language/resource.language.nl_NL/strings.po" beforeDir="false" afterPath="$PROJECT_DIR$/resources/language/resource.language.nl_NL/strings.po" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/language/resource.language.pt_BR/strings.po" beforeDir="false" afterPath="$PROJECT_DIR$/resources/language/resource.language.pt_BR/strings.po" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/language/resource.language.pt_PT/strings.po" beforeDir="false" afterPath="$PROJECT_DIR$/resources/language/resource.language.pt_PT/strings.po" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/resources/settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/addon.xml" beforeDir="false" afterPath="$PROJECT_DIR$/addon.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/changelog.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/service.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +44,35 @@
       <recent name="$PROJECT_DIR$/resources/skins/Default/1080i" />
     </key>
   </component>
+  <component name="RunManager">
+    <configuration name="service" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="service.kn.switchtimer" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/service.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.service" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -60,7 +86,8 @@
       <workItem from="1612975500365" duration="1657000" />
       <workItem from="1612982275969" duration="976000" />
       <workItem from="1613057624300" duration="3288000" />
-      <workItem from="1613213533354" duration="2151000" />
+      <workItem from="1613213533354" duration="4655000" />
+      <workItem from="1613485549142" duration="3726000" />
     </task>
     <task id="LOCAL-00001" summary="Matrix initial release">
       <created>1612812651856</created>
@@ -118,7 +145,21 @@
       <option name="project" value="LOCAL" />
       <updated>1613059870753</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Introduction of new settings scheme">
+      <created>1613215905871</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1613215905871</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Introduction of new settings scheme">
+      <created>1613215925861</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1613215925861</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -129,6 +170,10 @@
     <MESSAGE value="Improved timer handling" />
     <MESSAGE value="Bug on skin change fixed" />
     <MESSAGE value="Improved handling, delete all timers is now part of timer list" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improved handling, delete all timers is now part of timer list" />
+    <MESSAGE value="Introduction of new settings scheme" />
+    <option name="LAST_COMMIT_MESSAGE" value="Introduction of new settings scheme" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/service_kn_switchtimer$service.coverage" NAME="service Coverage Results" MODIFIED="1613487122918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

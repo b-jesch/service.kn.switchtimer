@@ -31,8 +31,12 @@ HOME = xbmcgui.Window(10000)
 def jsonrpc(query):
     querystring = {"jsonrpc": "2.0", "id": 1}
     querystring.update(query)
-    return json.loads(xbmc.executeJSONRPC(json.dumps(querystring)))
-
+    try:
+        response = json.loads(xbmc.executeJSONRPC(json.dumps(querystring)))
+        if 'result' in response: return response['result']
+    except TypeError as e:
+        handler.notifyLog('Error executing JSON RPC: {}'.format(e), xbmc.LOGERROR)
+    return False
 
 class Service(knClasses.XBMCMonitor):
 
@@ -55,8 +59,8 @@ class Service(knClasses.XBMCMonitor):
         self.__showNoticeBeforeSw = True if handler.getSetting('showNoticeBeforeSw').upper() == 'TRUE' else False
         self.__useCountdownTimer = True if handler.getSetting('useCountdownTimer').upper() == 'TRUE' else False
         self.__leadOffset = int(re.match('\d+', handler.getSetting('leadOffset')).group())
-        self.__dispMsgTime = int(re.match('\d+', handler.getSetting('dispTime')).group())*1000
-        self.__discardTmr = int(re.match('\d+', handler.getSetting('discardOldTmr')).group())*60
+        self.__dispMsgTime = int(re.match('\d+', handler.getSetting('dispTime')).group()) * 1000
+        self.__discardTmr = int(re.match('\d+', handler.getSetting('discardOldTmr')).group()) * 60
         self.__confirmTmrAdded = True if handler.getSetting('confirmTmrAdded').upper() == 'TRUE' else False
 
         self.__switchOnInit = True if handler.getSetting('switchOnInit').upper() == 'TRUE' else False
@@ -74,10 +78,10 @@ class Service(knClasses.XBMCMonitor):
                 "params": {"channelgroupid": "alltv"},
                 }
         res = jsonrpc(query)
-        if 'result' in res and 'channels' in res['result']:
-            res = res['result'].get('channels')
-            for channels in res:
-                if channels['label'] == channelname: return channels['channelid']
+        if not res: return False
+        channels = res['channels']
+        for channel in channels:
+            if channel['label'] == channelname: return channel['channelid']
         return False
 
     @classmethod
@@ -87,11 +91,8 @@ class Service(knClasses.XBMCMonitor):
                 "method": "Player.GetActivePlayers",
                 }
         res = jsonrpc(query)
-        if 'result' in res and res['result']:
-            res = res['result'][0]
-            props['player'] = res['type']
-            props['playerid'] = res['playerid']
-
+        if res:
+            props.update({'player': res[0].get('playertype'), 'playerid': res[0].get('playerid')})
             query = {
                     "method": "Player.GetItem",
                     "params": {"properties": ["title", "season", "episode", "file"],
@@ -99,10 +100,8 @@ class Service(knClasses.XBMCMonitor):
                     "id": "VideoGetItem"
                     }
             res = jsonrpc(query)
-            if 'result' in res:
-                res = res['result'].get('item')
-                props['media'] = res['type']
-                if 'id' in res: props['id'] = res['id']
+            if res:
+                props.update({'media': res['item'].get('type'), 'id': res['item'].get('id')})
         return props
 
     @classmethod
@@ -119,7 +118,7 @@ class Service(knClasses.XBMCMonitor):
                 "params": {"playerid": playerProperties['playerid']},
             }
             res = jsonrpc(query)
-            if 'result' in res and res['result'] == "OK":
+            if res == "OK":
                 handler.notifyLog('Player stopped')
 
         handler.notifyLog('Currently playing channelid %s, switch to id %s' % (playerProperties['id'], channelId))
@@ -128,11 +127,11 @@ class Service(knClasses.XBMCMonitor):
             "params": {"item": {"channelid": channelId}}
         }
         res = jsonrpc(query)
-        if 'result' in res and res['result'] == 'OK':
-            handler.notifyLog('Switched to channel \'%s\'' % (channel))
+        if res == 'OK':
+            handler.notifyLog('Switched to channel \'%s\'' % channel)
         else:
-            handler.notifyLog('Couldn\'t switch to channel \'%s\'' % (channel))
-            handler.notifyOSD(loc(30000), loc(30025) % (channel), icon=IconAlert)
+            handler.notifyLog('Couldn\'t switch to channel \'%s\'' % channel)
+            handler.notifyOSD(loc(30000), loc(30025) % channel, icon=IconAlert)
 
     def poll(self):
 
