@@ -38,6 +38,7 @@ def jsonrpc(query):
         handler.notifyLog('Error executing JSON RPC: {}'.format(e), xbmc.LOGERROR)
     return False
 
+
 class Service(knClasses.XBMCMonitor):
 
     def __init__(self, *args):
@@ -265,8 +266,8 @@ class Service(knClasses.XBMCMonitor):
                         "params": {"channelgroupid": "alltv", "properties": ["channelnumber"]}
                         }
                 res = jsonrpc(query)
-                if 'result' in res:
-                    for _channel in res['result']['channels']:
+                if 'channels' in res:
+                    for _channel in res['channels']:
                         if _channel['channelnumber'] == self.__channel:
                             handler.notifyLog('Channelswitch on startup is enabled, switch to \'%s\'' % _channel['label'])
                             handler.notifyOSD(loc(30000), loc(30013) % (_channel['label']))

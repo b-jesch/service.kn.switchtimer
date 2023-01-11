@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1813deb3-1834-494e-9816-fb94b4549df5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/service.kn.switchtimer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/service.kn.switchtimer.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/addon.xml" beforeDir="false" afterPath="$PROJECT_DIR$/addon.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/changelog.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/service.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
