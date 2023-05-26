@@ -183,7 +183,7 @@ class Service(knClasses.XBMCMonitor):
                             elif self.__useCountdownTimer:
 
                                 # check for skin XML
-                                skin_id = xbmc.translatePath('special://skin').split(os.sep)[-2] + '.st_notification.xml'
+                                skin_id = xbmcvfs.translatePath('special://skin').split(os.sep)[-2] + '.st_notification.xml'
                                 if os.path.exists(os.path.join(path, 'resources', 'skins', 'Default', '1080i', skin_id)):
 
                                     pvr = knClasses.cPvrProperties()
